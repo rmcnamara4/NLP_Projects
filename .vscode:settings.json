@@ -1,0 +1,3 @@
+{
+    "python.defaultInterpreterPath": "conda run -n nlp python"
+}
