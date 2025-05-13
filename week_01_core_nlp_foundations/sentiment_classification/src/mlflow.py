@@ -34,13 +34,13 @@ def create_model(model_name, model_params):
       - Evaluation metric is preset to AUC for tree-based models.
   """
   if model_name == 'lr':
-    model = LogisticRegression(**model_params, n_jobs = 5)
+    model = LogisticRegression(**model_params, n_jobs = 6)
   elif model_name == 'xgb':
-    model = XGBClassifier(**model_params, eval_metric = 'auc', n_jobs = 5)
+    model = XGBClassifier(**model_params, eval_metric = 'auc', n_jobs = 6)
   elif model_name == 'lgbm':
-    model = LGBMClassifier(**model_params, metric = 'auc', n_jobs = 5)
+    model = LGBMClassifier(**model_params, metric = 'auc', n_jobs = 6)
   elif model_name == 'cat':
-    model = CatBoostClassifier(**model_params, eval_metric = 'AUC', thread_count = 5)
+    model = CatBoostClassifier(**model_params, eval_metric = 'AUC', thread_count = 6)
   return model
 
 def create_objective(tfidf_suggestions, model_suggestions, model_name, X_train, y_train, X_val, y_val, experiment_id):
