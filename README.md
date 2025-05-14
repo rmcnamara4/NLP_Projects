@@ -26,22 +26,26 @@ This repo will contain:
 Each week focuses on a core NLP concept or model, building toward real-world LLM workflows:
 
 🧠 Phase 1: Classical NLP (Weeks 1–5)
+
 	•	Tokenization
 	•	TF-IDF / Bag-of-Words
 	•	POS tagging & NER
 	•	Word2Vec & GloVe
 
 🔬 Phase 2: Neural NLP (Weeks 6–10)
+
 	•	RNNs, LSTMs, GRUs
 	•	Attention Mechanism
 	•	Transformer from Scratch
 
 🪨 Phase 3: LLMs & Advanced Topics (Weeks 11–13)
+
 	•	BERT & GPT-style models
 	•	Prompt engineering
 	•	Retrieval-Augmented Generation (RAG)
 
 🚀 Phase 4: Capstone Project (Weeks 14–15)
+
 	•	Build, train, and deploy a full NLP pipeline
 	•	Model serving, inference, and monitoring
 
@@ -55,8 +59,10 @@ Each week focuses on a core NLP concept or model, building toward real-world LLM
 ⸻
 
 📌 Follow Along
+
 	•	💻 Code: All code will be pushed regularly to this GitHub repo
 	•	📝 Blog: I’ll share reflections and learnings on Medium (link coming soon)
 	•	🕒 Timeline: While the plan is 15 weeks, I may adjust the pace to fit life and work. The goal is consistency, not perfection.
+    
 
 > I’m excited to get into the weeds of NLP and uncover what’s under the hood of the LLM sportscar. However long it takes, this journey is happening.
