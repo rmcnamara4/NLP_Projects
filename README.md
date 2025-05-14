@@ -48,12 +48,15 @@ Each week focuses on a core NLP concept or model, building toward real-world LLM
 ⸻
 
 🎯 Project Goals
+
 	1.	Document my learning journey to solidify my understanding of NLP, from foundational theory to applied projects.
 	2.	Provide a roadmap and resources for other data scientists or engineers entering the NLP and LLM space.
 
 ⸻
 
 📌 Follow Along
-	•	💻 Code: Everything will be pushed weekly to this GitHub repo
-	•	📝 Blog: Read my reflections on Medium (link coming soon)
-	•	📬 Updates: I’ll post progress weekly — follow if you want to learn NLP alongside me
+	•	💻 Code: All code will be pushed regularly to this GitHub repo
+	•	📝 Blog: I’ll share reflections and learnings on Medium (link coming soon)
+	•	🕒 Timeline: While the plan is 15 weeks, I may adjust the pace to fit life and work. The goal is consistency, not perfection.
+
+> I’m excited to get into the weeds of NLP and uncover what’s under the hood of the LLM sportscar. However long it takes, this journey is happening.
