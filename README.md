@@ -15,6 +15,7 @@ I recently completed a data science master’s at Columbia University, where I w
 📚 What This Project Is
 
 This repo will contain:
+
 	•	Weekly mini-projects and notebooks that build up from classical NLP to LLMs.
 	•	All code, learning materials, and implementation notes.
 	•	A companion blog series on Medium documenting my weekly progress, reflections, and key takeaways.
