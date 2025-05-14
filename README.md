@@ -63,6 +63,6 @@ Each week focuses on a core NLP concept or model, building toward real-world LLM
 	•	💻 Code: All code will be pushed regularly to this GitHub repo
 	•	📝 Blog: I’ll share reflections and learnings on Medium (link coming soon)
 	•	🕒 Timeline: While the plan is 15 weeks, I may adjust the pace to fit life and work. The goal is consistency, not perfection.
-    
 
-> I’m excited to get into the weeds of NLP and uncover what’s under the hood of the LLM sportscar. However long it takes, this journey is happening.
+
+I’m excited to get into the weeds of NLP and uncover what’s under the hood of the LLM sportscar. However long it takes, this journey is happening.
