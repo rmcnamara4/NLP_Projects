@@ -2,6 +2,7 @@ import re
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import string
 
 stop_words = set(stopwords.words('english'))
 
