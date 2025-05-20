@@ -37,7 +37,7 @@ warnings.filterwarnings('ignore')
 import optuna 
 from optuna.integration import XGBoostPruningCallback, LightGBMPruningCallback, CatBoostPruningCallback
 
-from src.preprocessing import preprocess
+from preprocessing import preprocess
 from src.metrics import * 
 from src.mlflow import * 
 
