@@ -43,7 +43,7 @@ def get_analogies(analogy_queries, embeddings, n, save_path):
        writer.writerow(['Analogy', 'Predicted Word', 'Similarity'])
        for positives, negatives in analogy_queries: 
           analogy_str = f"{negatives[0]} is to {positives[0]} as {positives[1]} is to ..."
-          results = embeddings.most_similar(positives = positives, negatives = negatives, topn = n)
+          results = embeddings.most_similar(positive = positives, negative = negatives, topn = n)
           for w, s in results: 
              writer.writerow([analogy_str, w, round(s, 4)])
 
@@ -102,7 +102,7 @@ def get_similarity(w1, w2, embeddings, bpe_tokenizer = None):
       return None
   return cosine_similarity([w1], [w2])[0][0]
 
-def evaluate(data, embeddings, bpe = False):
+def evaluate(data, embeddings, bpe_tokenizer = None):
   """
   Evaluates a word embedding model by computing similarity correlations against
   human-annotated biomedical term pairs.
@@ -119,7 +119,7 @@ def evaluate(data, embeddings, bpe = False):
   Args:
       data (pd.DataFrame): Evaluation dataset with columns `text_1`, `text_2`, and `mean_score`.
       embeddings (gensim KeyedVectors): Word or subword embedding model.
-      bpe (bool, optional): Whether to use BPE-based subword embeddings. Defaults to False.
+      bpe (BPE tokenizer, optional): Tokenizer to use for BPE. Defaults to None.
 
   Returns:
       inds (List[int]): Indices of rows that were successfully evaluated.
@@ -129,7 +129,7 @@ def evaluate(data, embeddings, bpe = False):
   human_scores = []
   inds = []
   for i, row in data.iterrows():
-    sim = get_similarity(row['text_1'].lower(), row['text_2'].lower(), embeddings, bpe)
+    sim = get_similarity(row['text_1'].lower(), row['text_2'].lower(), embeddings, bpe_tokenizer)
     if sim is not None:
       inds.append(i)
       similarities.append(sim)
