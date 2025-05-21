@@ -50,12 +50,15 @@ if __name__ == '__main__':
     tokenized_abstracts = abstracts.swifter.apply(clean_text, bpe = False)
 
     # Train and save model 
+    print('Training Skip-Gram model...')
     skipgram_model = train_model(
         vector_size = 200,
         window = 5, 
         sg = 1, 
         min_count = 20, 
-        workers = 4
+        workers = 4, 
+        tokenized_abstracts = tokenized_abstracts.tolist(), 
+        epochs = 10
     )
     skipgram_model.save('./results/skipgram/skipgram_model.model')
                         
@@ -111,6 +114,7 @@ if __name__ == '__main__':
     cleaned_text = abstracts.swifter.apply(lambda x: ' '.join(clean_text(x, bpe = True)))
     cleaned_text.to_csv('./data/bpe_skipgram/cleaned_abstracts.csv', index = False, header = True)
 
+    print('Training BPE tokenizer...')
     tokenizer = Tokenizer(BPE(unk_token = '<UNK>'))
     tokenizer.pre_tokenizer = Whitespace()
     trainer = BpeTrainer(
@@ -123,12 +127,15 @@ if __name__ == '__main__':
     bpe_tokenized_text = cleaned_text.squeeze().swifter.apply(lambda x: tokenizer.encode(x).tokens).tolist()
 
     # train model 
+    print('Training BPE Skip-Gram model...')
     bpe_skipgram_model = train_model(
         vector_size = 200,
         window = 5, 
         sg = 1, 
         min_count = 20, 
-        workers = 4
+        workers = 4, 
+        tokenized_abstracts = bpe_tokenized_text,
+        epochs = 10
     )
     bpe_skipgram_model.save('./results/bpe_skipgram/bpe_model.model')
 
@@ -182,21 +189,22 @@ if __name__ == '__main__':
     ###############################################################
     # FINAL EVALUATION 
     ###############################################################
-    evaluation_data = load_dataset('bigbio/umnsrs')
+    print('Evaluating models on UMNSRS dataset...')
+    evaluation_data = load_dataset('bigbio/umnsrs', trust_remote_code = True)
     evaluation_data = evaluation_data['train'].to_pandas()
     evaluation_data = evaluation_data[['text_1', 'text_2', 'mean_score']]
 
     # evaluate on all terms 
-    skip_gram_inds, skip_gram_results = evaluate(evaluation_data, embeddings, bpe = False)
+    skip_gram_inds, skip_gram_results = evaluate(evaluation_data, embeddings, bpe_tokenizer = None)
 
-    bpe_inds, bpe_results = evaluate(evaluation_data, bpe_embeddings, bpe = True) 
+    bpe_inds, bpe_results = evaluate(evaluation_data, bpe_embeddings, bpe_tokenizer = tokenizer) 
 
     # evaluate only on subset of terms 
     filtered_evaluation_data = evaluation_data.iloc[skip_gram_inds, :]
 
-    _, skip_gram_results_filtered = evaluate(filtered_evaluation_data, embeddings, bpe = False) 
+    _, skip_gram_results_filtered = evaluate(filtered_evaluation_data, embeddings, bpe_tokenizer = None) 
 
-    _, bpe_results_filtered = evaluate(filtered_evaluation_data, bpe_embeddings, bpe = True)
+    _, bpe_results_filtered = evaluate(filtered_evaluation_data, bpe_embeddings, bpe_tokenizer = tokenizer)
 
     # save results 
     results_df = pd.DataFrame([
