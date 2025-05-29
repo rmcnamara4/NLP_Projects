@@ -9,7 +9,11 @@ from lightgbm import LGBMClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
 
-from src.metrics import *
+import sys 
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
+
+from metric_utils import *
 import ast 
 
 
