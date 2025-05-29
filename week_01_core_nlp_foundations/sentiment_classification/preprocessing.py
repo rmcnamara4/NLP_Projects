@@ -61,3 +61,13 @@ def preprocess():
     X_test_nltk.to_csv('./data/X_test_nltk.csv', header = True, index = False)
     pd.Series(X_test_spacy).to_csv('./data/X_test_spacy.csv', header = True, index = False)
     y_test.replace(replace_dict).to_csv('./data/y_test.csv', header = True, index = False)
+
+    # save it to the common data folder as well for future usage 
+    X_train_nltk.to_csv('../data/amazon_sentiment/X_train_nltk.csv', header = True, index = False)
+    y_train.replace(replace_dict).to_csv('../data/amazon_sentiment/y_train.csv', header = True, index = False)
+
+    X_val_nltk.to_csv('../data/amazon_sentiment/X_val_nltk.csv', header = True, index = False)
+    y_val.replace(replace_dict).to_csv('../data/amazon_sentiment/y_val.csv', header = True, index = False)
+
+    X_test_nltk.to_csv('./data/X_test_nltk.csv', header = True, index = False)
+    y_test.replace(replace_dict).to_csv('../data/amazon_sentiment/y_test.csv', header = True, index = False)
