@@ -9,6 +9,10 @@ from src.data_utils import *
 import os
 
 def download_abstracts(email): 
+    if os.path.exists('./data/pubmed_abstracts.csv'): 
+        print('Abstracts already downloaded. Skipping download.')
+        return
+    
     Entrez.email = email 
     search_query = 'medicine[MeSH Terms]'
 
