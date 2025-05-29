@@ -1,6 +1,6 @@
 from gensim.models import Word2Vec
 
-def train_model(vector_size, window, sg, min_count, workers, tokenized_abstracts, epochs): 
+def train_model(vector_size, window, sg, min_count, workers, tokenized_abstracts, epochs, seed = 56): 
     """
     Trains a Word2Vec model using the provided parameters and tokenized abstracts.
 
@@ -21,7 +21,8 @@ def train_model(vector_size, window, sg, min_count, workers, tokenized_abstracts
         window = window, 
         sg = sg, 
         min_count = min_count, 
-        workers = workers
+        workers = workers, 
+        seed = seed
     )
 
     model.build_vocab(tokenized_abstracts) 
