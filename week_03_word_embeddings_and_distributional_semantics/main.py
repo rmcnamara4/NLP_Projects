@@ -23,6 +23,9 @@ from datasets import load_dataset
 from sklearn.metrics.pairwise import cosine_similarity
 
 import os
+import random 
+random.seed(42) 
+np.random.seed(42)
 
 email = os.getenv('PUBMED_EMAIL')
 if not email: 
@@ -38,7 +41,7 @@ ANALOGY_QUERIES = [
 SIMILARITY_WORDS = ['diabetes', 'cancer', 'disease', 'analysis', 'cardiovascular']
 
 if __name__ == '__main__':
-    # download_abstracts(email)
+    download_abstracts(email)
 
     data = pd.read_csv('./data/pubmed_abstracts.csv') 
     abstracts = data['Abstract'].dropna() 
@@ -50,20 +53,24 @@ if __name__ == '__main__':
     tokenized_abstracts = abstracts.swifter.apply(clean_text, bpe = False)
 
     # Train and save model 
-    print('Training Skip-Gram model...')
-    skipgram_model = train_model(
-        vector_size = 200,
-        window = 5, 
-        sg = 1, 
-        min_count = 20, 
-        workers = 4, 
-        tokenized_abstracts = tokenized_abstracts.tolist(), 
-        epochs = 10
-    )
-    skipgram_model.save('./results/skipgram/skipgram_model.model')
-                        
-    embeddings = skipgram_model.wv 
-    embeddings.save('./results/skipgram/skipgram.embeddings') 
+    if os.path.exists('./results/skipgram/skipgram_model.model'):
+        print('Skip-Gram model already exists. Skipping training.')
+        skipgram_model = Word2Vec.load('./results/skipgram/skipgram_model.model')
+    else:
+        print('Training Skip-Gram model...')
+        skipgram_model = train_model(
+            vector_size = 200,
+            window = 5, 
+            sg = 1, 
+            min_count = 20, 
+            workers = 4, 
+            tokenized_abstracts = tokenized_abstracts.tolist(), 
+            epochs = 10
+        )
+        skipgram_model.save('./results/skipgram/skipgram_model.model')
+                            
+        embeddings = skipgram_model.wv 
+        embeddings.save('./results/skipgram/skipgram.embeddings') 
 
     # visualize the embeddings 
     # all words in the vocab 
@@ -112,35 +119,44 @@ if __name__ == '__main__':
     ###############################################################
     # clean and tokenize the abstracts 
     cleaned_text = abstracts.swifter.apply(lambda x: ' '.join(clean_text(x, bpe = True)))
+    cleaned_text = cleaned_text.sort_values()
     cleaned_text.to_csv('./data/bpe_skipgram/cleaned_abstracts.csv', index = False, header = True)
 
-    print('Training BPE tokenizer...')
-    tokenizer = Tokenizer(BPE(unk_token = '<UNK>'))
-    tokenizer.pre_tokenizer = Whitespace()
-    trainer = BpeTrainer(
-        vocab_size = 10_000, 
-        special_tokens = ['<UNK>', '<NUM>', '<PAD>']
-    )
-    tokenizer.train(['./data/bpe_skipgram/cleaned_abstracts.csv'], trainer = trainer) 
-    tokenizer.save('./data/bpe_skipgram/bpe_tokenizer.json') 
+    if os.path.exists('./data/bpe_skipgram/bpe_tokenizer.json'):
+        print('BPE tokenizer already exists. Loading from file...')
+        tokenizer = Tokenizer.from_file('./data/bpe_skipgram/bpe_tokenizer.json')
+    else: 
+        print('Training BPE tokenizer...')
+        tokenizer = Tokenizer(BPE(unk_token = '<UNK>'))
+        tokenizer.pre_tokenizer = Whitespace()
+        trainer = BpeTrainer(
+            vocab_size = 10_000, 
+            special_tokens = ['<UNK>', '<NUM>', '<PAD>']
+        )
+        tokenizer.train(['./data/bpe_skipgram/cleaned_abstracts.csv'], trainer = trainer) 
+        tokenizer.save('./data/bpe_skipgram/bpe_tokenizer.json') 
 
     bpe_tokenized_text = cleaned_text.squeeze().swifter.apply(lambda x: tokenizer.encode(x).tokens).tolist()
 
     # train model 
-    print('Training BPE Skip-Gram model...')
-    bpe_skipgram_model = train_model(
-        vector_size = 200,
-        window = 5, 
-        sg = 1, 
-        min_count = 20, 
-        workers = 4, 
-        tokenized_abstracts = bpe_tokenized_text,
-        epochs = 10
-    )
-    bpe_skipgram_model.save('./results/bpe_skipgram/bpe_model.model')
+    if os.path.exists('./results/bpe_skipgram/bpe_model.model'):
+        print('BPE Skip-Gram model already exists. Skipping training.')
+        bpe_skipgram_model = Word2Vec.load('./results/bpe_skipgram/bpe_model.model')
+    else:
+        print('Training BPE Skip-Gram model...')
+        bpe_skipgram_model = train_model(
+            vector_size = 200,
+            window = 5, 
+            sg = 1, 
+            min_count = 20, 
+            workers = 4, 
+            tokenized_abstracts = bpe_tokenized_text,
+            epochs = 10
+        )
+        bpe_skipgram_model.save('./results/bpe_skipgram/bpe_model.model')
 
-    bpe_embeddings = bpe_skipgram_model.wv
-    bpe_embeddings.save('./results/bpe_skipgram/bpe_skipgram.embeddings')
+        bpe_embeddings = bpe_skipgram_model.wv
+        bpe_embeddings.save('./results/bpe_skipgram/bpe_skipgram.embeddings')
 
     # visulalize the embeddings
     # all words in the vocab
@@ -190,9 +206,13 @@ if __name__ == '__main__':
     # FINAL EVALUATION 
     ###############################################################
     print('Evaluating models on UMNSRS dataset...')
-    evaluation_data = load_dataset('bigbio/umnsrs', trust_remote_code = True)
-    evaluation_data = evaluation_data['train'].to_pandas()
-    evaluation_data = evaluation_data[['text_1', 'text_2', 'mean_score']]
+    if os.path.exists('./data/umnsrs_data.csv'): 
+        evaluation_data = pd.read_csv('./data/umnsrs_data.csv')
+    else:
+        evaluation_data = load_dataset('bigbio/umnsrs', trust_remote_code = True)
+        evaluation_data = evaluation_data['train'].to_pandas()
+        evaluation_data = evaluation_data[['text_1', 'text_2', 'mean_score']]
+        evaluation_data.to_csv('./data/umnsrs_data.csv', index = False, header = True)
 
     # evaluate on all terms 
     skip_gram_inds, skip_gram_results = evaluate(evaluation_data, embeddings, bpe_tokenizer = None)
