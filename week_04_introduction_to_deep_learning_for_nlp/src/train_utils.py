@@ -104,8 +104,8 @@ def train_and_evaluate_model(model, train_loader, val_loader, criterion, optimiz
     for i in range(epochs):
         print(f'Epoch {i + 1}')
         print('=================================')
-        train_avg_loss, train_auroc, train_auprc = train_one_epoch(model, train_loader, criterion, optimizer, device)
-        _, _, val_avg_loss, val_auroc, val_auprc = evaluate_one_epoch(model, criterion, val_loader)
+        train_avg_loss, train_auroc, train_auprc = train_one_epoch(model, train_loader, criterion, optimizer, device, print_every)
+        _, _, val_avg_loss, val_auroc, val_auprc = evaluate_one_epoch(model, criterion, val_loader, device)
 
         train_losses.append(train_avg_loss)
         train_aurocs.append(train_auroc)
@@ -125,5 +125,9 @@ def train_and_evaluate_model(model, train_loader, val_loader, criterion, optimiz
             if counter >= patience:
                 print(f"Early stopping triggered at epoch {i + 1}")
                 break
+        
+        print(f'Train Loss: {train_avg_loss:.4f}, Train AUROC: {train_auroc:.4f}, Train AUPRC: {train_auprc:.4f}')
+        print(f'Val Loss: {val_avg_loss:.4f}, Val AUROC: {val_auroc:.4f}, Val AUPRC: {val_auprc:4f}')
+        print()
 
     return best_model_state, train_losses, val_losses, train_aurocs, val_aurocs, train_auprcs, val_auprcs
