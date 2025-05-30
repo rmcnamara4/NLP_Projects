@@ -42,7 +42,7 @@ def calculate_metrics(y_true, y_pred_proba, y_pred, set = 'train'):
 
   return metrics
 
-def plot_roc_curve(y_true, y_pred_proba, path, set = 'Train'):
+def plot_roc_curve(y_true, y_pred_proba, path = None, set = 'Train'):
     """
     Plots the ROC curve and computes the AUC.
 
@@ -64,10 +64,14 @@ def plot_roc_curve(y_true, y_pred_proba, path, set = 'Train'):
     plt.title(f'{set} ROC Curve')
     plt.legend(loc = 'lower right')
     plt.tight_layout()
-    plt.savefig(path)
-    plt.close()
 
-def plot_pr_curve(y_true, y_pred_proba, path, set = 'Train'):
+    if path is None: 
+       plt.show()
+    else: 
+        plt.savefig(path)
+        plt.close()
+
+def plot_pr_curve(y_true, y_pred_proba, path = None, set = 'Train'):
     """
     Plots the Precision-Recall curve and computes the average precision.
 
@@ -88,10 +92,14 @@ def plot_pr_curve(y_true, y_pred_proba, path, set = 'Train'):
     plt.title(f'{set} Recall-Precision Curve')
     plt.legend(loc = 'lower left')
     plt.tight_layout()
-    plt.savefig(path)
-    plt.close()
+    
+    if path is None:
+        plt.show()
+    else:
+        plt.savefig(path)
+        plt.close()
 
-def create_confusion_matrix(y_true, y_pred, path, set = 'Train'):
+def create_confusion_matrix(y_true, y_pred, path = None, set = 'Train'):
   """
   Generates and saves a confusion matrix plot for classification predictions.
 
@@ -107,6 +115,37 @@ def create_confusion_matrix(y_true, y_pred, path, set = 'Train'):
   """
   ConfusionMatrixDisplay.from_predictions(y_true, y_pred)
   plt.title(f'{set} Confusion Matrix')
-  plt.savefig(path)
-  plt.close()
+
+  if path is None: 
+     plt.show()
+  else: 
+     plt.savefig(path) 
+     plt.close()
+
+def plot_loss(train_losses, val_losses, path = None, title = 'Loss over Epochs'):
+    """
+    Plots training and validation loss over epochs.
+
+    Args:
+        train_losses (list of float): Training loss for each epoch.
+        val_losses (list of float): Validation loss for each epoch.
+        title (str, optional): Title of the plot. Defaults to 'Loss over Epochs'.
+        save_path (str, optional): If provided, saves the plot to this path. Otherwise shows the plot.
+    """
+    plt.figure(figsize = (8, 6))
+    plt.plot(train_losses, label = 'Train Loss', marker = 'o')
+    plt.plot(val_losses, label = 'Val Loss', marker = 'o')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title(title)
+    plt.xticks(ticks = range(0, len(train_losses)), labels = range(1, len(train_losses) + 1))
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    
+    if path is None:
+        plt.show()
+    else: 
+        plt.savefig(path)
+        plt.close()
 
