@@ -16,6 +16,8 @@ from collections import Counter
 import torch 
 from torch.utils.data import DataLoader
 
+import pickle
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == '__main__':
@@ -90,41 +92,43 @@ if __name__ == '__main__':
     # Base LSTM Classifier 
     ##########################################################################################
     # initiailze model 
-    # model = LSTMClassifier(stoi, 100, 128, 1).to(device)
-    # optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
+    model = LSTMClassifier(stoi, 100, 128, 1).to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr = 0.001)
 
-    # # train and evaluate model 
-    # print('Training Base LSTM Classifier...')
-    # best_model_state, train_losses, val_losses, train_aurocs, val_aurocs, train_auprcs, val_auprcs =  train_and_evaluate_model(model, train_loader, val_loader, criterion, optimizer, device, epochs = 10, patience = 2, print_every = 600)
-    # print('Training complete!')
-    # print()
+    # train and evaluate model 
+    print('Training Base LSTM Classifier...')
+    best_model_state, train_losses, val_losses, train_aurocs, val_aurocs, train_auprcs, val_auprcs =  train_and_evaluate_model(model, train_loader, val_loader, criterion, optimizer, device, epochs = 10, patience = 2, print_every = 600)
+    print('Training complete!')
+    print()
 
-    # # save 
-    # torch.save(best_model_state, './results/base_model/lstm_classifier.pth')
+    # save 
+    torch.save(best_model_state, './results/base_model/lstm_classifier.pth')
 
-    # torch.save(train_losses, './results/base_model/train_losses.pth')
-    # torch.save(train_aurocs, './results/base_model/train_aurocs.pth')
-    # torch.save(train_auprcs, './results/base_model/train_auprcs.pth')
+    torch.save(train_losses, './results/base_model/train_losses.pth')
+    torch.save(train_aurocs, './results/base_model/train_aurocs.pth')
+    torch.save(train_auprcs, './results/base_model/train_auprcs.pth')
 
-    # torch.save(val_losses, './results/base_model/val_losses.pth')
-    # torch.save(val_aurocs, './results/base_model/val_aurocs.pth')
-    # torch.save(val_auprcs, './results/base_model/val_auprcs.pth')
+    torch.save(val_losses, './results/base_model/val_losses.pth')
+    torch.save(val_aurocs, './results/base_model/val_aurocs.pth')
+    torch.save(val_auprcs, './results/base_model/val_auprcs.pth')
 
-    # # evaluate on test set
-    # print('Evaluating Base LSTM Classifier on Test Set...')
-    # print()
-    # plot_loss(train_losses, val_losses, './results/base_model/loss_over_epochs.png')
+    # evaluate on test set
+    print('Evaluating Base LSTM Classifier on Test Set...')
+    print()
+    plot_loss(train_losses, val_losses, './results/base_model/loss_over_epochs.png')
 
-    # model.eval()
-    # with torch.no_grad(): 
-    #     test_pred_proba, test_labels, test_avg_loss, _, _ = evaluate_one_epoch(model, criterion, test_loader, device)
+    model.eval()
+    with torch.no_grad(): 
+        test_pred_proba, test_labels, test_avg_loss, _, _ = evaluate_one_epoch(model, criterion, test_loader, device)
 
-    # test_pred = (test_pred_proba >= 0).astype(int)
+    test_pred = (test_pred_proba >= 0).astype(int)
 
-    # base_metrics = calculate_metrics(test_labels, test_pred_proba, test_pred, set = 'test')
-    # plot_roc_curve(test_labels, test_pred_proba, './results/base_model/roc_curve.png', set = 'Test')
-    # plot_pr_curve(test_labels, test_pred_proba, './results/base_model/pr_curve.png', set = 'Test')
-    # create_confusion_matrix(test_labels, test_pred, './results/base_model/confusion_matrix.png', set = 'Test')
+    base_metrics = calculate_metrics(test_labels, test_pred_proba, test_pred, set = 'test')
+    with open('./results/base_model/metrics.pkl', 'wb') as f:
+        pickle.dump(base_metrics, f)
+    plot_roc_curve(test_labels, test_pred_proba, './results/base_model/roc_curve.png', set = 'Test')
+    plot_pr_curve(test_labels, test_pred_proba, './results/base_model/pr_curve.png', set = 'Test')
+    create_confusion_matrix(test_labels, test_pred, './results/base_model/confusion_matrix.png', set = 'Test')
 
     ##########################################################################################
     # Attention LSTM Classifier 
@@ -139,7 +143,7 @@ if __name__ == '__main__':
     print()
 
     # save 
-    torch.save(best_model_state, '../results/attention_model/lstm_classifier.pth')
+    torch.save(best_model_state, './results/attention_model/lstm_classifier.pth')
 
     torch.save(train_losses, './results/attention_model/train_losses.pth')
     torch.save(train_aurocs, './results/attention_model/train_aurocs.pth')
@@ -161,6 +165,8 @@ if __name__ == '__main__':
     test_pred = (test_pred_proba >= 0).astype(int)
 
     attention_metrics = calculate_metrics(test_labels, test_pred_proba, test_pred, set = 'test')
+    with open('./results/attention_model/metrics.pkl', 'wb') as f:
+        pickle.dump(attention_metrics, f)
     plot_roc_curve(test_labels, test_pred_proba, './results/attention_model/roc_curve.png', set = 'Test')
     plot_pr_curve(test_labels, test_pred_proba, './results/attention_model/pr_curve.png', set = 'Test')
     create_confusion_matrix(test_labels, test_pred, './results/attention_model/confusion_matrix.png', set = 'Test')
