@@ -1,7 +1,7 @@
 import torch.nn as nn
 from src.encoder import Encoder 
 from src.decoder import Decoder
-from src.embeddings import get_positional_embeddings
+from src.position import get_positional_embeddings
 
 class TransformerModel(nn.Module):
   """
