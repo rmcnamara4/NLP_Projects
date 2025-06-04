@@ -1,5 +1,5 @@
 import torch.nn as nn
-from src.attention import MultiHeadAttention
+from src.model.attention import MultiHeadAttention
 
 class EncoderLayer(nn.Module):
   """

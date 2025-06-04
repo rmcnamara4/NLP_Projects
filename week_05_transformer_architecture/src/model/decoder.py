@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch 
-from src.attention import MultiHeadAttention
+from src.model.attention import MultiHeadAttention
 
 class DecoderLayer(nn.Module):
   """
