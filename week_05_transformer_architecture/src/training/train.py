@@ -1,4 +1,8 @@
 import torch 
+import logging 
+import os 
+
+from src.training.checkpoint import save_checkpoint, load_checkpoint
 
 def train_one_epoch(model, dataloader, optimizer, criterion, device, print_every = 50):
   """
@@ -88,7 +92,7 @@ def evaluate_one_epoch(model, dataloader, criterion, device):
 
   return total_loss / len(dataloader)
 
-def train(model, train_dataloader, val_dataloader, optimizer, criterion, device, epochs, print_every = 50, patience = 2):
+def train(model, train_dataloader, val_dataloader, optimizer, criterion, device, epochs, print_every = 50, patience = 2, checkpoint_path = None, resume = False):
   """
   Trains the Transformer model using a training and validation loop with early stopping.
 
@@ -109,6 +113,8 @@ def train(model, train_dataloader, val_dataloader, optimizer, criterion, device,
       epochs (int): Maximum number of training epochs.
       print_every (int, optional): How frequently to print training loss during an epoch. Default is 50.
       patience (int, optional): Number of consecutive epochs with no validation improvement before early stopping. Default is 2.
+      checkpoint_path (str, optional): File path to save or resume checkpoint.
+      resume (bool): Whether to resume from checkpoint.
 
   Returns:
       tuple: A tuple containing:
@@ -117,17 +123,23 @@ def train(model, train_dataloader, val_dataloader, optimizer, criterion, device,
   """
   train_losses = []
   val_losses = []
+
   best_val_loss = float('inf')
   no_improve_epochs = 0
+  start_epoch = 0 
+
+  if resume and checkpoint_path and os.path.exists(checkpoint_path): 
+    start_epoch, best_val_loss, train_losses, val_losses = load_checkpoint(model, optimizer, checkpoint_path, device)
+    logging.info(f"Resuming training from epoch {start_epoch + 1} with best_val_loss = {best_val_loss:.4f}")
+
   for epoch in range(epochs):
-    print(f'Epoch {epoch + 1}')
-    print('============================')
+    logging.info(f'Epoch {epoch + 1} / {epochs}')
+    logging.info('-' * 30)
 
     train_loss = train_one_epoch(model, train_dataloader, optimizer, criterion, device, print_every = print_every)
     val_loss = evaluate_one_epoch(model, val_dataloader, criterion, device)
 
-    print('============================')
-    print(f'Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}')
+    logging.info(f'Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}')
 
     train_losses.append(train_loss)
     val_losses.append(val_loss)
@@ -136,11 +148,16 @@ def train(model, train_dataloader, val_dataloader, optimizer, criterion, device,
       best_val_loss = val_loss
       no_improve_epochs = 0
       best_model_state = model.state_dict()
+
+      if checkpoint_path: 
+        save_checkpoint(model, optimizer, epoch, best_val_loss, checkpoint_path, train_losses = train_losses, val_losses = val_losses)
+
     else:
       no_improve_epochs += 1
-      print(f'No improvement in validation loss for {no_improve_epochs} epochs.')
+      logging.info(f'No improvement in validation loss for {no_improve_epochs} epochs.')
+
       if no_improve_epochs >= patience:
-        print(f'Early stopping triggered after {epoch + 1} epochs.')
+        logging.info(f'Early stopping triggered after {epoch + 1} epochs.')
         break
 
   model.load_state_dict(best_model_state)
