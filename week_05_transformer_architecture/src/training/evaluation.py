@@ -1,4 +1,5 @@
 import torch 
+import logging
 from nltk.translate.bleu_score import corpus_bleu
 
 def length_penalty(length, alpha = 0.6):
@@ -139,7 +140,7 @@ def evaluate_bleu(model, dataloader, smoother, beam_width = 5, max_len = 100, al
   with torch.no_grad():
     for i, (src_input, tgt_input, tgt_output) in enumerate(dataloader):
       if i % 50 == 0:
-        print(f'Batch [{i}] / [{len(dataloader)}]')
+        logging.info(f'Batch [{i}] / [{len(dataloader)}]')
 
       batch_size = src_input.shape[0]
       for j in range(batch_size):
@@ -158,11 +159,12 @@ def evaluate_bleu(model, dataloader, smoother, beam_width = 5, max_len = 100, al
         reference.append([tgt_tokens])
 
         if i == 0 and j < 5:
-          print('Reference:', ' '.join(tgt_tokens))
-          print('Hypothesis:', ' '.join(pred_tokens))
-          print()
+          logging.info(f'Example {j + 1}:')
+          logging.info('Reference:', ' '.join(tgt_tokens))
+          logging.info('Hypothesis:', ' '.join(pred_tokens))
+          logging.info('\n')
 
   bleu = corpus_bleu(reference, predictions, smoothing_function = smoother)
-  print(f'Corpus BLEU: {bleu:.4f}')
+  logging.info(f'Corpus BLEU: {bleu:.4f}')
 
   return bleu
