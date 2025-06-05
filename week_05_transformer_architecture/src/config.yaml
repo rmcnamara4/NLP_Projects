@@ -8,6 +8,7 @@ model:
   encoder_dropout: 0.2
   decoder_dropout: 0.2
   max_len: 600
+  return_attn: True
 
 training: 
   batch_size: 64
@@ -16,9 +17,18 @@ training:
   print_every: 100
   save_every: 600
   patience: 4
+  resume: False
+
+dataset: 
+  name: 'opus_books'
+  src_lang: 'en'
+  tgt_lang: 'fr'
 
 paths: 
   model_dir: './models'
   model_file: 'model.pth'
+  checkpoint_file: 'checkpoint.pth'
   train_loss_file: 'train_losses.pt'
   val_loss_file': 'val_losses.pt'
+  train_log: 'train.log'
+  evaluation_log: 'eval.log'
