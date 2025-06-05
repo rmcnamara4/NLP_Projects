@@ -27,7 +27,6 @@ dataset:
 paths: 
   model_dir: './models'
   model_file: 'model.pth'
-  config_file: './src/config.yaml'
   checkpoint_file: 'checkpoint.pth'
   train_loss_file: 'train_losses.pt'
   val_loss_file': 'val_losses.pt'
