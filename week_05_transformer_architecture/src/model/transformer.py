@@ -85,7 +85,6 @@ class TransformerModel(nn.Module):
     encoder_embeddings = self.encoder_emb_drop(encoder_embeddings)
 
     encoder_output = self.encoder(encoder_embeddings, encoder_input_ids = source, padding_idx = self.source_vocab['<PAD>'] if '<PAD>' in self.source_vocab else None)
-    print('Encoder Output shape:', encoder_output.shape)
 
     decoder_embeddings = self.decoder_embedding_layer(target)
     decoder_pos_embeddings = self.positional_embeddings[:, :target.shape[1], :]
