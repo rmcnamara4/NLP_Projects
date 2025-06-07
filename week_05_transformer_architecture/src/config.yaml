@@ -19,16 +19,20 @@ training:
   patience: 4
   resume: False
 
+evaluation: 
+  beam_width: 5
+  max_len: 100
+  alpha: 0.6
+
 dataset: 
   name: 'opus_books'
   src_lang: 'en'
   tgt_lang: 'fr'
 
 paths: 
-  model_dir: './models'
+  model_dir: './models/version_1'
   model_file: 'model.pth'
   checkpoint_file: 'checkpoint.pth'
   train_loss_file: 'train_losses.pt'
   val_loss_file': 'val_losses.pt'
   train_log: 'train.log'
-  evaluation_log: 'eval.log'
