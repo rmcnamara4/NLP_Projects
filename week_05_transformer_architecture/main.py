@@ -43,10 +43,12 @@ def main():
     val_dataset = TranslationDataset(val_src_tokens, val_tgt_tokens, source_vocab, target_vocab)
     test_dataset = TranslationDataset(test_src_tokens, test_tgt_tokens, source_vocab, target_vocab)
 
+    max_len = config['model']['max_len']
     batch_size = config['training']['batch_size']
-    train_dataloader = DataLoader(train_dataset, batch_size = batch_size, shuffle = True, collate_fn = lambda x: collate_fn(x, train = True), num_workers = 5, pin_memory = True)
-    val_dataloader = DataLoader(val_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, train = False), num_workers = 5, pin_memory = True)
-    test_dataloader = DataLoader(test_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, train = False), num_workers = 5, pin_memory = True)
+
+    train_dataloader = DataLoader(train_dataset, batch_size = batch_size, shuffle = True, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = True, max_len = max_len), num_workers = 0, pin_memory = True)
+    val_dataloader = DataLoader(val_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = False, max_len = max_len), num_workers = 0, pin_memory = True)
+    test_dataloader = DataLoader(test_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = False, max_len = max_len), num_workers = 0, pin_memory = True)
 
     model = TransformerModel(
         source_vocab, 
@@ -59,7 +61,7 @@ def main():
         n_layers = config['model']['n_layers'],
         encoder_dropout = config['model']['encoder_dropout'],
         decoder_dropout = config['model']['decoder_dropout'],
-        max_len = config['model']['max_len'],
+        max_len = max_len,
         return_attn = config['model']['return_attn'], 
         device = device
     ).to(device) 
