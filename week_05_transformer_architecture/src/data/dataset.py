@@ -10,27 +10,42 @@ import swifter
 
 from src.data.preprocessing import numericalize, tokenize
 
-def load_tokenized_data(split, src_lang, tgt_lang, dataset_name = 'opus_books'): 
+def load_tokenized_data(src_lang, tgt_lang, dataset_name = 'opus_books'): 
   """
   Loads and tokenizes a specific split of a Hugging Face dataset.
 
   Args:
-      split (str): Split to load ('train', 'validation', or 'test').
       src_lang (str): Source language code (e.g., 'en').
       tgt_lang (str): Target language code (e.g., 'fr').
       dataset_name (str): Name of the Hugging Face dataset. Default is 'opus_books'.
 
   Returns:
-      tuple: (tokenized source texts, tokenized target texts)
+      tuple: A tuple containing three elements:
+          - (train_source_tokens, train_target_tokens)
+          - (val_source_tokens, val_target_tokens)
+          - (test_source_tokens, test_target_tokens)
+
+      Each element is a tuple of tokenized source and target sequences for that split.
   """
-  dataset = load_dataset(dataset_name, f'{src_lang}-{tgt_lang}', split = split)
-  src_text = [example['translation'][src_lang] for example in dataset]
-  tgt_text = [example['translation'][tgt_lang] for example in dataset]
+  dataset = load_dataset(dataset_name, f'{src_lang}-{tgt_lang}')
+  data = pd.DataFrame(dataset['train']['translation'])
 
-  src_tokens = pd.Series(src_text).swifter.apply(tokenize).values 
-  tgt_tokens = pd.Series(tgt_text).swifter.apply(tokenize).values
+  source = data[src_lang]
+  target = data[tgt_lang]
 
-  return src_tokens, tgt_tokens
+  eval_source, test_source, eval_target, test_target = train_test_split(source, target, test_size = 0.2, random_state = 10)
+  train_source, val_source, train_target, val_target = train_test_split(eval_source, eval_target, test_size = 0.2, random_state = 10)
+
+  train_source_tokens = train_source.swifter.apply(tokenize).values
+  train_target_tokens = train_target.swifter.apply(tokenize).values
+
+  val_source_tokens = val_source.swifter.apply(tokenize).values
+  val_target_tokens = val_target.swifter.apply(tokenize).values
+
+  test_source_tokens = test_source.swifter.apply(tokenize).values
+  test_target_tokens = test_target.swifter.apply(tokenize).values
+
+  return (train_source_tokens, train_target_tokens), (val_source_tokens, val_target_tokens), (test_source_tokens, test_target_tokens)
   
 
 def collate_fn(batch, source_vocab, target_vocab, train = True):
