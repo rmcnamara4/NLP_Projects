@@ -26,7 +26,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
 
     config = load_config('./src/config.yaml')
-    setup_logging(log_file = config['paths']['train_log'])
+    setup_logging(log_file = config['paths']['train_log'], filemode = config['logging']['filemode'])
 
     src_lang = config['dataset']['src_lang']
     tgt_lang = config['dataset']['tgt_lang']
