@@ -1,6 +1,8 @@
 import torch
 import logging
 
+import os
+
 def save_checkpoint(model, optimizer, epoch, best_val_loss, path, train_losses = None, val_losses = None):
     """
     Save model, optimizer, epoch, and best validation loss to a file.
@@ -12,6 +14,8 @@ def save_checkpoint(model, optimizer, epoch, best_val_loss, path, train_losses =
         best_val_loss (float): The best validation loss so far.
         path (str): Destination file path.
     """
+    os.makedirs(os.path.dirname(path), exist_ok = True)
+    
     checkpoint = {
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
