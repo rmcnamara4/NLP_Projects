@@ -132,7 +132,7 @@ def train(model, train_dataloader, val_dataloader, optimizer, criterion, device,
     start_epoch, best_val_loss, train_losses, val_losses = load_checkpoint(model, optimizer, checkpoint_path, device)
     logging.info(f"Resuming training from epoch {start_epoch + 1} with best_val_loss = {best_val_loss:.4f}")
 
-  for epoch in range(epochs):
+  for epoch in range(start_epoch, epochs):
     logging.info(f'Epoch {epoch + 1} / {epochs}')
     logging.info('-' * 30)
 
