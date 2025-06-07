@@ -47,7 +47,7 @@ def main():
     batch_size = config['training']['batch_size']
 
     train_dataloader = DataLoader(train_dataset, batch_size = batch_size, shuffle = True, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = True, max_len = max_len), num_workers = 0, pin_memory = True)
-    val_dataloader = DataLoader(val_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = False, max_len = max_len), num_workers = 0, pin_memory = True)
+    val_dataloader = DataLoader(val_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = True, max_len = max_len), num_workers = 0, pin_memory = True)
     test_dataloader = DataLoader(test_dataset, batch_size = batch_size, shuffle = False, collate_fn = lambda x: collate_fn(x, source_vocab, target_vocab, train = False, max_len = max_len), num_workers = 0, pin_memory = True)
 
     model = TransformerModel(
