@@ -53,22 +53,21 @@ class MultiHeadAttention(nn.Module):
               (used for visualization or attention analysis).
     """
     batch_size = query.shape[0]
-    seq_len = query.shape[1]
 
     Q = self.q_proj(query)
     K = self.k_proj(key)
     V = self.v_proj(value)
 
-    Q = Q.reshape(batch_size, seq_len, self.n_heads, self.d_k).transpose(1, 2)
-    K = K.reshape(batch_size, seq_len, self.n_heads, self.d_k).transpose(1, 2)
-    V = V.reshape(batch_size, seq_len, self.n_heads, self.d_v).transpose(1, 2)
+    Q = Q.reshape(batch_size, query.shape[1], self.n_heads, self.d_k).transpose(1, 2)
+    K = K.reshape(batch_size, key.shape[1], self.n_heads, self.d_k).transpose(1, 2)
+    V = V.reshape(batch_size, value.shape[1], self.n_heads, self.d_v).transpose(1, 2)
 
     scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
     if mask is not None:
       scores = scores + mask
     scores = F.softmax(scores, dim = -1)
 
-    weights = torch.matmul(scores, V).transpose(1, 2).contiguous().reshape(batch_size, seq_len, self.d_v * self.n_heads)
+    weights = torch.matmul(scores, V).transpose(1, 2).contiguous().reshape(batch_size, query.shape[1], self.d_v * self.n_heads)
     output = self.o_proj(weights)
     output = self.drop_attn(output)
 
