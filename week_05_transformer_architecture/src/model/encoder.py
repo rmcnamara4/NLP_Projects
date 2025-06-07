@@ -54,7 +54,7 @@ class EncoderLayer(nn.Module):
 
     if encoder_input_ids is not None and padding_idx is not None:
       pad_mask = (encoder_input_ids != padding_idx).unsqueeze(1).unsqueeze(2)
-      attn_mask = pad_mask.masked_fill(~pad_mask, float('-inf')).float()
+      attn_mask = pad_mask.float().masked_fill(~pad_mask, float('-inf')).masked_fill(pad_mask, 0.0)
     else:
       attn_mask = None
 

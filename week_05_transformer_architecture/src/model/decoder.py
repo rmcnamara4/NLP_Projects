@@ -76,14 +76,14 @@ class DecoderLayer(nn.Module):
     else:
       mask = causal_mask
 
-    attn_mask = mask.masked_fill(~mask, float('-inf')).float()
+    attn_mask = mask.float().masked_fill(~mask, float('-inf')).masked_fill(mask, 0.0)
 
     self_attn_output, self_attn_weights = self.self_attn(x, x, x, attn_mask)
     decoder_hidden = self.norm1(self_attn_output + x)
 
     if encoder_input_ids is not None and padding_idx is not None:
         enc_pad_mask = (encoder_input_ids != padding_idx).unsqueeze(1).unsqueeze(2)
-        cross_attn_mask = enc_pad_mask.masked_fill(~enc_pad_mask, float('-inf')).float()
+        cross_attn_mask = enc_pad_mask.float().masked_fill(~enc_pad_mask, float('-inf')).masked_fill(enc_pad_mask, 0.0)
     else:
         cross_attn_mask = None
 
