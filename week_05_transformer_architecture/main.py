@@ -31,9 +31,7 @@ def main():
     src_lang = config['dataset']['src_lang']
     tgt_lang = config['dataset']['tgt_lang']
 
-    train_src_tokens, train_tgt_tokens = load_tokenized_data('train', src_lang, tgt_lang, config['dataset']['name'])
-    val_src_tokens, val_tgt_tokens = load_tokenized_data('validation', src_lang, tgt_lang, config['dataset']['name'])
-    test_src_tokens, test_tgt_tokens = load_tokenized_data('test', src_lang, tgt_lang, config['dataset']['name'])
+    (train_src_tokens, train_tgt_tokens), (val_src_tokens, val_tgt_tokens), (test_src_tokens, test_tgt_tokens) = load_tokenized_data(src_lang, tgt_lang, config['dataset']['name'])
 
     source_vocab = build_vocab(train_src_tokens)
     source_vocab.set_default_index(source_vocab['<UNK>'])
