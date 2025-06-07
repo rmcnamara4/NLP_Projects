@@ -38,7 +38,7 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device, print_every
     output, self_attn, cross_attn = model(src_input, tgt_input)
 
     output = output.view(-1, output.shape[-1])
-    tgt_output = tgt_output.view(-1).long()
+    tgt_output = tgt_output.reshape(-1).long()
 
     loss = criterion(output, tgt_output)
     total_loss += loss.item()
@@ -83,7 +83,7 @@ def evaluate_one_epoch(model, dataloader, criterion, device):
       output, self_attn, cross_attn = model(src_input, tgt_input)
 
       output = output.view(-1, output.shape[-1])
-      tgt_output = tgt_output.view(-1).long()
+      tgt_output = tgt_output.reshape(-1).long()
 
       loss = criterion(output, tgt_output)
       total_loss += loss.item()
