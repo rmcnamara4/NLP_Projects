@@ -7,7 +7,7 @@ model:
   ffn_hidden: 1024
   encoder_dropout: 0.2
   decoder_dropout: 0.2
-  max_len: 600
+  max_len: 64
   return_attn: True
 
 training: 
@@ -15,7 +15,6 @@ training:
   epochs: 50
   learning_rate: 1e-4
   print_every: 100
-  save_every: 600
   patience: 4
   resume: False
 
