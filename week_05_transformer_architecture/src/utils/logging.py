@@ -1,7 +1,7 @@
 import logging 
 import os
 
-def setup_logging(log_dir = './logs', log_file = 'train.log'): 
+def setup_logging(log_dir = './logs', log_file = 'train.log', filemode = 'w'): 
     os.makedirs(log_dir, exist_ok = True) 
     log_path = os.path.join(log_dir, log_file) 
 
@@ -11,5 +11,6 @@ def setup_logging(log_dir = './logs', log_file = 'train.log'):
         handlers = [
             logging.FileHandler(log_path), 
             logging.StreamHandler()
-        ]
+        ], 
+        filemode = filemode
     )
