@@ -2,7 +2,36 @@ import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 
-from src.data.preprocessing import numericalize
+from sklearn.model_selection import train_test_split
+import pandas as pd 
+from datasets import load_dataset
+
+import swifter
+
+from src.data.preprocessing import numericalize, tokenize
+
+def load_tokenized_data(split, src_lang, tgt_lang, dataset_name = 'opus_books'): 
+  """
+  Loads and tokenizes a specific split of a Hugging Face dataset.
+
+  Args:
+      split (str): Split to load ('train', 'validation', or 'test').
+      src_lang (str): Source language code (e.g., 'en').
+      tgt_lang (str): Target language code (e.g., 'fr').
+      dataset_name (str): Name of the Hugging Face dataset. Default is 'opus_books'.
+
+  Returns:
+      tuple: (tokenized source texts, tokenized target texts)
+  """
+  dataset = load_dataset(dataset_name, f'{src_lang}-{tgt_lang}', split = split)
+  src_text = pd.Series(dataset['translation'][src_lang])
+  tgt_text = pd.Series(dataset['translation'][tgt_lang])
+
+  src_tokens = src_text.swifter.apply(tokenize).values 
+  tgt_tokens = tgt_text.swifter.apply(tokenize).values
+
+  return src_tokens, tgt_tokens
+  
 
 def collate_fn(batch, source_vocab, target_vocab, train = True):
   """
