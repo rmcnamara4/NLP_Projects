@@ -24,11 +24,11 @@ def load_tokenized_data(split, src_lang, tgt_lang, dataset_name = 'opus_books'):
       tuple: (tokenized source texts, tokenized target texts)
   """
   dataset = load_dataset(dataset_name, f'{src_lang}-{tgt_lang}', split = split)
-  src_text = pd.Series(dataset['translation'][src_lang])
-  tgt_text = pd.Series(dataset['translation'][tgt_lang])
+  src_text = [example['translation'][src_lang] for example in dataset]
+  tgt_text = [example['translation'][tgt_lang] for example in dataset]
 
-  src_tokens = src_text.swifter.apply(tokenize).values 
-  tgt_tokens = tgt_text.swifter.apply(tokenize).values
+  src_tokens = pd.Series(src_text).swifter.apply(tokenize).values 
+  tgt_tokens = pd.Series(tgt_text).swifter.apply(tokenize).values
 
   return src_tokens, tgt_tokens
   
