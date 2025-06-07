@@ -28,6 +28,9 @@ dataset:
   src_lang: 'en'
   tgt_lang: 'fr'
 
+logging: 
+  filemode: 'a'
+
 paths: 
   model_dir: './models/version_1'
   model_file: 'model.pth'
