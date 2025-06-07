@@ -48,7 +48,7 @@ def load_tokenized_data(src_lang, tgt_lang, dataset_name = 'opus_books'):
   return (train_source_tokens, train_target_tokens), (val_source_tokens, val_target_tokens), (test_source_tokens, test_target_tokens)
   
 
-def collate_fn(batch, source_vocab, target_vocab, train = True):
+def collate_fn(batch, source_vocab, target_vocab, train = True, max_len = 100):
   """
   Collate function for preparing mini-batches of sequence pairs for a sequence-to-sequence model.
 
@@ -72,6 +72,9 @@ def collate_fn(batch, source_vocab, target_vocab, train = True):
           - target_output (Tensor): Target output tensor for loss computation.
   """
   src_ids, target_ids = zip(*batch)
+
+  src_ids = [seq[:max_len] for seq in src_ids]
+  target_ids = [seq[:max_len] for seq in target_ids]
 
   src_ids = pad_sequence(src_ids, batch_first = True, padding_value = source_vocab['<PAD>'])
   target_ids = pad_sequence(target_ids, batch_first = True, padding_value = target_vocab['<PAD>'])
