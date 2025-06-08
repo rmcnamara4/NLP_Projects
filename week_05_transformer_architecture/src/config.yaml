@@ -19,7 +19,7 @@ training:
   resume: True
 
 evaluation: 
-  beam_width: 5
+  beam_width: 3
   max_len: 100
   alpha: 0.6
 
@@ -36,5 +36,5 @@ paths:
   model_file: 'model.pth'
   checkpoint_file: 'checkpoint.pth'
   train_loss_file: 'train_losses.pt'
-  val_loss_file': 'val_losses.pt'
+  val_loss_file: 'val_losses.pt'
   train_log: 'train.log'
