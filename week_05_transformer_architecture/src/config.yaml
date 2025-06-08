@@ -19,7 +19,7 @@ training:
   resume: True
 
 evaluation: 
-  beam_width: 3
+  beam_width: 4
   max_len: 100
   alpha: 0.6
 
