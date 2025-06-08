@@ -139,7 +139,7 @@ def evaluate_bleu(model, dataloader, smoother, beam_width = 5, max_len = 100, al
   reference = []
   with torch.no_grad():
     for i, (src_input, tgt_input, tgt_output) in enumerate(dataloader):
-      if i % 50 == 0:
+      if i % 1 == 0:
         logging.info(f'Batch [{i}] / [{len(dataloader)}]')
 
       batch_size = src_input.shape[0]
@@ -160,8 +160,8 @@ def evaluate_bleu(model, dataloader, smoother, beam_width = 5, max_len = 100, al
 
         if i == 0 and j < 5:
           logging.info(f'Example {j + 1}:')
-          logging.info('Reference:', ' '.join(tgt_tokens))
-          logging.info('Hypothesis:', ' '.join(pred_tokens))
+          logging.info('Reference:' + ' '.join(tgt_tokens))
+          logging.info('Hypothesis:' + ' '.join(pred_tokens))
           logging.info('\n')
 
   bleu = corpus_bleu(reference, predictions, smoothing_function = smoother)
