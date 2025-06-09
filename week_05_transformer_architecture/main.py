@@ -69,26 +69,28 @@ def main():
     criterion = nn.CrossEntropyLoss(ignore_index = target_vocab['<PAD>'])
     optimizer = optim.Adam(model.parameters(), lr = config['training']['learning_rate'])
 
-    train_losses, val_losses = train(
-        model, 
-        train_dataloader, 
-        val_dataloader, 
-        optimizer, 
-        criterion, 
-        device, 
-        epochs = config['training']['epochs'],
-        print_every = config['training']['print_every'],
-        patience = config['training']['patience'],
-        checkpoint_path = os.path.join(config['paths']['model_dir'], config['paths']['checkpoint_file']),
-        resume = config['training']['resume']
-    )
+    # train_losses, val_losses = train(
+    #     model, 
+    #     train_dataloader, 
+    #     val_dataloader, 
+    #     optimizer, 
+    #     criterion, 
+    #     device, 
+    #     epochs = config['training']['epochs'],
+    #     print_every = config['training']['print_every'],
+    #     patience = config['training']['patience'],
+    #     checkpoint_path = os.path.join(config['paths']['model_dir'], config['paths']['checkpoint_file']),
+    #     resume = config['training']['resume']
+    # )
 
-    torch.save(model.state_dict(), os.path.join(config['paths']['model_dir'], config['paths']['model_file']))
-    torch.save(train_losses, os.path.join(config['paths']['model_dir'], config['paths']['train_loss_file']))
-    torch.save(val_losses, os.path.join(config['paths']['model_dir'], config['paths']['val_loss_file']))
+    # torch.save(model.state_dict(), os.path.join(config['paths']['model_dir'], config['paths']['model_file']))
+    # torch.save(train_losses, os.path.join(config['paths']['model_dir'], config['paths']['train_loss_file']))
+    # torch.save(val_losses, os.path.join(config['paths']['model_dir'], config['paths']['val_loss_file']))
 
-    logging.info('Training complete and model saved.') 
+    # logging.info('Training complete and model saved.') 
 
+    state_dict = torch.load(os.path.join(config['paths']['model_dir'], config['paths']['model_file']))
+    model.load_state_dict(state_dict)
     logging.info('Starting evaluation...')
 
     smoother = SmoothingFunction().method4
@@ -102,7 +104,7 @@ def main():
         device = device
     )
 
-    os.makedir(config['paths']['model_dir'], exist_ok = True) 
+    os.makedirs(config['paths']['model_dir'], exist_ok = True) 
     shutil.copy('./src/config.yaml', config['paths']['model_dir'])
 
     logging.info('Evaluation complete.')
