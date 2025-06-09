@@ -1,0 +1,40 @@
+model: 
+  d_model: 256
+  d_k: 64
+  d_v: 64
+  n_heads: 4
+  n_layers: 2 
+  ffn_hidden: 1024
+  encoder_dropout: 0.2
+  decoder_dropout: 0.2
+  max_len: 100
+  return_attn: True
+
+training: 
+  batch_size: 64
+  epochs: 50
+  learning_rate: 0.0001
+  print_every: 100
+  patience: 4
+  resume: True
+
+evaluation: 
+  beam_width: 4
+  max_len: 100
+  alpha: 0.6
+
+dataset: 
+  name: 'opus_books'
+  src_lang: 'en'
+  tgt_lang: 'fr'
+
+logging: 
+  filemode: 'a'
+
+paths: 
+  model_dir: './models/version_1'
+  model_file: 'model.pth'
+  checkpoint_file: 'checkpoint.pth'
+  train_loss_file: 'train_losses.pt'
+  val_loss_file: 'val_losses.pt'
+  train_log: 'train.log'
