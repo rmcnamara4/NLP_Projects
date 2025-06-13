@@ -13,3 +13,4 @@ catboost_info/
 
 !week_03_word_embeddings_and_distributional_semantics/results/evaluation_summary.csv 
 !week_05_transformer_architecture/src/data/
+!week_06_encoder_centric_models/src/data/
