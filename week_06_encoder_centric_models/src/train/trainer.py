@@ -2,6 +2,8 @@ import torch
 import torch.nn.functional as F
 from torch.cuda.amp import autocast, GradScaler
 from sklearn.metrics import average_precision_score
+import logging
+import os
 
 class Trainer: 
     def __init__(self, model, optimizer, criterion, train_dataloader, val_dataloader, device = 'cpu', scheduler = None): 
@@ -54,14 +56,14 @@ class Trainer:
             total_samples += batch_size
 
             if i % print_every == 0: 
-                print(f'Batch {i + 1} Loss: {loss:.4f}')
+                logging.info(f'Batch {i + 1} Loss: {loss:.4f}')
             
             if self.use_amp: 
                 torch.cuda.empty_cache()
 
         return running_loss / total_samples, all_pred_probas, all_labels
     
-    def evaluate_one_epoch(self): 
+    def evaluate_one_epoch(self, dataloader): 
         self.model.eval()
 
         all_pred_probas = []
@@ -71,7 +73,7 @@ class Trainer:
         total_samples = 0
         
         with torch.no_grad(): 
-            for i, batch in enumerate(self.val_dataloader): 
+            for i, batch in enumerate(dataloader): 
                 input_ids = batch['input_ids'].to(self.device)
                 attention_mask = batch['attention_mask'].to(self.device)
                 labels = batch['labels'].to(self.device)
@@ -92,7 +94,7 @@ class Trainer:
 
         return running_loss / total_samples, all_pred_probas, all_labels
     
-    def train(self, epochs, patience = 3, print_every = 100): 
+    def train(self, epochs, patience = 3, print_every = 100, checkpoint_path = None, resume = False): 
         train_losses = []
         val_losses = []
 
@@ -101,13 +103,22 @@ class Trainer:
 
         best_val_auprc = float('-inf') 
         no_improve_epochs = 0
-        
-        for epoch in range(epochs): 
-            print(f'Epoch {epoch + 1} / {epochs}')
-            print('-' * 30) 
 
-            train_loss, train_pred_probas, train_labels = self.train_one_epoch(self.model, self.train_dataloader, self.optimizer, self.criterion, self.scaler, self.device, print_every) 
-            val_loss, val_pred_probas, val_labels = self.evaluate_one_epoch(self.model, self.val_dataloader, self.criterion, self.device) 
+        start_epoch = 0
+
+        if resume and checkpoint_path and os.path.exists(checkpoint_path): 
+            start_epoch, best_val_auprc, train_losses, val_losses = self.load_checkpoint(checkpoint_path)
+            logging.info(f'Resuming training from epoch {start_epoch + 1} with best_val_auprc = {best_val_auprc:.4f}')
+
+        best_model_state = self.model.state_dict()
+        
+        for epoch in range(start_epoch, epochs): 
+            logging.info(f'Epoch {epoch + 1} / {epochs}')
+            logging.info('-' * 30) 
+            logging.info('\n') 
+
+            train_loss, train_pred_probas, train_labels = self.train_one_epoch(print_every) 
+            val_loss, val_pred_probas, val_labels = self.evaluate_one_epoch(self.val_dataloader) 
 
             train_auprc = average_precision_score(train_labels, train_pred_probas) 
             val_auprc = average_precision_score(val_labels, val_pred_probas) 
@@ -117,31 +128,59 @@ class Trainer:
 
             current_lr = self.optimizer.param_groups[0]['lr']
             
-            print('=' * 80)
-            print(f'Train Loss: {train_loss:.4f} | Train AUPRC: {train_auprc:.4f} | Val Loss: {val_loss:.4f} | Val AUPRC: {val_auprc:.4f} | LR: {current_lr:.2e}')
-            print('=' * 80)
+            logging.info('=' * 80)
+            logging.info(f'Train Loss: {train_loss:.4f} | Train AUPRC: {train_auprc:.4f} | Val Loss: {val_loss:.4f} | Val AUPRC: {val_auprc:.4f} | LR: {current_lr:.2e}')
+            logging.info('=' * 80)
 
             train_losses.append(train_loss) 
             val_losses.append(val_loss) 
 
             train_auprcs.append(train_auprc) 
-            val_auprcs.append(val_auprcs) 
+            val_auprcs.append(val_auprc) 
 
             if val_auprc > best_val_auprc: 
                 best_val_auprc = val_auprc 
                 no_improve_epochs = 0 
                 best_model_state = self.model.state_dict()
 
+                if checkpoint_path: 
+                    self.save_checkpoint(epoch, best_val_auprc, checkpoint_path, train_losses = train_losses, val_losses = val_losses)
+
             else: 
                 no_improve_epochs += 1
-                print(f'No improvement in validation AUPRC for {no_improve_epochs} epochs.')
+                logging.info(f'No improvement in validation AUPRC for {no_improve_epochs} epochs.')
 
                 if no_improve_epochs >= patience: 
-                    print(f'Early stopping triggered after {epoch + 1} epochs.')
+                    logging.info(f'Early stopping triggered after {epoch + 1} epochs.')
                     break 
 
-            print()
+            logging.info('\n')
 
         self.model.load_state_dict(best_model_state) 
 
         return train_losses, train_auprcs, val_losses, val_auprcs
+    
+    def save_checkpoint(self, epoch, best_val_auprc, path, train_losses = None, val_losses = None):
+        os.makedirs(os.path.dirname(path), exist_ok = True)
+        
+        checkpoint = {
+            'epoch': epoch,
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'best_val_auprc': best_val_auprc,
+            'train_losses': train_losses, 
+            'val_losses': val_losses
+        }
+        torch.save(checkpoint, path)
+        logging.info(f"Checkpoint saved to {path}")
+
+    def load_checkpoint(self, path):
+        checkpoint = torch.load(path, map_location = self.device)
+        self.model.load_state_dict(checkpoint['model_state_dict'])
+        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch'] + 1  # Resume from next epoch
+        best_val_auprc = checkpoint.get('best_val_auprc', float('inf'))
+        train_losses = checkpoint.get('train_losses', [])
+        val_losses = checkpoint.get('val_losses', [])
+        logging.info(f"Loaded checkpoint from {path}")
+        return epoch, best_val_auprc, train_losses, val_losses
