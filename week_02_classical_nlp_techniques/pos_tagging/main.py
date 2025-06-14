@@ -10,7 +10,7 @@ import math
 nltk.download('brown') 
 nltk.download('universal_target') 
 
-from src.evaluation import evaluate
+from metrics import evaluate
 from src.viterbi_algorithm import viterbi
 from src.hmm_utils import get_emission_probability, convert_counts_to_probabilities
 
