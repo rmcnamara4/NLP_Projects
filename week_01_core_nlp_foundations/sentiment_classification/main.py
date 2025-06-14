@@ -42,7 +42,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
 
 from preprocessing import preprocess
-from metric_utils import * 
+from metrics import * 
 from src.mlflow import * 
 
 # if __name__ == '__main__': 
