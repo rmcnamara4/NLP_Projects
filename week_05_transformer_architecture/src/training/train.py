@@ -49,7 +49,7 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device, print_every
     optimizer.step()
 
     if i % print_every == 0:
-      print(f'Batch {i} Loss: {loss:.4f}')
+      logging.info(f'Batch {i} Loss: {loss:.4f}')
 
     torch.cuda.empty_cache()
 
