@@ -7,7 +7,7 @@ import sys
 import os 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-from metric_utils import * 
+from metrics import * 
 
 import pandas as pd
 import swifter 
