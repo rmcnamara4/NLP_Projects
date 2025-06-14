@@ -3,8 +3,12 @@ from src.data.preprocessing import numericalize, tokenize, build_vocab
 
 from src.model.transformer import TransformerModel 
 
-from src.utils.config import load_config
-from src.utils.logging import setup_logging
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
+
+from config import load_config
+from logging import setup_logging
 
 from src.data.dataset import load_tokenized_data
 
@@ -18,7 +22,6 @@ import torch.optim as optim
 
 from nltk.translate.bleu_score import SmoothingFunction
 
-import os
 import shutil
 import logging
 
