@@ -1,0 +1,115 @@
+from transformers import AutoTokenizer, DataCollatorWithPadding
+import torch 
+from torch.utils.data import DataLoader
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
+from src.data.dataset import CivilDataset
+from seed import set_seed
+from config import load_config
+from setup_logging import setup_logging
+from src.model.classifier import DistilBERTClassifier
+from src.train.trainer import Trainer
+from src.utils.optimizer iport get_optimizer
+from src.utils.scheduler import get_scheduler
+from src.utils.save_model_history import save_model_history
+
+import logging
+
+def main(): 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
+
+    config = load_config('./src/config.yaml') 
+    set_seed(config['seed'])
+
+    setup_logging(log_file = config['paths']['train_log'], filemode = config['logging']['filemode'])
+
+    tokenizer = AutoTokenizer.from_pretrained(config['model']['model_name'])
+    logging.info(f"Tokenizer loaded: {config['model']['model_name']}")
+
+    dataset = CivilDataset(
+        tokenizer = tokenizer, 
+        max_length = config['dataset']['max_length'],
+        binary_col = config['dataset']['binary_col'],
+        thresh_val_size = config['dataset']['thresh_val_size'],
+        random_state = config['dataset']['random_state']
+    )
+    splits = dataset.load()
+    tokenized_splits = dataset.tokenize(splits) 
+    logging.info("Dataset loaded and tokenized.")
+
+    data_collator = DataCollatorWithPadding(tokenizer = tokenizer)
+    batch_size = config['training']['batch_size']
+    pin_memory = config['dataloader']['pin_memory']
+    num_workers = config['dataloader']['num_workers']
+    prefetch_factor = config['dataloader']['prefetch_factor']
+
+    train_dataloader = DataLoader(tokenized_dataset['train'], batch_size = batch_size, shuffle = True, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    val_dataloader = DataLoader(tokenized_dataset['val'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    test_dataloader = DataLoader(tokenized_dataset['test'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    threshold_val_dataloader = DataLoader(tokenized_dataset['threshold_val'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    logging.info("Data loaders created.")
+
+    model = DistilBERTClassifier( 
+        num_classes = config['model']['num_classes'],
+        classifier_dim = config['model']['classifier_dim'],
+        dropout = config['model']['dropout'],
+        use_cls = config['model']['use_cls'],
+        freeze_bert = config['model']['freeze_bert']
+    ).to(device) 
+    logging.info(f"Model initialized.")
+
+    optimizer = get_optimizer(
+        model = model, 
+        name = config['optimizer']['name'],
+        lr = config['optimizer']['lr']
+    )
+    logging.info(f"Optimizer initialized: {config['optimizer']['name']} with lr = {config['optimizer']['lr']}")
+
+    if config['scheduler']['use_scheduler']: 
+        scheduler = get_scheduler(
+            optimizer = optimizer, 
+            mode = config['scheduler']['mode'],
+            factor = config['scheduler']['factor'],
+            patience = config['scheduler']['patience']
+        )
+    else: 
+        scheduler = None
+    logging.info(f"Scheduler initialized. Mode = {config['scheduler']['mode']}, factor = {config['scheduler']['factor']} and patience = {config['scheduler']['patience']}")
+
+    criterion = torch.nn.CrossEntropyLoss() if config['model']['num_classes'] > 1 else torch.nn.BCEWithLogitsLoss()
+    logging.info("Loss function initialized.")
+
+    trainer = Trainer(
+        model = model, 
+        optimizer = optimizer, 
+        criterion = criterion, 
+        train_dataloader = train_dataloader, 
+        val_dataloader = val_dataloader, 
+        device = device, 
+        scheduler = scheduler
+    )
+
+    train_losses, train_auprcs, val_losses, val_auprcs = trainer.train(
+        epochs = config['training']['epochs'], 
+        patience = config['training']['patience'], 
+        print_every = config['training']['print_every'], 
+        checkpoint_path = config['paths']['checkpoint_path'], 
+        resume = config['training']['resume']
+    )
+
+    logging.info('Training complete!') 
+    save_model_history(
+        model = model, 
+        train_losses = train_losses, 
+        val_losses = val_losses, 
+        train_auprcs = train_auprcs, 
+        val_auprcs = val_auprcs, 
+        config = config
+    )
+
+if __name__ == '__main__':
+    main()
+
