@@ -80,7 +80,7 @@ def main():
         scheduler = None
     logging.info(f"Scheduler initialized. Mode = {config['scheduler']['mode']}, factor = {config['scheduler']['factor']} and patience = {config['scheduler']['patience']}")
 
-    class_weights = get_class_weights(labels = tokenized_splits['train']['labels'], strategy = config['training']['class_weights']) if config['training']['use_class_weights'] else 'None'
+    class_weights = get_class_weights(labels = tokenized_splits['train']['labels'], strategy = config['training']['class_weights_strategy']) if config['training']['use_class_weights'] else 'None'
     criterion = torch.nn.CrossEntropyLoss(weight = class_weights.to(device))
     logging.info("Loss function initialized.")
 
@@ -98,7 +98,7 @@ def main():
         epochs = config['training']['epochs'], 
         patience = config['training']['patience'], 
         print_every = config['training']['print_every'], 
-        checkpoint_path = config['paths']['checkpoint_path'], 
+        checkpoint_path = config['paths']['checkpoint_file'], 
         resume = config['training']['resume']
     )
 
