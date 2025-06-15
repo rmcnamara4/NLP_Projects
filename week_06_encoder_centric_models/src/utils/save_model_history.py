@@ -14,12 +14,13 @@ def save_model_history(model, train_losses, val_losses, train_auprcs, val_auprcs
         val_auprcs (list): List of validation AUPRCs.
         config (dict): Configuration dictionary containing paths for saving.
     """
-    os.makedirs(config['paths']['model_dir'], exist_ok = True)
+    path = config['paths']['model_dir']
+    os.makedirs(path, exist_ok = True)
     
-    torch.save(model.state_dict(), config['paths']['model_file'])
-    torch.save(train_losses, config['paths']['train_loss_file'])
-    torch.save(val_losses, config['paths']['val_loss_file'])
-    torch.save(train_auprcs, config['paths']['train_auprc_file'])
-    torch.save(val_auprcs, config['paths']['val_auprc_file'])
+    torch.save(model.state_dict(), os.path.join(path, config['paths']['model_file']))
+    torch.save(train_losses, os.path.join(path, config['paths']['train_loss_file']))
+    torch.save(val_losses, os.path.join(config['paths']['val_loss_file']))
+    torch.save(train_auprcs, os.path.join(config['paths']['train_auprc_file']))
+    torch.save(val_auprcs, os.path.join(config['paths']['val_auprc_file']))
     
     logging.info('Model and training history saved successfully.')
