@@ -47,10 +47,10 @@ def main():
     num_workers = config['dataloader']['num_workers']
     prefetch_factor = config['dataloader']['prefetch_factor']
 
-    train_dataloader = DataLoader(tokenized_dataset['train'], batch_size = batch_size, shuffle = True, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
-    val_dataloader = DataLoader(tokenized_dataset['val'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
-    test_dataloader = DataLoader(tokenized_dataset['test'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
-    threshold_val_dataloader = DataLoader(tokenized_dataset['threshold_val'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    train_dataloader = DataLoader(tokenized_splits['train'], batch_size = batch_size, shuffle = True, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    val_dataloader = DataLoader(tokenized_splits['val'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    test_dataloader = DataLoader(tokenized_splits['test'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
+    threshold_val_dataloader = DataLoader(tokenized_splits['threshold_val'], batch_size = batch_size, shuffle = False, collate_fn = data_collator, pin_memory = pin_memory, num_workers = num_workers, prefetch_factor = prefetch_factor)
     logging.info("Data loaders created.")
 
     model = DistilBERTClassifier( 
@@ -80,7 +80,7 @@ def main():
         scheduler = None
     logging.info(f"Scheduler initialized. Mode = {config['scheduler']['mode']}, factor = {config['scheduler']['factor']} and patience = {config['scheduler']['patience']}")
 
-    class_weights = get_class_weights(labels = tokenized_splits['train']['labels'], strategy = config['training']['class_weights'])
+    class_weights = get_class_weights(labels = tokenized_splits['train']['labels'], strategy = config['training']['class_weights']) if config['training']['use_class_weights'] else 'None'
     criterion = torch.nn.CrossEntropyLoss(weight = class_weights.to(device))
     logging.info("Loss function initialized.")
 
