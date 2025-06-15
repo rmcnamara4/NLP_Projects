@@ -12,9 +12,10 @@ from config import load_config
 from setup_logging import setup_logging
 from src.model.classifier import DistilBERTClassifier
 from src.train.trainer import Trainer
-from src.utils.optimizer iport get_optimizer
+from src.utils.optimizer import get_optimizer
 from src.utils.scheduler import get_scheduler
 from src.utils.save_model_history import save_model_history
+from src.utils.class_weights import get_class_weights
 
 import logging
 
@@ -79,7 +80,8 @@ def main():
         scheduler = None
     logging.info(f"Scheduler initialized. Mode = {config['scheduler']['mode']}, factor = {config['scheduler']['factor']} and patience = {config['scheduler']['patience']}")
 
-    criterion = torch.nn.CrossEntropyLoss() if config['model']['num_classes'] > 1 else torch.nn.BCEWithLogitsLoss()
+    class_weights = get_class_weights(labels = tokenized_splits['train']['labels'], strategy = config['training']['class_weights'])
+    criterion = torch.nn.CrossEntropyLoss(weight = class_weights.to(device))
     logging.info("Loss function initialized.")
 
     trainer = Trainer(
