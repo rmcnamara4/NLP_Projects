@@ -20,12 +20,12 @@ dataloader:
   prefetch_factor: 2
 
 training: 
-  batch_size: 1024
+  batch_size: 128
   class_weights: 'equal'
-  epochs: 10
+  epochs: 1
   use_class_weights: True 
   class_weights_strategy: 'balanced' # can be 'balanced', 'none', or a list/tuple of weights (ex: (0.1, 0.9))
-  print_every: 100
+  print_every: 2
   patience: 3
   resume: False
 
