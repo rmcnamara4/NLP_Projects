@@ -1,4 +1,4 @@
-from datasets import load_dataset, Dataset
+from datasets import load_dataset, Dataset, DatasetDict
 from sklearn.model_selection import train_test_split
 
 class CivilDataset: 
@@ -49,12 +49,12 @@ class CivilDataset:
         val = data['validation'][:].copy()
         val, threshold_val = train_test_split(val, test_size = self.thresh_val_size, random_state = self.random_state, stratify = val['label'])
 
-        splits = {
+        splits = DatasetDict({
             'train': Dataset.from_pandas(data['train'][:].reset_index(drop = True)), 
             'val': Dataset.from_pandas(val.reset_index(drop = True)),
             'threshold_val': Dataset.from_pandas(threshold_val.reset_index(drop = True)),
             'test': Dataset.from_pandas(data['test'][:].reset_index(drop = True))
-        }
+        })
 
         return splits
     
