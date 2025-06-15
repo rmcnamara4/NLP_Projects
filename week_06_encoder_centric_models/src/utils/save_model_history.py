@@ -1,5 +1,6 @@
 import torch 
 import os
+import logging
 
 def save_model_history(model, train_losses, val_losses, train_auprcs, val_auprcs, config): 
     """
