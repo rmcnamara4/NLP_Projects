@@ -30,7 +30,7 @@ training:
   resume: False
 
 optimizer: 
-  name: 'AdamW', 
+  name: 'AdamW'
   lr: 0.001
 
 scheduler: 
