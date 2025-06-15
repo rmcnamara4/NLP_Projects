@@ -8,7 +8,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
 
 from config import load_config
-from logging import setup_logging
+from setup_logging import setup_logging
 
 from src.data.dataset import load_tokenized_data
 
