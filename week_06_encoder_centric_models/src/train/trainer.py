@@ -48,8 +48,8 @@ class Trainer:
             prob = F.softmax(logits, dim = 1)[:, 1].detach().cpu().numpy()
             labs = labels.detach().cpu().numpy()
 
-            all_pred_probas.extend(prob)
-            all_labels.extend(labs) 
+            all_pred_probas.extend(prob.tolist())
+            all_labels.extend(labs.tolist()) 
 
             batch_size = input_ids.size(0)
             running_loss += loss.item() * batch_size
@@ -85,8 +85,8 @@ class Trainer:
                 prob = F.softmax(logits, dim = 1)[:, 1].cpu().numpy()
                 labs = labels.cpu().numpy()
 
-                all_pred_probas.extend(prob)
-                all_labels.extend(labs)
+                all_pred_probas.extend(prob.tolist())
+                all_labels.extend(labs.tolist())
 
                 batch_size = input_ids.size(0)
                 running_loss += loss.item() * batch_size
