@@ -119,8 +119,8 @@ class Trainer:
             train_loss, train_pred_probas, train_labels = self.train_one_epoch(print_every) 
             val_loss, val_pred_probas, val_labels = self.evaluate_one_epoch(self.val_dataloader) 
 
-            train_auprc = average_precision_score(np.array(train_labels), np.array(train_pred_probas))
-            val_auprc = average_precision_score(np.array(val_labels), np.array(val_pred_probas))
+            train_auprc = average_precision_score(train_labels, train_pred_probas)
+            val_auprc = average_precision_score(val_labels, val_pred_probas)
 
             if self.scheduler: 
                 self.scheduler.step(val_loss) 
