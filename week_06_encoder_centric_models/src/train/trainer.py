@@ -115,7 +115,6 @@ class Trainer:
         for epoch in range(start_epoch, epochs): 
             logging.info(f'Epoch {epoch + 1} / {epochs}')
             logging.info('-' * 30) 
-            logging.info('\n') 
 
             train_loss, train_pred_probas, train_labels = self.train_one_epoch(print_every) 
             val_loss, val_pred_probas, val_labels = self.evaluate_one_epoch(self.val_dataloader) 
