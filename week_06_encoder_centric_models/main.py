@@ -7,6 +7,9 @@ import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning, module="transformers.utils.generic")
+
 from src.data.dataset import CivilDataset
 from seed import set_seed
 from config import load_config
