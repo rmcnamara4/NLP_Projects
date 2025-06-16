@@ -38,6 +38,10 @@ scheduler:
   factor: 0.5
   mode: 'min'
 
+threshold: 
+  step: 0.01
+  beta: 1
+
 logging: 
   filemode: 'a'
 
@@ -50,3 +54,4 @@ paths:
   train_auprc_file: 'train_auprc.pt'
   val_auprc_file: 'val_auprc.pt'
   train_log: 'train.log'
+  results_dir: 'results'
