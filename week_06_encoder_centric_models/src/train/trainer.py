@@ -56,7 +56,7 @@ class Trainer:
             total_samples += batch_size
 
             if i % print_every == 0: 
-                logging.info(f'Batch {i + 1} Loss: {loss:.4f}')
+                logging.info(f'Batch {i + 1} Loss: {loss.item():.4f}')
             
             if self.use_amp: 
                 torch.cuda.empty_cache()
