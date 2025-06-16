@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 
 import sys
 import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from src.data.dataset import CivilDataset
