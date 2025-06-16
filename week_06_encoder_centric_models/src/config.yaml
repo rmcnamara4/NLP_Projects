@@ -9,7 +9,7 @@ model:
   freeze_bert: True
 
 dataset: 
-  max_length: 200
+  max_length: 220
   binary_col: 'toxicity'
   thresh_val_size: 0.5
   random_state: 42
@@ -20,12 +20,12 @@ dataloader:
   prefetch_factor: 2
 
 training: 
-  batch_size: 128
-  epochs: 1
+  batch_size: 512
+  epochs: 10
   use_class_weights: True 
   class_weights_strategy: 'balanced' # can be 'balanced', 'none', or a list/tuple of weights (ex: (0.1, 0.9))
-  print_every: 2
-  patience: 3
+  print_every: 100
+  patience: 4
   resume: False
 
 optimizer: 
