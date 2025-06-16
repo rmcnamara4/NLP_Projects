@@ -1,7 +1,7 @@
 from sklearn.metrics import fbeta_score
 import json
 
-def find_best_threshold(probs, labels, metric = 'f1', step = 0.01, beta = 1): 
+def find_best_threshold(probs, labels, step = 0.01, beta = 1): 
     best_threshold = 0.5
     best_score = -1
 
