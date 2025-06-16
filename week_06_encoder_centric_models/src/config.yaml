@@ -20,7 +20,7 @@ dataloader:
   prefetch_factor: 2
 
 training: 
-  batch_size: 512
+  batch_size: 1024
   epochs: 10
   use_class_weights: True 
   class_weights_strategy: 'balanced' # can be 'balanced', 'none', or a list/tuple of weights (ex: (0.1, 0.9))
