@@ -19,8 +19,8 @@ def save_model_history(model, train_losses, val_losses, train_auprcs, val_auprcs
     
     torch.save(model.state_dict(), os.path.join(path, config['paths']['model_file']))
     torch.save(train_losses, os.path.join(path, config['paths']['train_loss_file']))
-    torch.save(val_losses, os.path.join(config['paths']['val_loss_file']))
-    torch.save(train_auprcs, os.path.join(config['paths']['train_auprc_file']))
-    torch.save(val_auprcs, os.path.join(config['paths']['val_auprc_file']))
+    torch.save(val_losses, os.path.join(path, config['paths']['val_loss_file']))
+    torch.save(train_auprcs, os.path.join(path, config['paths']['train_auprc_file']))
+    torch.save(val_auprcs, os.path.join(path, config['paths']['val_auprc_file']))
     
     logging.info('Model and training history saved successfully.')
