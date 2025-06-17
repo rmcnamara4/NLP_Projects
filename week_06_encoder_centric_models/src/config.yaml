@@ -26,7 +26,7 @@ training:
   class_weights_strategy: 'balanced' # can be 'balanced', 'none', or a list/tuple of weights (ex: (0.1, 0.9))
   print_every: 100
   patience: 4
-  resume: False
+  resume: True
 
 optimizer: 
   name: 'AdamW'
