@@ -65,7 +65,7 @@ class DistilBERTClassifier(nn.Module):
             mask = attention_mask.unsqueeze(-1).expand(hidden_states.size())
             masked_hidden = hidden_states * mask 
             summed = masked_hidden.sum(1)
-            counts = attention_mask.sum(1).clamp(min = 1e-9)
+            counts = attention_mask.sum(1).clamp(min = 1e-9).unsqueeze(1)
             pooled_output = summed / counts
         
         return self.classifier(pooled_output)
