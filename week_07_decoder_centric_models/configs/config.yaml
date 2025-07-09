@@ -3,13 +3,10 @@ defaults:
   - callbacks: 
       - early_stopping 
       - model_checkpoint 
-  - datamodule: datamodule 
-  - save_model: save_model
+  - datamodule
+  - save_model
+  - project
 
 hydra: 
   run: 
-    dir: .
-
-project: 
-  name: summarization 
-  version: v1
+    dir: outputs/${project.name}_${project.version}
