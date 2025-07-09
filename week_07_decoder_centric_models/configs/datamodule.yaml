@@ -1,0 +1,13 @@
+batch_size: 12
+chunk_len: 512
+stride: 412
+min_len: 256
+max_len: 1024
+num_workers: 4
+prefetch_factor: 2
+split_sizes:
+  - 500
+  - 200
+  - 200
+padding_value: -100
+seed: 156
