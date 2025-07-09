@@ -1,2 +1,15 @@
 defaults: 
   - optimizer: adamw 
+  - callbacks: 
+      - early_stopping 
+      - model_checkpoint 
+  - datamodule: datamodule 
+  - save_model: save_model
+
+hydra: 
+  run: 
+    dir: .
+
+project: 
+  name: summarization 
+  version: v1
