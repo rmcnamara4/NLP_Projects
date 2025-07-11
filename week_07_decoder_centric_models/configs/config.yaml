@@ -6,11 +6,11 @@ defaults:
       - model_checkpoint 
   - scheduler: 
       - cosine_annealing
-  - datamodule
-  - save_model
-  - project
-  - model 
-  - trainer
+  - datamodule: default
+  - save_model: default
+  - project: default
+  - model: default
+  - trainer: default
 
 hydra: 
   run: 
