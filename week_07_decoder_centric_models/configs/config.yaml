@@ -8,6 +8,8 @@ defaults:
   - datamodule
   - save_model
   - project
+  - model 
+  - trainer
 
 hydra: 
   run: 
