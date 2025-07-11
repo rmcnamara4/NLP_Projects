@@ -1,29 +1,21 @@
-import sys 
-import os 
+import hydra 
+from omegaconf import DictConfig, OmegaConf
+from hydra.utils import instantiate, call 
+
+from pytorch_lightning import Trainer 
 
 import warnings
 warnings.filterwarnings('ignore', message = 'pkg_resources is deprecated')
 
-from src.data.dataset import SummarizationDataModule
-from transformers import GPT2Tokenizer
+from transformers import AutoTokenizer
 
-def main(): 
-    model_name = 'gpt2'
-    tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+## DON'T FORGET TO SET SEED
+@hydra.main(config_path = 'configs', config_name = 'config', version_base = '1.3')
+def main(cfg: DictConfig): 
+    tokenizer = AutoTokenizer.from_pretrained(cfg.model.model_name)
     tokenizer.pad_token = tokenizer.eos_token 
 
-    data_module = SummarizationDataModule(
-        tokenizer = tokenizer, 
-        batch_size = 2, 
-        chunk_len = 512,
-        stride = 450, 
-        min_len = 256, 
-        max_len = 1024, 
-        num_workers = 5, 
-        prefetch_factor = 2, 
-        split_sizes = (500, 200, 200), 
-        padding_value = -100
-    )
+    data_module = instantiate(cfg.datamodule) 
 
     data_module.prepare_data()
     data_module.setup(stage = 'fit')
@@ -31,7 +23,15 @@ def main():
     train_loader = data_module.train_dataloader()
     val_loader = data_module.val_dataloader()
 
-    print(next(iter(train_loader)))
+    model = instantiate(cfg.model, tokenizer = tokenizer) 
+    callbacks = [instantiate(cb) for cb in cfg.callbacks]
+
+    trainer = Trainer(
+        **cfg.trainer, 
+        callbacks = callbacks
+    )
+
+    trainer.fit(model, datamodule = data_module)
 
 if __name__ == '__main__': 
     main()
