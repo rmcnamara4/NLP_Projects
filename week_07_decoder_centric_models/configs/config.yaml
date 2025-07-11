@@ -3,6 +3,8 @@ defaults:
   - callbacks: 
       - early_stopping 
       - model_checkpoint 
+  - scheduler: 
+      - cosine_annealing
   - datamodule
   - save_model
   - project
