@@ -15,3 +15,5 @@ defaults:
 hydra: 
   run: 
     dir: outputs/${project.name}_${project.version}
+
+seed: 42
