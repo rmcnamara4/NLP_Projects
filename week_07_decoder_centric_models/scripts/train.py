@@ -11,6 +11,13 @@ from src.data.dataset import SummarizationDataModule
 from src.models.summarizer import SummarizationModule
 from transformers import AutoTokenizer
 
+import sys 
+import os 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
+
+from seed import set_seed
+import torch 
+
 from pytorch_lightning.loggers import TensorBoardLogger, CSVLogger
 
 import shutil
@@ -20,6 +27,8 @@ os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 ## DON'T FORGET TO SET SEED
 @hydra.main(config_path = '../configs', config_name = 'config', version_base = '1.3')
 def main(cfg: DictConfig): 
+    set_seed(cfg.seed)
+
     logger = CSVLogger(
         save_dir = cfg.paths.log_dir, 
         name = 'train', 
@@ -33,6 +42,8 @@ def main(cfg: DictConfig):
     tokenizer.pad_token = tokenizer.eos_token 
 
     data_module = SummarizationDataModule(cfg.datamodule, tokenizer = tokenizer)
+
+    print('Data module instantiated!')
 
     data_module.prepare_data()
     data_module.setup(stage = 'fit')
@@ -51,6 +62,8 @@ def main(cfg: DictConfig):
     else: 
         print('Starting training from scratch.') 
 
+    print('Model instantiated!') 
+
     trainer = Trainer(
         **cfg.trainer, 
         callbacks = callbacks, 
@@ -58,6 +71,16 @@ def main(cfg: DictConfig):
     )
 
     trainer.fit(model, datamodule = data_module, ckpt_path = resume_from_checkpoint)
+
+    if cfg.save_model.save_model: 
+        save_path = os.path.join(cfg.save_model.save_path, f'{cfg.save_model.model_name}.pt')
+        torch.save(model.state_dict(), save_path) 
+        print(f'Saved model state_dict to: {save_path}')
+
+    if cfg.save_model.save_model: 
+        save_path = os.path.join(cfg.save_model.save_path, f'{cfg.save_model.model_name}.pt')
+        torch.save(model.state_dict(), save_path) 
+        print(f'Saved model state_dict to: {save_path}')
 
 if __name__ == '__main__': 
     main()
