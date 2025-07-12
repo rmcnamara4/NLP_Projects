@@ -19,7 +19,7 @@ class SummarizationModule(pl.LightningModule):
     self.model.resize_token_embeddings(len(tokenizer))
     self.model.config.pad_token_id = tokenizer.pad_token_id
 
-    self.gradual_unfreezing = model_cfg.get('gradual_unfreezing', False) 
+    self.gradual_unfreezing = model_cfg.get('gradual_unfreeze', False) 
     
     if self.gradual_unfreezing: 
         for param in self.model.transformer.parameters(): 
