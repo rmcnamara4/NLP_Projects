@@ -1,7 +1,7 @@
 import tqdm 
 import torch 
 
-def generate_summaries(generation_cfg, model, dataloader, tokenizer, device = 'cuda'): 
+def generate_summaries(cfg, model, dataloader, tokenizer, device = 'cuda'): 
     model.eval()
     model.to(device)
 
@@ -20,17 +20,17 @@ def generate_summaries(generation_cfg, model, dataloader, tokenizer, device = 'c
             generated_ids = model.generate(
                 input_ids = input_ids,
                 attention_mask = attention_mask,
-                max_new_tokens = generation_cfg.max_new_tokens,
-                num_beams = generation_cfg.num_beams,
+                max_new_tokens = cfg.max_new_tokens,
+                num_beams = cfg.num_beams,
                 pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id,
-                early_stopping = generation_cfg.get('early_stopping', False),
-                do_sample = generation_cfg.do_sample, 
-                top_p = generation_cfg.get('top_p', None),
-                top_k = generation_cfg.get('top_k', None),
-                temperature = generation_cfg.get('temperature', None), 
-                repetition_penalty = generation_cfg.repetition_penalty, 
-                length_penalty = generation_cfg.length_penalty,
-                no_repeat_ngram_size = generation_cfg.no_repeat_ngram_size
+                early_stopping = cfg.get('early_stopping', False),
+                do_sample = cfg.do_sample, 
+                top_p = cfg.get('top_p', None),
+                top_k = cfg.get('top_k', None),
+                temperature = cfg.get('temperature', None), 
+                repetition_penalty = cfg.repetition_penalty, 
+                length_penalty = cfg.length_penalty,
+                no_repeat_ngram_size = cfg.no_repeat_ngram_size
             )
 
             # Decode predictions
@@ -48,7 +48,7 @@ def generate_summaries(generation_cfg, model, dataloader, tokenizer, device = 'c
 
     return all_preds
 
-def resummarize_chunks(generation_cfg, all_preds, model, tokenizer, device = 'cuda'): 
+def resummarize_chunks(cfg, all_preds, model, tokenizer, device = 'cuda'): 
     final_summaries = {}
 
     model.to(device)
@@ -59,8 +59,8 @@ def resummarize_chunks(generation_cfg, all_preds, model, tokenizer, device = 'cu
             combined_text = " ".join(chunk_summaries)
             combined_ids = tokenizer.encode(combined_text, return_tensors = 'pt', add_special_tokens = False).squeeze()
 
-            if len(combined_ids) > tokenizer.model_max_length - generation_cfg.max_new_tokens - 25: 
-              combined_ids = combined_ids[:tokenizer.model_max_length - generation_cfg.max_new_tokens - 25]
+            if len(combined_ids) > tokenizer.model_max_length - cfg.max_new_tokens - 25: 
+              combined_ids = combined_ids[:tokenizer.model_max_length - cfg.max_new_tokens - 25]
             
             summary_ids = tokenizer.encode('Summarize this: ', return_tensors = 'pt', add_special_tokens = False).squeeze()
             tldr_ids = tokenizer.encode('\nTL;DR: ', add_special_tokens = False, return_tensors = 'pt').squeeze()
@@ -74,17 +74,17 @@ def resummarize_chunks(generation_cfg, all_preds, model, tokenizer, device = 'cu
 
             summary_ids = model.generate(
                 **inputs,
-                max_new_tokens = generation_cfg.max_new_tokens,
-                num_beams = generation_cfg.num_beams,
+                max_new_tokens = cfg.max_new_tokens,
+                num_beams = cfg.num_beams,
                 pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id,
-                early_stopping = generation_cfg.get('early_stopping', False),
-                do_sample = generation_cfg.do_sample, 
-                top_p = generation_cfg.get('top_p', None),
-                top_k = generation_cfg.get('top_k', None),
-                temperature = generation_cfg.get('temperature', None), 
-                repetition_penalty = generation_cfg.repetition_penalty, 
-                length_penalty = generation_cfg.length_penalty,
-                no_repeat_ngram_size = generation_cfg.no_repeat_ngram_size
+                early_stopping = cfg.get('early_stopping', False),
+                do_sample = cfg.do_sample, 
+                top_p = cfg.get('top_p', None),
+                top_k = cfg.get('top_k', None),
+                temperature = cfg.get('temperature', None), 
+                repetition_penalty = cfg.repetition_penalty, 
+                length_penalty = cfg.length_penalty,
+                no_repeat_ngram_size = cfg.no_repeat_ngram_size
             )
 
             final_summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
