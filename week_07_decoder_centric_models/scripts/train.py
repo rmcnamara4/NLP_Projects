@@ -72,6 +72,7 @@ def main(cfg: DictConfig):
     trainer.fit(model, datamodule = data_module, ckpt_path = resume_from_checkpoint)
 
     if cfg.save_model.save_model: 
+        os.makedirs(cfg.save_model.save_path, exist_ok = True) 
         save_path = os.path.join(cfg.save_model.save_path, f'{cfg.save_model.model_name}.pt')
         torch.save(model.state_dict(), save_path) 
         print(f'Saved model state_dict to: {save_path}')
