@@ -7,3 +7,4 @@ accumulate_grad_batches: 8
 val_check_interval: 0.5 
 deterministic: true 
 log_every_n_steps: 10
+num_sanity_val_steps: 0
