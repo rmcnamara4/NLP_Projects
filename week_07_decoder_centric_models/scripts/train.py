@@ -44,12 +44,6 @@ def main(cfg: DictConfig):
 
     print('Data module instantiated!')
 
-    data_module.prepare_data()
-    data_module.setup(stage = 'fit')
-
-    train_loader = data_module.train_dataloader()
-    val_loader = data_module.val_dataloader()
-
     model = SummarizationModule(cfg.model, cfg.optimizer, cfg.scheduler, tokenizer = tokenizer)
     callbacks = [instantiate(cb) for cb in cfg._callback_dict.values()]
 
