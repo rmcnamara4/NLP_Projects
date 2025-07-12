@@ -1,11 +1,9 @@
 defaults: 
   - _self_
   - optimizer: adamw 
-  - callbacks: 
-      - early_stopping 
-      - model_checkpoint 
-  - scheduler: 
-      - cosine_annealing
+  - callbacks@_callback_dict.early_stopping: early_stopping
+  - callbacks@_callback_dict.model_checkpoint: model_checkpoint
+  - scheduler: cosine_annealing
   - datamodule: default
   - save_model: default
   - project: default
@@ -15,3 +13,9 @@ defaults:
 hydra: 
   run: 
     dir: outputs/${project.name}_${project.version}
+
+resume: true
+
+paths: 
+  checkpoint_dir: checkpoints/${project.name}_${project.version}
+  log_dir: outputs/${project.name}_${project.version}/lightning_logs

@@ -4,7 +4,7 @@ import hydra
 from transformers import GPT2Config, GPT2LMHeadModel
 import pytorch_lightning as pl 
 class SummarizationModule(pl.LightningModule): 
-  def __init__(self, model_cfg, tokenizer): 
+  def __init__(self, model_cfg, optimizer_cfg, scheduler_cfg, tokenizer): 
     super().__init__()
     self.save_hyperparameters(ignore = ['tokenizer'])
 
@@ -74,7 +74,7 @@ class SummarizationModule(pl.LightningModule):
         logger = False
       )
 
-      return loss.item()
+      return loss
 
   def validation_step(self, batch, batch_idx):
       outputs = self(**batch)
@@ -92,7 +92,7 @@ class SummarizationModule(pl.LightningModule):
       )
 
       self.log(
-        'val_token_tokens', 
+        'val_total_tokens', 
         num_tokens.float(), 
         on_step = False, 
         on_epoch = True, 
@@ -101,14 +101,14 @@ class SummarizationModule(pl.LightningModule):
         logger = False
       )
 
-      return loss.item()
+      return loss
 
   def configure_optimizers(self):
     optimizer: Optimizer = hydra.utils.instantiate(
-      self.hparams.optimizer, params = self.parameters()
+      self.hparams.optimizer_cfg, params = self.parameters()
     )
 
-    scheduler_cfg = self.hparams.get('scheduler') 
+    scheduler_cfg = self.hparams.get('scheduler_cfg') 
     if scheduler_cfg is not None: 
       scheduler: _LRScheduler = hydra.utils.instantiate(
         scheduler_cfg, optimizer = optimizer 
