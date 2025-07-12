@@ -21,7 +21,6 @@ import torch
 from pytorch_lightning.loggers import TensorBoardLogger, CSVLogger
 
 import shutil
-import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 ## DON'T FORGET TO SET SEED
@@ -71,11 +70,6 @@ def main(cfg: DictConfig):
     )
 
     trainer.fit(model, datamodule = data_module, ckpt_path = resume_from_checkpoint)
-
-    if cfg.save_model.save_model: 
-        save_path = os.path.join(cfg.save_model.save_path, f'{cfg.save_model.model_name}.pt')
-        torch.save(model.state_dict(), save_path) 
-        print(f'Saved model state_dict to: {save_path}')
 
     if cfg.save_model.save_model: 
         save_path = os.path.join(cfg.save_model.save_path, f'{cfg.save_model.model_name}.pt')
