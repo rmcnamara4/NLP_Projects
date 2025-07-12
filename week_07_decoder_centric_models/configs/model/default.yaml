@@ -1,4 +1,4 @@
-model_name: 'gpt2'
+model_name: 'gpt2-medium'
 attn_pdrop: 0.3
 resid_pdrop: 0.3 
 embd_pdrop: 0.3

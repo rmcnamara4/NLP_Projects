@@ -5,4 +5,4 @@ save_top_k: 1
 save_weights_only: False 
 dirpath: ${paths.checkpoint_dir}
 filename: best_checkpoint
-save_on_train_epoch_end: TrueA
+save_on_train_epoch_end: False
