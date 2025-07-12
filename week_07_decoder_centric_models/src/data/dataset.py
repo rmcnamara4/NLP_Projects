@@ -4,9 +4,22 @@ from torch.utils.data import DataLoader
 from src.data.collators import TrainCollator, TestCollator 
 from src.data.preprocessing import train_preprocess, test_preprocess
 
-
 class SummarizationDataModule(pl.LightningDataModule): 
   def __init__(self, cfg, tokenizer): 
+    """
+    PyTorch Lightning DataModule for preparing and loading the PubMed scientific papers dataset
+    for summarization tasks.
+
+    This module handles:
+    - Loading and preprocessing the dataset using custom chunking and formatting logic.
+    - Tokenizing input articles and abstracts with configurable chunking and length limits.
+    - Creating train, validation, and test DataLoaders with appropriate collators.
+    - Supporting efficient data loading with multi-worker prefetching.
+
+    Args:
+        cfg: Hydra configuration object containing preprocessing and dataloader parameters.
+        tokenizer: Hugging Face tokenizer for encoding input and output text.
+    """
     super().__init__()
     self.tokenizer = tokenizer
     self.batch_size = cfg.batch_size
@@ -23,9 +36,20 @@ class SummarizationDataModule(pl.LightningDataModule):
     self.seed = cfg.seed
 
   def prepare_data(self): 
+    """
+    Downloads the PubMed subset of the 'scientific_papers' dataset from Hugging Face datasets.
+    This is done only once and is safe to call in multi-GPU environments.
+    """
     load_dataset('scientific_papers', 'pubmed')
 
   def setup(self, stage = None): 
+    """
+    Tokenizes and splits the dataset into train/validation/test sets depending on the stage.
+
+    Args:
+        stage (str, optional): Either 'fit', 'test', or None. Determines which splits to load
+                                and preprocess.
+    """
     if stage == 'fit' or stage is None: 
       train_data, val_data = load_dataset('scientific_papers', 'pubmed', split = ['train', 'validation'])
       dataset = DatasetDict({
@@ -78,6 +102,9 @@ class SummarizationDataModule(pl.LightningDataModule):
       self.test_dataset = tokenized_dataset['test']
 
   def train_dataloader(self): 
+    """
+    Returns the DataLoader for the training dataset with shuffling and multi-worker support.
+    """
     return DataLoader(
         self.train_dataset, 
         shuffle = True, 
@@ -88,6 +115,9 @@ class SummarizationDataModule(pl.LightningDataModule):
     )
 
   def val_dataloader(self): 
+    """
+    Returns the DataLoader for the validation dataset without shuffling.
+    """
     return DataLoader( 
         self.val_dataset, 
         shuffle = False, 
@@ -98,6 +128,9 @@ class SummarizationDataModule(pl.LightningDataModule):
     )
 
   def test_dataloader(self): 
+    """
+    Returns the DataLoader for the test dataset without shuffling and using the test collator.
+    """
     return DataLoader(
         self.test_dataset, 
         shuffle = False, 

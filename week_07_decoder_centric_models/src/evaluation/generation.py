@@ -2,6 +2,35 @@ import tqdm
 import torch 
 
 def generate_summaries(cfg, model, dataloader, tokenizer, device = 'cuda'): 
+    """
+    Generates chunk-level summaries using a trained language model.
+
+    This function performs batched inference over the input dataloader and applies generation 
+    techniques such as beam search, sampling, and repetition penalties based on the provided config.
+    The function assumes each input corresponds to a chunk of an article and associates predictions 
+    with their article ID.
+
+    Args:
+        cfg: A config object or dict containing generation parameters such as:
+            - max_new_tokens (int): Maximum number of tokens to generate.
+            - num_beams (int): Beam width for beam search.
+            - do_sample (bool): Whether to sample (used for nucleus/top-k sampling).
+            - top_p (float): Top-p (nucleus) sampling threshold.
+            - top_k (int): Top-k sampling threshold.
+            - temperature (float): Sampling temperature.
+            - repetition_penalty (float): Penalty for repeated tokens.
+            - length_penalty (float): Length penalty during generation.
+            - no_repeat_ngram_size (int): Prevent repeating n-grams of this size.
+            - early_stopping (bool, optional): Whether to stop early in beam search.
+        model (torch.nn.Module): The language model to use for generation.
+        dataloader (DataLoader): A PyTorch DataLoader that yields input_ids, attention_mask, and article_id.
+        tokenizer (PreTrainedTokenizer): The tokenizer used to decode predictions.
+        device (str, optional): Device to run inference on. Defaults to 'cuda'.
+
+    Returns:
+        dict: A dictionary mapping article IDs to lists of chunk-level summary strings.
+              Format: {article_id: [summary_chunk1, summary_chunk2, ...]}
+    """
     model.eval()
     model.to(device)
 
@@ -49,6 +78,38 @@ def generate_summaries(cfg, model, dataloader, tokenizer, device = 'cuda'):
     return all_preds
 
 def resummarize_chunks(cfg, all_preds, model, tokenizer, device = 'cuda'): 
+    """
+    Combines chunk-level summaries into a full-text summary per article using a second-stage 
+    generation pass.
+
+    This function:
+    - Concatenates the chunk-level summaries for each article.
+    - Prepends a prompt and appends a TL;DR token to guide the model.
+    - Applies generation with either beam search or sampling, based on the given config.
+    - Extracts the final generated summary after the 'TL;DR:' prompt.
+
+    Args:
+        cfg: A config object or dict containing generation parameters such as:
+            - max_new_tokens (int): Maximum number of tokens to generate.
+            - num_beams (int): Beam width for beam search.
+            - do_sample (bool): Whether to use sampling.
+            - top_p (float): Nucleus sampling threshold.
+            - top_k (int): Top-k sampling threshold.
+            - temperature (float): Sampling temperature.
+            - repetition_penalty (float): Repetition penalty for decoding.
+            - length_penalty (float): Length penalty during generation.
+            - no_repeat_ngram_size (int): N-gram repetition restriction.
+            - early_stopping (bool, optional): Whether to stop early in beam search.
+        all_preds (dict): A dictionary mapping article IDs to lists of chunk summaries.
+                          Format: {article_id: [chunk_summary1, chunk_summary2, ...]}
+        model (torch.nn.Module): The language model used for summarization.
+        tokenizer (PreTrainedTokenizer): HuggingFace tokenizer used to encode/decode text.
+        device (str, optional): Device for computation ('cuda' or 'cpu'). Defaults to 'cuda'.
+
+    Returns:
+        dict: A dictionary mapping article IDs to their final resummarized string.
+              Format: {article_id: final_summary}
+    """
     final_summaries = {}
 
     model.to(device)
