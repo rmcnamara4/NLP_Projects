@@ -9,6 +9,7 @@ defaults:
   - project: default
   - model: default
   - trainer: default
+  - generation: beam
 
 hydra: 
   run: 
@@ -21,5 +22,3 @@ resume: true
 paths: 
   checkpoint_dir: checkpoints/${project.name}_${project.version}
   log_dir: outputs/${project.name}_${project.version}/lightning_logs
-
-metrics: ['rouge-1', 'rouge-2', 'rouge-L']
