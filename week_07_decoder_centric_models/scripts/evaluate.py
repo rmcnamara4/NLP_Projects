@@ -34,7 +34,7 @@ def main(cfg: DictConfig):
 
     model = SummarizationModule(cfg.model, cfg.optimizer, cfg.scheduler, tokenizer = tokenizer)
 
-    model_path = os.path.join(cfg.save_model.model_path, cfg.save_model.model_name) 
+    model_path = os.path.join(cfg.save_model.save_path, cfg.save_model.model_name + '.pt')  
     if not os.path.exists(model_path):
         raise FileNotFoundError(f'Model not found at {model_path}')
     else: 
