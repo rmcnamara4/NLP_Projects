@@ -14,7 +14,7 @@ def save_results(results, save_dir):
         None
     """
     os.makedirs(save_dir, exist_ok = True) 
-    with open(save_dir + 'metrics.json', 'w') as f: 
+    with open(os.path.join(save_dir, 'metrics.json'), 'w') as f: 
         json.dump(results, f, indent = 4) 
 
 def save_predictions(predictions_dict, references_dict, save_dir): 
@@ -42,5 +42,5 @@ def save_predictions(predictions_dict, references_dict, save_dir):
         }
 
     os.makedirs(save_dir, exist_ok = True)
-    with open(save_dir + 'predictions.json', 'w') as f:
+    with open(os.path.join(save_dir, 'predictions.json'), 'w') as f:
         json.dump(combined, f, indent = 2)
