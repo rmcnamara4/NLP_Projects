@@ -22,7 +22,8 @@ class SummarizationDataModule(pl.LightningDataModule):
     """
     super().__init__()
     self.tokenizer = tokenizer
-    self.batch_size = cfg.batch_size
+    self.train_batch_size = cfg.train_batch_size
+    self.test_batch_size = cfg.test_batch_size
     self.chunk_len = cfg.chunk_len
     self.stride = cfg.stride
     self.min_len = cfg.min_len
@@ -63,7 +64,7 @@ class SummarizationDataModule(pl.LightningDataModule):
       tokenized_dataset = dataset.map(
           train_preprocess, 
           batched = True, 
-          batch_size = self.batch_size, 
+          batch_size = self.train_batch_size, 
           remove_columns = dataset['train'].column_names , 
           fn_kwargs = {
               'tokenizer': self.tokenizer, 
@@ -88,7 +89,7 @@ class SummarizationDataModule(pl.LightningDataModule):
       tokenized_dataset = dataset.map(
           test_preprocess, 
           batched = True, 
-          batch_size = self.batch_size, 
+          batch_size = self.test_batch_size, 
           remove_columns = dataset['test'].column_names , 
           fn_kwargs = {
               'tokenizer': self.tokenizer, 
@@ -108,7 +109,7 @@ class SummarizationDataModule(pl.LightningDataModule):
     return DataLoader(
         self.train_dataset, 
         shuffle = True, 
-        batch_size = self.batch_size, 
+        batch_size = self.train_batch_size, 
         collate_fn = self.collate_fn, 
         num_workers = self.num_workers, 
         prefetch_factor = self.prefetch_factor
@@ -121,7 +122,7 @@ class SummarizationDataModule(pl.LightningDataModule):
     return DataLoader( 
         self.val_dataset, 
         shuffle = False, 
-        batch_size = self.batch_size, 
+        batch_size = self.train_batch_size, 
         collate_fn = self.collate_fn, 
         num_workers = self.num_workers, 
         prefetch_factor = self.prefetch_factor
@@ -134,7 +135,7 @@ class SummarizationDataModule(pl.LightningDataModule):
     return DataLoader(
         self.test_dataset, 
         shuffle = False, 
-        batch_size = self.batch_size, 
+        batch_size = self.test_batch_size, 
         collate_fn = self.test_collate_fn, 
         num_workers = self.num_workers, 
         prefetch_factor = self.prefetch_factor
