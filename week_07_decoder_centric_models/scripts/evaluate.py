@@ -6,6 +6,7 @@ from src.evaluation.generation import *
 from src.evaluation.metrics import * 
 from src.utils.save import * 
 from src.data.dataset import SummarizationDataModule
+from src.models.summarizer import SummarizationModule
 
 import sys 
 import os 
@@ -31,11 +32,13 @@ def main(cfg: DictConfig):
     test_dataloader = data_module.test_dataloader()
     print('Data module instantiated!') 
 
+    model = SummarizationModule(cfg.model, cfg.optimizer, cfg.scheduler, tokenizer = tokenizer)
+
     model_path = os.path.join(cfg.save_model.model_path, cfg.save_model.model_name) 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f'Model not found at {model_path}')
     else: 
-        model = torch.load(model_path) 
+        model.load_state_dict(torch.load(model_path))
         model.to(device) 
 
     print('Model loaded!') 
@@ -50,7 +53,7 @@ def main(cfg: DictConfig):
         device = device 
     )
 
-    torch.save(os.path.join(save_path, 'chunk_summaries.pt'), chunk_summaries)
+    torch.save(chunk_summaries, os.path.join(save_path, 'chunk_summaries.pt'))
     print('Chunk summaries generated!') 
 
     final_summaries = resummarize_chunks( 
@@ -78,6 +81,9 @@ def main(cfg: DictConfig):
     save_predictions(final_summaries, ref_dict, save_path) 
 
     print('Results saved!')
+
+if __name__ == '__main__':
+    main()
 
 
 
