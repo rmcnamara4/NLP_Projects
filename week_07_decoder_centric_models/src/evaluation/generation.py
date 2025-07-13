@@ -1,4 +1,4 @@
-import tqdm 
+from tqdm import tqdm
 import torch 
 
 def generate_summaries(cfg, model, dataloader, tokenizer, device = 'cuda'): 
