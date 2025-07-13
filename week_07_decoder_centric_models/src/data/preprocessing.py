@@ -137,7 +137,7 @@ def test_preprocess(batch, tokenizer, chunk_len = 512, stride = 350, min_len = 2
 
             input_ids.append(chunk_input) 
             attention_masks.append(attention_mask)
-            article_ids.append(idx)
+            article_ids.append(f"{batch['__index_level_0__'][idx]}")
             references.append(abstract) 
 
     return {
