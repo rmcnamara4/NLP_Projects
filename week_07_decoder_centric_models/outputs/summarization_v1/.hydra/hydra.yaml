@@ -113,7 +113,7 @@ hydra:
     - hydra.mode=RUN
     task: []
   job:
-    name: train
+    name: evaluate
     chdir: null
     override_dirname: ''
     id: ???
@@ -142,6 +142,7 @@ hydra:
       provider: schema
     output_dir: /home/rmcnamara4/NLP_Projects/week_07_decoder_centric_models/outputs/summarization_v1
     choices:
+      generation: beam
       trainer: default
       model: default
       project: default

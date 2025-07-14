@@ -28,7 +28,8 @@ scheduler:
   T_max: ${trainer.max_epochs}
   eta_min: 0.0
 datamodule:
-  batch_size: 4
+  train_batch_size: 4
+  test_batch_size: 8
   chunk_len: 512
   stride: 412
   min_len: 256
@@ -66,3 +67,11 @@ trainer:
   deterministic: true
   log_every_n_steps: 10
   num_sanity_val_steps: 0
+generation:
+  num_beams: 5
+  do_sample: false
+  early_stopping: true
+  max_new_tokens: 200
+  repetition_penalty: 1.2
+  length_penalty: 1.2
+  no_repeat_ngram_size: 3
