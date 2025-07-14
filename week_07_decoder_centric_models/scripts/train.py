@@ -23,7 +23,6 @@ from pytorch_lightning.loggers import TensorBoardLogger, CSVLogger
 import shutil
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
-## DON'T FORGET TO SET SEED
 @hydra.main(config_path = '../configs', config_name = 'config', version_base = '1.3')
 def main(cfg: DictConfig): 
     set_seed(cfg.seed)
