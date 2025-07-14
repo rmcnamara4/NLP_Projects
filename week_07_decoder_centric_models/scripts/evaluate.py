@@ -34,12 +34,6 @@ def main(cfg: DictConfig):
     data_module.setup(stage = 'test') 
     test_dataloader = data_module.test_dataloader()
 
-    # #CHECK 
-    # subset = Subset(test_dataloader.dataset, list(range(100)))
-    # test_collate_fn = TestCollator(tokenizer = tokenizer)
-    # small_dataloader = DataLoader(subset, batch_size = 8, collate_fn = test_collate_fn, shuffle = False)
-    # # CHECK
-
     print('Data module instantiated!') 
 
     summarization_module = SummarizationModule(cfg.model, cfg.optimizer, cfg.scheduler, tokenizer = tokenizer)
@@ -69,6 +63,8 @@ def main(cfg: DictConfig):
 
     torch.save(chunk_summaries, os.path.join(save_path, 'chunk_summaries.pt'))
     print('Chunk summaries generated!') 
+
+    chunk_summaries = torch.load(os.path.join(save_path, 'chunk_summaries.pt'))
 
     final_summaries = resummarize_chunks( 
         cfg = cfg.generation, 
