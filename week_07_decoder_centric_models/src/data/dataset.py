@@ -65,7 +65,8 @@ class SummarizationDataModule(pl.LightningDataModule):
           train_preprocess, 
           batched = True, 
           batch_size = self.train_batch_size, 
-          remove_columns = dataset['train'].column_names , 
+          remove_columns = dataset['train'].column_names, 
+          load_from_cache_file = False,
           fn_kwargs = {
               'tokenizer': self.tokenizer, 
               'chunk_len': self.chunk_len, 
@@ -89,8 +90,10 @@ class SummarizationDataModule(pl.LightningDataModule):
       tokenized_dataset = dataset.map(
           test_preprocess, 
           batched = True, 
+          with_indices = True, 
           batch_size = self.test_batch_size, 
-          remove_columns = dataset['test'].column_names , 
+          remove_columns = dataset['test'].column_names, 
+          load_from_cache_file = False,
           fn_kwargs = {
               'tokenizer': self.tokenizer, 
               'chunk_len': self.chunk_len, 

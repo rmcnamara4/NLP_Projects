@@ -91,39 +91,40 @@ def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, m
         'labels': labels
     }
 
-def test_preprocess(batch, tokenizer, chunk_len = 512, stride = 350, min_len = 256, max_len = 1024): 
+def test_preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 350, min_len = 256, max_len = 1024): 
     """
     Preprocesses a batch of articles for inference-time summarization.
 
     This function:
-    - Splits each article into overlapping chunks.
+    - Splits each article into overlapping chunks using a sliding window.
     - Constructs inputs of the form: 'Summarize this: <chunk>\\nTL;DR:'.
-    - Does not include target summaries in the input (unlike training).
-    - Returns chunked inputs along with article ID and reference summaries for later aggregation and evaluation.
+    - Returns chunked inputs along with the original article index (from the dataset)
+      and reference summaries for evaluation and postprocessing.
 
     Args:
-        batch (Dict[str, List[str]]): A dictionary with two keys:
+        batch (Dict[str, List[str]]): A dictionary containing:
             - 'article': List of full article texts.
             - 'abstract': List of corresponding reference summaries.
-        tokenizer (PreTrainedTokenizer): HuggingFace tokenizer used to tokenize and pad inputs.
-        chunk_len (int, optional): Maximum length of each article chunk (excluding prompt). Default is 512.
-        stride (int, optional): Overlap between chunks in tokens. Default is 350.
+        idx (List[int]): The dataset indices corresponding to the current batch.
+        tokenizer (PreTrainedTokenizer): HuggingFace tokenizer used to tokenize and encode input text.
+        chunk_len (int, optional): Maximum token length of each article chunk (excluding prompt). Default is 512.
+        stride (int, optional): Overlap in tokens between adjacent chunks. Default is 350.
         min_len (int, optional): Minimum number of tokens a chunk must have to be included. Default is 256.
-        max_len (int, optional): Maximum total length of each sequence (including prompt). Default is 1024.
+        max_len (int, optional): Maximum total token length of the entire input (including prompt and TL;DR). Default is 1024.
 
     Returns:
         Dict[str, List]: A dictionary with the following keys:
-            - 'input_ids': List of tokenized input sequences.
-            - 'attention_mask': Corresponding attention masks.
-            - 'article_id': List of indices indicating which article each chunk belongs to.
-            - 'reference': List of ground-truth summaries for each article (repeated for each chunk).
+            - 'input_ids': Tokenized input sequences for each chunk.
+            - 'attention_mask': Attention masks for the input sequences.
+            - 'article_id': The original dataset index for each chunk, used for grouping during postprocessing.
+            - 'reference': Repeated reference summaries, one for each chunk.
     """
     input_ids = []
     attention_masks = []
     article_ids = []
     references = []
 
-    for idx, (article, abstract) in enumerate(zip(batch['article'], batch['abstract'])): 
+    for i, (article, abstract) in enumerate(zip(batch['article'], batch['abstract'])): 
         article_chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len)
         prompt_ids = tokenizer.encode('Summarize this: ', add_special_tokens = False) 
         tldr_ids = tokenizer.encode('\nTL;DR: ', add_special_tokens = False)
@@ -137,7 +138,7 @@ def test_preprocess(batch, tokenizer, chunk_len = 512, stride = 350, min_len = 2
 
             input_ids.append(chunk_input) 
             attention_masks.append(attention_mask)
-            article_ids.append(f"{batch['__index_level_0__'][idx]}")
+            article_ids.append(idx[i])
             references.append(abstract) 
 
     return {
