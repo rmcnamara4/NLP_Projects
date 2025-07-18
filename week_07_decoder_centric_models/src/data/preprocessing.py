@@ -30,9 +30,17 @@ def chunk_text(text, tokenizer, chunk_len = 512, stride = 412, min_len = 256, nu
     # half = num_keep // 2
     # start = max(0, mid - half) 
 
-    half = num_keep // 2
+    third = num_keep // 3  # 2
 
-    return chunks[:half] + chunks[-half:]
+    start = chunks[:third]
+
+    mid_start = len(chunks) // 2 - (third // 2)
+    mid = chunks[mid_start:mid_start + third]
+
+    end = chunks[-third:]
+
+    return start + mid + end
+    
     # return chunks[start:start + num_keep]
 
 def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, max_len = 1024): 
