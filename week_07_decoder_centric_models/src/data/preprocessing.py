@@ -26,11 +26,14 @@ def chunk_text(text, tokenizer, chunk_len = 512, stride = 412, min_len = 256, nu
     if len(chunks) <= num_keep: 
         return chunks 
 
-    mid = len(chunks) // 2
-    half = num_keep // 2
-    start = max(0, mid - half) 
+    # mid = len(chunks) // 2
+    # half = num_keep // 2
+    # start = max(0, mid - half) 
 
-    return chunks[start:start + num_keep]
+    half = num_keep // 2
+
+    return chunks[:half] + chunks[-half:]
+    # return chunks[start:start + num_keep]
 
 def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, max_len = 1024): 
     """
