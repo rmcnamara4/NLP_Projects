@@ -1,7 +1,7 @@
-num_beams: 5
+num_beams: 4
 do_sample: false 
 early_stopping: true 
-max_new_tokens: 200
-repetition_penalty: 1.2
-length_penalty: 1.2
+max_new_tokens: 100
+repetition_penalty: 1.1
+length_penalty: 1
 no_repeat_ngram_size: 3 
