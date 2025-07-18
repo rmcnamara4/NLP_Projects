@@ -9,7 +9,8 @@ defaults:
   - project: default
   - model: default
   - trainer: default
-  - generation: beam
+  - generation@_generation_dict.chunk_generation: beam
+  - generation@_generation_dict.final_generation: sampling
 
 hydra: 
   run: 
