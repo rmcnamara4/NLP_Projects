@@ -2,4 +2,4 @@ model_name: 'gpt2'
 attn_pdrop: 0.3
 resid_pdrop: 0.3 
 embd_pdrop: 0.3
-gradual_unfreeze: true 
+gradual_unfreeze: false 
