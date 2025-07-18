@@ -43,7 +43,7 @@ class SummarizationModule(pl.LightningModule):
         self.current_stage = 0
     else: 
         for param in self.model.transformer.parameters(): 
-            param.requires_grad = True 
+            param.requires_grad = False 
         self.current_stage = len(self.model.transformer.h)
 
     for param in self.model.lm_head.parameters(): 
