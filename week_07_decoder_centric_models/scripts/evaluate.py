@@ -54,7 +54,7 @@ def main(cfg: DictConfig):
     os.makedirs(save_path, exist_ok = True)
 
     chunk_summaries = generate_summaries( 
-        cfg = cfg.generation, 
+        cfg = cfg._generation_dict['chunk_generation'], 
         model = model, 
         dataloader = test_dataloader, 
         tokenizer = tokenizer, 
@@ -67,7 +67,7 @@ def main(cfg: DictConfig):
     chunk_summaries = torch.load(os.path.join(save_path, 'chunk_summaries.pt'))
 
     final_summaries = resummarize_chunks( 
-        cfg = cfg.generation, 
+        cfg = cfg._generation_dict['final_generation'], 
         all_preds = chunk_summaries,
         model = model, 
         tokenizer = tokenizer, 
