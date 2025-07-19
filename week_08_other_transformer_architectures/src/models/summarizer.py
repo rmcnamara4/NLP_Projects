@@ -30,7 +30,7 @@ class PegasusSummarizationModule(pl.LightningModule):
         attention_dropout = model_cfg.attention_dropout  # attention-specific
       )
 
-      self.model = PegasusForConditionalGeneration.from_pretrained(model_cfg.model_name, config = config)
+      self.model = PegasusForConditionalGeneration.from_pretrained(model_cfg.model_name, config = config, use_safetensors = True)
       self.model.config.pad_token_id = tokenizer.pad_token_id
 
       self.use_lora = lora_cfg.get('use_lora', False) 
