@@ -6,7 +6,7 @@ from pytorch_lightning import Trainer
 
 import warnings 
 warnings.filterwarnings('ignore', message = 'pkg_resources is deprecated')
-warnings.filterwarnings('ignore', category = DeprecationWarning, module = 'lightning_fabric')
+warnings.filterwarnings('ignore', category = DeprecationWarning)
 
 from src.data.dataset import PegasusDataModule 
 from src.models.summarizer import PegasusSummarizationModule
