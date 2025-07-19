@@ -1,4 +1,6 @@
 from src.data.chunking import * 
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 256, max_len = 1024, num_keep = 6, train = True, chunking_strategy = 'middle', embedding_model = None):
     """
