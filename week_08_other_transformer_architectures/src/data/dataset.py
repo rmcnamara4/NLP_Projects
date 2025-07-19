@@ -39,9 +39,11 @@ class PegasusDataModule(pl.LightningDataModule):
     self.prefetch_factor = cfg.prefetch_factor
     self.split_sizes = cfg.split_sizes
     self.seed = cfg.seed 
-    self.embedding_model = embedding_model
+    self.embedding_model_name = embedding_model_name
     self.chunking_strategy = cfg.chunking_strategy
     self.num_keep = cfg.num_keep
+
+    self.embedding_model = SentenceTransformer(embedding_model_name) if embedding_model_name else None
 
   def prepare_data(self):
     """
