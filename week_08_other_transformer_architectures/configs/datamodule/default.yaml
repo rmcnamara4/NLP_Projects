@@ -4,8 +4,8 @@ chunk_len: 512
 stride: 412
 min_len: 256
 max_len: 1024
-num_workers: 0
-prefetch_factor: null
+num_workers: 8
+prefetch_factor: 2
 split_sizes: 
   - 200
   - 50
@@ -13,4 +13,4 @@ split_sizes:
 chunking_strategy: 'middle'
 num_keep: 6
 embedding_model_name: null # 'all-MiniLM-L6-v2'
-seed: 42
+seed: 156
