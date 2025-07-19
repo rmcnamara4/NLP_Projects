@@ -1,0 +1,3 @@
+_target_: torch.optim.lr_scheduler.CosineAnnealingLR
+T_max: ${trainer.max_epochs}  # can override from command line or top config
+eta_min: 0.0
