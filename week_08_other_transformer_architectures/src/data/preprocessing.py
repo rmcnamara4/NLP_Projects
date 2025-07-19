@@ -41,6 +41,7 @@ def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 2
     for i, (article, abstract) in enumerate(zip(batch['article'], batch['abstract'])): 
         if chunking_strategy == 'middle': 
             chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, return_text = False) 
+            chunks = chunks[:num_keep]
         elif chunking_strategy == 'dynamic': 
             if embedding_model is None: 
                 raise ValueError('Embedding model must be provided for dynamic chunking.') 
