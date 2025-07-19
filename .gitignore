@@ -17,3 +17,4 @@ week_07_decoder_centric_models/checkpoints/
 !week_06_encoder_centric_models/src/data/
 !week_07_decoder_centric_models/src/data/
 !week_07_decoder_centric_models/src/models/
+!week_08_other_transformer_architectures/src/data/
