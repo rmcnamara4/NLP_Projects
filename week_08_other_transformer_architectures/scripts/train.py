@@ -40,6 +40,8 @@ def main(cfg: DictConfig):
     tokenizer = PegasusTokenizer.from_pretrained(cfg.model.model_name)
 
     data_module = PegasusDataModule(cfg.datamodule, tokenizer = tokenizer)
+    
+    print('Data module instantiated!')
 
     model = PegasusSummarizationModule(
         model_cfg = cfg.model, 
@@ -48,16 +50,33 @@ def main(cfg: DictConfig):
         scheduler_cfg = cfg.scheduler, 
         tokenizer = tokenizer
     )
-
+    callbacks = [instantiate(cb) for cb in cfg._callback_dict.values()]
     data_module.model = model.model
 
-    data_module.prepare_data()  # Ensure data is downloaded and processed
-    data_module.setup(stage = 'fit')
+    ckpt_path = os.path.join(cfg.paths.checkpoint_dir, 'best_checkpoint.ckpt')
+    resume_from_checkpoint = ckpt_path if cfg.resume and os.path.exists(ckpt_path) else None 
 
-    train_dataloader = data_module.train_dataloader()
-    val_dataloader = data_module.val_dataloader()
+    if resume_from_checkpoint: 
+        print(f'Resuming training from {resume_from_checkpoint}')
+    else: 
+        print('Starting training from scratch.')
 
-    print(next(iter(train_dataloader)))
+    print('Model instantiated!')
+
+    trainer = Trainer(
+        **cfg.trainer, 
+        callbacks = callbacks, 
+        logger = logger
+    )
+
+    trainer.fit(model, datamodule = data_module, ckpt_path = resume_from_checkpoint)
+
+    if cfg.save_model.save_model: 
+        os.makedirs(cfg.save_model.save_path, exist_ok = True) 
+        save_path = os.path.join(cfg.save_model.save_path, f'{cfg.save_model.model_name}.pt')
+        torch.save(model.state_dict(), save_path) 
+        print(f'Saved model state_dict to: {save_path}')
+
 
 if __name__ == '__main__': 
     main() 
