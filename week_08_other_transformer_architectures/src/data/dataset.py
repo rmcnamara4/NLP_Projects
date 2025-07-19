@@ -7,7 +7,7 @@ from transformers import DataCollatorForSeq2Seq
 from torch.utils.data import DataLoader
 
 from sentence_transformers import SentenceTransformer
-from src.data.preprocess import preprocess
+from src.data.preprocessing import preprocess
 
 class PegasusDataModule(pl.LightningDataModule):
     """
