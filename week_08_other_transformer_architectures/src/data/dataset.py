@@ -37,7 +37,7 @@ class PegasusDataModule(pl.LightningDataModule):
         embedding_model_name (str): Name of the SentenceTransformer model for dynamic chunking.
         embedding_model: Instantiated SentenceTransformer model if dynamic chunking is used.
     """
-    def __init__(self, cfg, tokenizer):
+    def __init__(self, cfg, tokenizer, model = None):
         super().__init__()
         self.tokenizer = tokenizer
         self.train_batch_size = cfg.train_batch_size
@@ -53,6 +53,7 @@ class PegasusDataModule(pl.LightningDataModule):
         self.embedding_model_name = cfg.embedding_model_name
         self.chunking_strategy = cfg.chunking_strategy
         self.num_keep = cfg.num_keep
+        self.model = model
 
         self.embedding_model = SentenceTransformer(self.embedding_model_name) if self.embedding_model_name else None
 
