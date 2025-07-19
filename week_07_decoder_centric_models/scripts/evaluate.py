@@ -53,16 +53,16 @@ def main(cfg: DictConfig):
     save_path = os.path.join(cfg.paths.log_dir, 'test')
     os.makedirs(save_path, exist_ok = True)
 
-    chunk_summaries = generate_summaries( 
-        cfg = cfg._generation_dict['chunk_generation'], 
-        model = model, 
-        dataloader = test_dataloader, 
-        tokenizer = tokenizer, 
-        device = device 
-    )
+    # chunk_summaries = generate_summaries( 
+    #     cfg = cfg._generation_dict['chunk_generation'], 
+    #     model = model, 
+    #     dataloader = test_dataloader, 
+    #     tokenizer = tokenizer, 
+    #     device = device 
+    # )
 
-    torch.save(chunk_summaries, os.path.join(save_path, 'chunk_summaries.pt'))
-    print('Chunk summaries generated!') 
+    # torch.save(chunk_summaries, os.path.join(save_path, 'chunk_summaries.pt'))
+    # print('Chunk summaries generated!') 
 
     chunk_summaries = torch.load(os.path.join(save_path, 'chunk_summaries.pt'))
 
