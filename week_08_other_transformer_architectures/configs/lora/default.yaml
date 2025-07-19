@@ -3,3 +3,4 @@ rank: 8
 alpha: 16
 target_modules: ['q_proj', 'v_proj']
 bias: 'none'
+dropout: 0.1
