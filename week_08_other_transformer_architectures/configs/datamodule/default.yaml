@@ -10,7 +10,7 @@ split_sizes:
   - 200
   - 50
   - 50
-chunking_strategy: 'middle'
+chunking_strategy: 'dynamic'
 num_keep: 6
 embedding_model_name: 'all-MiniLM-L6-v2'
 seed: 42
