@@ -20,8 +20,6 @@ class PegasusDataModule(pl.LightningDataModule):
     Args:
         cfg: Configuration object containing all relevant data settings (batch sizes, chunking params, etc.).
         tokenizer: A HuggingFace tokenizer used to tokenize articles and abstracts.
-        embedding_model (str, optional): The name or path of a SentenceTransformer-compatible model used
-                                            for dynamic chunk selection. If None, no dynamic chunking is used.
 
     Attributes:
         train_batch_size (int): Batch size for training.
@@ -36,9 +34,10 @@ class PegasusDataModule(pl.LightningDataModule):
         seed (int): Random seed for reproducibility.
         chunking_strategy (str): Strategy for chunking ('middle' or 'dynamic').
         num_keep (int): Number of chunks to keep after filtering or similarity-based selection.
+        embedding_model_name (str): Name of the SentenceTransformer model for dynamic chunking.
         embedding_model: Instantiated SentenceTransformer model if dynamic chunking is used.
     """
-    def __init__(self, cfg, tokenizer, embedding_model = None):
+    def __init__(self, cfg, tokenizer):
         super().__init__()
         self.tokenizer = tokenizer
         self.train_batch_size = cfg.train_batch_size
@@ -51,11 +50,11 @@ class PegasusDataModule(pl.LightningDataModule):
         self.prefetch_factor = cfg.prefetch_factor
         self.split_sizes = cfg.split_sizes
         self.seed = cfg.seed 
-        self.embedding_model_name = embedding_model_name
+        self.embedding_model_name = cfg.embedding_model_name
         self.chunking_strategy = cfg.chunking_strategy
         self.num_keep = cfg.num_keep
 
-        self.embedding_model = SentenceTransformer(embedding_model_name) if embedding_model_name else None
+        self.embedding_model = SentenceTransformer(self.embedding_model_name) if self.embedding_model_name else None
 
     def prepare_data(self):
         """
