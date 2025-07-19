@@ -166,6 +166,8 @@ class SummarizationModule(pl.LightningModule):
       scheduler: _LRScheduler = hydra.utils.instantiate(
         scheduler_cfg, optimizer = optimizer 
       )
+    else: 
+      scheduler = None
   
     return {
       'optimizer': optimizer, 
