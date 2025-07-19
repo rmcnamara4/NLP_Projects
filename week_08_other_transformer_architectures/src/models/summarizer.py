@@ -55,7 +55,7 @@ class PegasusSummarizationModule(pl.LightningModule):
   def training_step(self, batch, batch_idx):
       outputs = self(**batch)
       loss = outputs.loss
-      num_tokens = (batch["labels"] != -100).sum()
+      num_tokens = (batch['labels'] != -100).sum()
 
       self.log(
         'train_loss_per_token', 
@@ -94,7 +94,7 @@ class PegasusSummarizationModule(pl.LightningModule):
   def validation_step(self, batch, batch_idx):
       outputs = self(**batch)
       loss = outputs.loss
-      num_tokens = (batch["labels"] != -100).sum()
+      num_tokens = (batch['labels'] != -100).sum()
 
       self.log(
         'val_total_loss', 
