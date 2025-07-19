@@ -71,81 +71,81 @@ class PegasusDataModule(pl.LightningDataModule):
             stage (str, optional): One of 'fit' (train/val) or 'test'. If None, defaults to setting up all splits.
         """
         if stage == 'fit' or stage is None:
-        train_data, val_data = load_dataset('scientific_papers', 'pubmed', split = ['train', 'validation'])
-        dataset = DatasetDict({
-            'train': train_data,
-            'validation': val_data
-        })
+            train_data, val_data = load_dataset('scientific_papers', 'pubmed', split = ['train', 'validation'])
+            dataset = DatasetDict({
+                'train': train_data,
+                'validation': val_data
+            })
 
-        dataset['train'] = dataset['train'].shuffle(seed = 24).select(range(self.split_sizes[0]))
-        dataset['validation'] = dataset['validation'].select(range(self.split_sizes[1]))
+            dataset['train'] = dataset['train'].shuffle(seed = 24).select(range(self.split_sizes[0]))
+            dataset['validation'] = dataset['validation'].select(range(self.split_sizes[1]))
 
-        tokenized_dataset = dataset.map(
-            preprocess,
-            batched = True,
-            batch_size = 32,
-            with_indices = True,
-            remove_columns = dataset['train'].column_names ,
-            fn_kwargs = {
-                'tokenizer': self.tokenizer,
-                'chunk_len': self.chunk_len,
-                'stride': self.stride,
-                'min_len': self.min_len,
-                'max_len': self.max_len, 
-                'num_keep': self.num_keep,
-                'train': True, 
-                'chunking_strategy': self.chunking_strategy,
-                'embedding_model': self.embedding_model
-            }
-        )
+            tokenized_dataset = dataset.map(
+                preprocess,
+                batched = True,
+                batch_size = 32,
+                with_indices = True,
+                remove_columns = dataset['train'].column_names ,
+                fn_kwargs = {
+                    'tokenizer': self.tokenizer,
+                    'chunk_len': self.chunk_len,
+                    'stride': self.stride,
+                    'min_len': self.min_len,
+                    'max_len': self.max_len, 
+                    'num_keep': self.num_keep,
+                    'train': True, 
+                    'chunking_strategy': self.chunking_strategy,
+                    'embedding_model': self.embedding_model
+                }
+            )
 
-        self.train_dataset = tokenized_dataset['train']
-        self.val_dataset = tokenized_dataset['validation']
+            self.train_dataset = tokenized_dataset['train']
+            self.val_dataset = tokenized_dataset['validation']
 
-        self.train_collate_fn = StripFieldsCollator(DataCollatorForSeq2Seq(
-            self.tokenizer, 
-            self.model, 
-            padding = 'longest', 
-            return_tensors = 'pt', 
-            max_length = self.tokenizer.model_max_length
-        ), allowed_fields = ['input_ids', 'attention_mask', 'labels'])
+            self.train_collate_fn = StripFieldsCollator(DataCollatorForSeq2Seq(
+                self.tokenizer, 
+                self.model, 
+                padding = 'longest', 
+                return_tensors = 'pt', 
+                max_length = self.tokenizer.model_max_length
+            ), allowed_fields = ['input_ids', 'attention_mask', 'labels'])
 
         elif stage == 'test':
-        test_data = load_dataset('scientific_papers', 'pubmed', split = 'test')
-        dataset = DatasetDict({
-            'test': test_data
-        })
+            test_data = load_dataset('scientific_papers', 'pubmed', split = 'test')
+            dataset = DatasetDict({
+                'test': test_data
+            })
 
-        dataset['test'] = dataset['test'].select(range(self.split_sizes[2]))
+            dataset['test'] = dataset['test'].select(range(self.split_sizes[2]))
 
-        tokenized_dataset = dataset.map(
-            preprocess,
-            batched = True,
-            batch_size = 32,
-            with_indices = True,
-            remove_columns = dataset['test'].column_names ,
-            fn_kwargs = {
-                'tokenizer': self.tokenizer,
-                'chunk_len': self.chunk_len,
-                'stride': self.stride,
-                'min_len': self.min_len,
-                'max_len': self.max_len, 
-                'num_keep': self.num_keep,
-                'train': False, 
-                'chunking_strategy': self.chunking_strategy,
-                'embedding_model': self.embedding_model
-            }
-        )
+            tokenized_dataset = dataset.map(
+                preprocess,
+                batched = True,
+                batch_size = 32,
+                with_indices = True,
+                remove_columns = dataset['test'].column_names ,
+                fn_kwargs = {
+                    'tokenizer': self.tokenizer,
+                    'chunk_len': self.chunk_len,
+                    'stride': self.stride,
+                    'min_len': self.min_len,
+                    'max_len': self.max_len, 
+                    'num_keep': self.num_keep,
+                    'train': False, 
+                    'chunking_strategy': self.chunking_strategy,
+                    'embedding_model': self.embedding_model
+                }
+            )
 
-        self.test_dataset = tokenized_dataset['test']
+            self.test_dataset = tokenized_dataset['test']
 
-        self.test_collate_fn = StripFieldsCollator(DataCollatorWithID(
-            self.tokenizer, 
-            self.model, 
-            padding = 'longest', 
-            return_tensors = 'pt', 
-            max_length = self.tokenizer.model_max_length
-        ), allowed_fields = ['input_ids', 'attention_mask', 'article_id'])
+            self.test_collate_fn = StripFieldsCollator(DataCollatorWithID(
+                self.tokenizer, 
+                self.model, 
+                padding = 'longest', 
+                return_tensors = 'pt', 
+                max_length = self.tokenizer.model_max_length
+            ), allowed_fields = ['input_ids', 'attention_mask', 'article_id'])
 
     def train_dataloader(self):
         """
