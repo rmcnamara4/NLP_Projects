@@ -2,19 +2,33 @@ from src.data.chunking import *
 
 def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 256, max_len = 1024, num_keep = 6, train = True, chunking_strategy = 'middle', embedding_model = None):
     """
-    Preprocess a batch of text data by chunking and encoding.
-    
+    Preprocesses a batch of article-abstract pairs for training or inference.
+
+    Articles are split into chunks using a specified strategy. For dynamic chunking, the most relevant chunks
+    are selected based on cosine similarity between chunk and target embeddings.
+
     Args:
-        batch (list): List of text strings to preprocess.
-        idx (int): Index of the current batch.
-        tokenizer: Tokenizer to use for encoding.
-        chunk_len (int): Length of each chunk.
-        stride (int): Stride for overlapping chunks.
-        min_len (int): Minimum length of chunks to keep.
-        return_text (bool): Whether to return text or token IDs.
-    
+        batch (dict): A batch from a Hugging Face Dataset with 'article' and 'abstract' fields.
+        idx (List[int]): List of indices corresponding to the batch samples.
+        tokenizer: Hugging Face tokenizer used for encoding input text.
+        chunk_len (int): Maximum number of tokens in each chunk.
+        stride (int): Number of tokens to move forward when generating overlapping chunks.
+        min_len (int): Minimum length of chunk (in tokens) to keep.
+        max_len (int): Maximum input length accepted by the model.
+        num_keep (int): Number of most relevant chunks to keep during dynamic chunking.
+        train (bool): If True, include labels for training. If False, return metadata for evaluation.
+        chunking_strategy (str): One of ['middle', 'dynamic'].
+                                 'middle' keeps the middle portion of the article;
+                                 'dynamic' selects chunks most similar to the abstract or the article centroid.
+        embedding_model (Optional): SentenceTransformer model used for computing embeddings in dynamic mode.
+
     Returns:
-        list: List of processed chunks.
+        dict: A dictionary with the following keys:
+            - 'input_ids': List of tokenized input chunks.
+            - 'attention_mask': List of attention masks corresponding to the input chunks.
+            - 'labels': (only in train mode) Tokenized abstract sequences as supervision targets.
+            - 'article_id': (only in inference mode) Sample indices for tracking.
+            - 'reference': (only in inference mode) Ground truth abstracts.
     """
     input_ids = []
     attention_masks = []

@@ -7,6 +7,19 @@ from torch.optim.lr_scheduler import _LRScheduler
 from torch.optim import Optimizer
 
 class PegasusSummarizationModule(pl.LightningModule):
+  """
+  PyTorch Lightning module for abstractive summarization using the Pegasus model.
+
+  This module supports both full fine-tuning and parameter-efficient fine-tuning with LoRA,
+  along with optional gradual unfreezing of transformer layers during training.
+
+  Args:
+      model_cfg (DictConfig): Configuration for the Pegasus model (e.g., model name, dropout).
+      lora_cfg (DictConfig): Configuration for LoRA (e.g., whether to use it, target modules, rank).
+      optimizer_cfg (DictConfig): Optimizer configuration compatible with Hydra instantiation.
+      scheduler_cfg (DictConfig): Learning rate scheduler configuration.
+      tokenizer (PreTrainedTokenizer): Hugging Face tokenizer used for padding and decoding.
+  """
   def __init__(self, model_cfg, lora_cfg, optimizer_cfg, scheduler_cfg, tokenizer):
       super().__init__()
       self.save_hyperparameters(ignore = ['tokenizer'])
@@ -49,10 +62,32 @@ class PegasusSummarizationModule(pl.LightningModule):
 
 
   def forward(self, input_ids, attention_mask, decoder_input_ids, labels = None):
+      """
+      Forward pass through the Pegasus model.
+
+      Args:
+          input_ids (torch.Tensor): Input token IDs.
+          attention_mask (torch.Tensor): Attention mask indicating non-padding tokens.
+          decoder_input_ids (torch.Tensor): Decoder input IDs for teacher forcing.
+          labels (torch.Tensor, optional): Target token IDs for computing loss.
+
+      Returns:
+          Seq2SeqLMOutput: Output from the Pegasus model including loss and logits.
+      """
       output = self.model(input_ids = input_ids, attention_mask = attention_mask, decoder_input_ids = decoder_input_ids, labels = labels)
       return output
 
   def training_step(self, batch, batch_idx):
+      """
+      Training step that computes and logs loss per token and total loss/token count.
+
+      Args:
+          batch (Dict[str, torch.Tensor]): Batch containing inputs and labels.
+          batch_idx (int): Index of the current batch.
+
+      Returns:
+          torch.Tensor: Training loss for the batch.
+      """
       outputs = self(**batch)
       loss = outputs.loss
       num_tokens = (batch['labels'] != -100).sum()
@@ -92,6 +127,16 @@ class PegasusSummarizationModule(pl.LightningModule):
       return loss
 
   def validation_step(self, batch, batch_idx):
+      """
+      Validation step that computes and accumulates total validation loss and token count.
+
+      Args:
+          batch (Dict[str, torch.Tensor]): Batch containing inputs and labels.
+          batch_idx (int): Index of the current batch.
+
+      Returns:
+          torch.Tensor: Validation loss for the batch.
+      """
       outputs = self(**batch)
       loss = outputs.loss
       num_tokens = (batch['labels'] != -100).sum()
@@ -119,6 +164,12 @@ class PegasusSummarizationModule(pl.LightningModule):
       return loss
 
   def configure_optimizers(self):
+    """
+    Configures and returns the optimizer and learning rate scheduler.
+
+    Returns:
+        Dict: Dictionary with optimizer and optional learning rate scheduler config.
+    """
     optimizer: Optimizer = hydra.utils.instantiate(
        self.hparams.optimizer_cfg, 
        params = self.parameters()
@@ -142,9 +193,16 @@ class PegasusSummarizationModule(pl.LightningModule):
     }
 
   def on_train_epoch_start(self):
+    """
+    Logs trainable parameter count at the beginning of each training epoch.
+    """
     self.print_trainable_params()
 
   def on_train_epoch_end(self):
+    """
+    Computes and logs average training loss at the end of the epoch.
+    Also unfreezes the next transformer layer if gradual unfreezing is enabled.
+    """
     total_loss = self.trainer.callback_metrics['train_total_loss']
     total_tokens = self.trainer.callback_metrics['train_total_tokens']
 
@@ -162,6 +220,9 @@ class PegasusSummarizationModule(pl.LightningModule):
       self.unfreeze_next()
 
   def on_validation_epoch_end(self):
+    """
+    Computes and logs average validation loss at the end of the epoch.
+    """
     total_loss = self.trainer.callback_metrics['val_total_loss']
     total_tokens = self.trainer.callback_metrics['val_total_tokens']
 
@@ -177,7 +238,9 @@ class PegasusSummarizationModule(pl.LightningModule):
 
   def unfreeze_next(self):
     """
-    Unfreezes the next transformer layer from top-down, limited by `max_unfrozen_layers`.
+    Unfreezes the next highest transformer layer (top-down) if within allowed limit.
+
+    This enables gradual unfreezing for stable training.
     """
     n_layers = len(self.model.transformer.h)
 
@@ -193,7 +256,10 @@ class PegasusSummarizationModule(pl.LightningModule):
     else:
         print('Reached max number of unfrozen layers.')
 
-  def print_trainable_params(self):
+  def print_trainable_params(self): 
+    """
+    Prints the number of trainable vs total model parameters for transparency/debugging.
+    """
     total = sum(p.numel() for p in self.model.parameters())
     trainable = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
     print(f'Trainable params: {trainable} / {total} ({100 * trainable / total:.2f}%)')
