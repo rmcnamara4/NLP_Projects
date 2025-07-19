@@ -1,0 +1,26 @@
+defaults: 
+  - _self_
+  - optimizer: adamw 
+  - callbacks@_callback_dict.early_stopping: early_stopping
+  - callbacks@_callback_dict.model_checkpoint: model_checkpoint
+  - scheduler: cosine_annealing
+  - datamodule: default
+  - save_model: default
+  - project: default
+  - model: default
+  - trainer: default
+  - generation@_generation_dict.chunk_generation: beam
+  - generation@_generation_dict.final_generation: beam
+  - lora: default 
+
+hydra: 
+  run: 
+    dir: outputs/${project.name}_${project.version}
+
+seed: 42
+
+resume: true 
+
+paths: 
+  checkpoint_dir: checkpoints/${project.name}_${project.version}
+  log_dir: outputs/${project.name}_${project.version}/lightning_logs
