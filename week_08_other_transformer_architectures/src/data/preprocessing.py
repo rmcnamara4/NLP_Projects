@@ -1,78 +1,20 @@
-def chunk_text(text, tokenizer, chunk_len = 512, stride = 412, min_len = 256, num_keep = 6): 
-    """
-    Tokenizes and splits input text into overlapping chunks for processing.
+from src.data.chunking import * 
 
+def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 256, max_len = 1024, num_keep = 6, train = True, chunking_strategy = 'middle', embedding_model = None):
+    """
+    Preprocess a batch of text data by chunking and encoding.
+    
     Args:
-        text (str): The input text to be chunked.
-        tokenizer: A HuggingFace tokenizer with an `encode` method.
-        chunk_len (int): Maximum number of tokens per chunk.
-        stride (int): Step size for the sliding window. Controls overlap.
-        min_len (int): Minimum number of tokens for a valid chunk.
-        num_keep (int): Maximum number of chunks to keep. 
-                        If more than `num_keep`, selects middle chunks.
-
+        batch (list): List of text strings to preprocess.
+        idx (int): Index of the current batch.
+        tokenizer: Tokenizer to use for encoding.
+        chunk_len (int): Length of each chunk.
+        stride (int): Stride for overlapping chunks.
+        min_len (int): Minimum length of chunks to keep.
+        return_text (bool): Whether to return text or token IDs.
+    
     Returns:
-        List[List[int]]: A list of token ID chunks, each a list of integers.
-    """
-    text_ids = tokenizer.encode(text, add_special_tokens = False)
-
-    chunks = []
-    for i in range(0, len(text_ids), stride): 
-        chunk = text_ids[i:i + chunk_len]
-        if len(chunk) < min_len: 
-            break
-        chunks.append(chunk)
-
-    if len(chunks) <= num_keep: 
-        return chunks 
-
-    third = num_keep // 3  
-
-    start = chunks[:third]
-
-    mid_start = len(chunks) // 2 - (third // 2)
-    mid = chunks[mid_start:mid_start + third]
-
-    end = chunks[-third:]
-
-    return start + mid + end
-
-def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 256, num_keep = 6, max_len = 1024, train = True): 
-    """
-    Preprocesses a batch of scientific paper articles and abstracts by splitting articles into 
-    overlapping tokenized chunks and pairing them with their corresponding abstract summaries.
-
-    If in training mode, returns tokenized input chunks with abstract labels. 
-    If in test/eval mode, returns tokenized inputs along with article IDs and raw references 
-    for downstream summary generation and evaluation.
-
-    Args:
-        batch (dict): A batch from the Hugging Face dataset with keys 'article' and 'abstract'.
-        idx (list): A list of indices corresponding to the current batch (provided via `with_indices=True`).
-        tokenizer (PreTrainedTokenizer): The tokenizer used to tokenize input articles and abstracts.
-        chunk_len (int, optional): Length of each tokenized chunk. Default is 512.
-        stride (int, optional): Overlap between consecutive chunks. Default is 412.
-        min_len (int, optional): Minimum token length to keep a chunk. Default is 256.
-        num_keep (int, optional): Maximum number of chunks to keep per article. Default is 6.
-        max_len (int, optional): Maximum token length for each chunk (applied after chunking). Default is 1024.
-        train (bool, optional): Flag indicating whether to return training-format output (with labels) or 
-                                evaluation-format output (with article IDs and references). Default is True.
-
-    Returns:
-        dict: 
-            - If `train=True`: 
-                {
-                    'input_ids': List[List[int]],
-                    'attention_mask': List[List[int]],
-                    'labels': List[List[int]]
-                }
-            - If `train=False`: 
-                {
-                    'input_ids': List[List[int]],
-                    'attention_mask': List[List[int]],
-                    'article_id': List[str],
-                    'reference': List[str]
-                }
+        list: List of processed chunks.
     """
     input_ids = []
     attention_masks = []
@@ -81,23 +23,54 @@ def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 2
     references = []
 
     for i, (article, abstract) in enumerate(zip(batch['article'], batch['abstract'])): 
-        chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, num_keep) 
+        if chunking_strategy == 'middle': 
+            chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, return_text = False) 
+        elif chunking_strategy == 'dynamic': 
+            if embedding_model is None: 
+                raise ValueError('Embedding model must be provided for dynamic chunking.') 
+
+            raw_chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, return_text = True) 
+
+            if len(raw_chunks) == 0: 
+                chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, return_text = False)
+            else: 
+                chunk_embeddings = get_embeddings(raw_chunks, embedding_model)
+
+                if train: 
+                    target_embeddings = get_embeddings([abstract], embedding_model)
+                else: 
+                    target_embeddings = np.mean(chunk_embeddings, axis = 0, keepdims = True)
+
+                sims = cosine_similarity(chunk_embeddings, target_embeddings).squeeze()
+                inds = np.argsort(sims)[-num_keep:][::-1]
+
+                selected_chunks = [raw_chunks[j] for j in inds]
+                if raw_chunks[0] not in selected_chunks: 
+                    selected_chunks = [raw_chunks[0]] + selected_chunks
+
+                selected_chunks = selected_chunks[:num_keep]
+
+                chunks = [tokenizer.encode(c, add_special_tokens = False) for c in selected_chunks]
+
+        else: 
+            raise ValueError(f'Invalid chunking strategy: {chunking_strategy}')
+
         abstract_ids = tokenizer.encode(abstract, add_special_tokens = False) 
 
         for chunk in chunks: 
-        if len(chunk) > max_len: 
-            chunk = chunk[:max_len]
+            if len(chunk) > max_len: 
+                chunk = chunk[:max_len]
 
-        attention_mask = [1] * len(chunk) 
+            attention_mask = [1] * len(chunk) 
 
-        input_ids.append(chunk) 
-        attention_masks.append(attention_mask) 
+            input_ids.append(chunk) 
+            attention_masks.append(attention_mask) 
 
-        if train: 
-            labels.append(abstract_ids)
-        else: 
-            article_ids.append(idx[i])
-            references.append(abstract)
+            if train: 
+                labels.append(abstract_ids)
+            else: 
+                article_ids.append(idx[i])
+                references.append(abstract)
 
     if train: 
         return {
