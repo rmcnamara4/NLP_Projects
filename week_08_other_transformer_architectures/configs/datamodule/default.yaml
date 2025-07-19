@@ -1,5 +1,5 @@
-train_batch_size: 2
-test_batch_size: 8 
+train_batch_size: 16
+test_batch_size: 16
 chunk_len: 512 
 stride: 412
 min_len: 256
@@ -7,7 +7,7 @@ max_len: 1024
 num_workers: 8
 prefetch_factor: 2
 split_sizes: 
-  - 5000
+  - 13000
   - 2000
   - 2000
 chunking_strategy: 'middle'
