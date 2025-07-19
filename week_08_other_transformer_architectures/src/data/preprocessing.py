@@ -42,9 +42,7 @@ def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 2
         if chunking_strategy == 'middle': 
             chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, return_text = False) 
             chunks = chunks[:num_keep]
-
-            print('Chunks shape:', len(chunks))
-            print('First Chunk:', chunks[0])
+            
         elif chunking_strategy == 'dynamic': 
             if embedding_model is None: 
                 raise ValueError('Embedding model must be provided for dynamic chunking.') 
