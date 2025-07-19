@@ -4,7 +4,7 @@ from datasets import load_dataset, DatasetDict
 from src.data.collators import StripFieldsCollator, DataCollatorWithID
 from transformers import DataCollatorForSeq2Seq 
 
-from torch.data.utils import DataLoader
+from torch.utils.data import DataLoader
 
 from sentence_transformers import SentenceTransformer
 from src.data.preprocess import preprocess
