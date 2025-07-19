@@ -1,0 +1,4 @@
+save_model: true 
+save_path: 'models/'
+model_name: ${project.name}_${project.version}
+save_format: 'state_dict'
