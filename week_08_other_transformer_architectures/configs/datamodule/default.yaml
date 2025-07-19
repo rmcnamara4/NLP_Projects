@@ -7,9 +7,9 @@ max_len: 1024
 num_workers: 8
 prefetch_factor: 2
 split_sizes: 
-  - 200
-  - 50
-  - 50
+  - 13000
+  - 2000
+  - 2000
 chunking_strategy: 'middle'
 num_keep: 6
 embedding_model_name: null # 'all-MiniLM-L6-v2'

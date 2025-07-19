@@ -1,4 +1,4 @@
-max_epochs: 2 
+max_epochs: 10
 accelerator: cuda
 devices: 1 
 precision: 16-mixed
