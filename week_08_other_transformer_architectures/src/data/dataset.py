@@ -156,7 +156,7 @@ class PegasusDataModule(pl.LightningDataModule):
         return DataLoader(
             self.train_dataset,
             shuffle = True,
-            batch_size = self.batch_size,
+            batch_size = self.train_batch_size,
             collate_fn = self.train_collate_fn,
             num_workers = self.num_workers,
             prefetch_factor = self.prefetch_factor
@@ -170,7 +170,7 @@ class PegasusDataModule(pl.LightningDataModule):
         return DataLoader(
             self.val_dataset,
             shuffle = False,
-            batch_size = self.batch_size,
+            batch_size = self.train_batch_size,
             collate_fn = self.train_collate_fn,
             num_workers = self.num_workers,
             prefetch_factor = self.prefetch_factor
@@ -184,7 +184,7 @@ class PegasusDataModule(pl.LightningDataModule):
         return DataLoader(
             self.test_dataset,
             shuffle = False,
-            batch_size = self.batch_size,
+            batch_size = self.test_batch_size,
             collate_fn = self.test_collate_fn,
             num_workers = self.num_workers,
             prefetch_factor = self.prefetch_factor
