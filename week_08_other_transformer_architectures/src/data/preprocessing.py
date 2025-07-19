@@ -51,9 +51,10 @@ def preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 412, min_len = 2
                 chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, return_text = False)
             else: 
                 chunk_embeddings = get_embeddings(raw_chunks, embedding_model)
+                chunk_embeddings = chunk_embeddings.cpu().numpy()
 
                 if train: 
-                    target_embeddings = get_embeddings([abstract], embedding_model)
+                    target_embeddings = get_embeddings([abstract], embedding_model).cpu().numpy()
                 else: 
                     target_embeddings = np.mean(chunk_embeddings, axis = 0, keepdims = True)
 
