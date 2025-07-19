@@ -9,8 +9,8 @@ defaults:
   - project: default
   - model: default
   - trainer: default
-  - generation@_generation_dict.chunk_generation: beam
-  - generation@_generation_dict.final_generation: beam
+  - generation@_generation_dict.chunk_generation: beam_chunk
+  - generation@_generation_dict.final_generation: beam_final
   - lora: default 
 
 hydra: 
