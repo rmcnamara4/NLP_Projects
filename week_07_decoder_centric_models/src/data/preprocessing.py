@@ -43,7 +43,7 @@ def chunk_text(text, tokenizer, chunk_len = 512, stride = 412, min_len = 256, nu
     
     return chunks[start:start + num_keep]
 
-def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, max_len = 1024): 
+def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, max_len = 1024, num_keep = 6): 
     """
     Preprocesses a batch of articles and abstracts into input-target pairs for language model fine-tuning.
 
@@ -73,7 +73,7 @@ def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, m
     labels = []
 
     for article, abstract in zip(batch['article'], batch['abstract']): 
-        article_chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len) 
+        article_chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, num_keep) 
         abstract_ids = tokenizer.encode(abstract, add_special_tokens = False) 
         
         for chunk in article_chunks: 
@@ -102,7 +102,7 @@ def train_preprocess(batch, tokenizer, chunk_len, stride = 350, min_len = 256, m
         'labels': labels
     }
 
-def test_preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 350, min_len = 256, max_len = 1024): 
+def test_preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 350, min_len = 256, max_len = 1024, num_keep = 6): 
     """
     Preprocesses a batch of articles for inference-time summarization.
 
@@ -136,7 +136,7 @@ def test_preprocess(batch, idx, tokenizer, chunk_len = 512, stride = 350, min_le
     references = []
 
     for i, (article, abstract) in enumerate(zip(batch['article'], batch['abstract'])): 
-        article_chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len)
+        article_chunks = chunk_text(article, tokenizer, chunk_len, stride, min_len, num_keep)
         prompt_ids = tokenizer.encode('Summarize this: ', add_special_tokens = False) 
         tldr_ids = tokenizer.encode('\nTL;DR: ', add_special_tokens = False)
 

@@ -34,6 +34,7 @@ class SummarizationDataModule(pl.LightningDataModule):
     self.padding_value = cfg.padding_value
     self.collate_fn = TrainCollator(tokenizer, self.padding_value)
     self.test_collate_fn = TestCollator(tokenizer)
+    self.num_keep = cfg.num_keep
     self.seed = cfg.seed
 
   def prepare_data(self): 
@@ -72,7 +73,8 @@ class SummarizationDataModule(pl.LightningDataModule):
               'chunk_len': self.chunk_len, 
               'stride': self.stride, 
               'min_len': self.min_len, 
-              'max_len': self.max_len
+              'max_len': self.max_len, 
+              'num_keep': self.num_keep
           }
       )
 
@@ -99,7 +101,8 @@ class SummarizationDataModule(pl.LightningDataModule):
               'chunk_len': self.chunk_len, 
               'stride': self.stride, 
               'min_len': self.min_len, 
-              'max_len': self.max_len
+              'max_len': self.max_len, 
+              'num_keep': self.num_keep
           }
       )
 

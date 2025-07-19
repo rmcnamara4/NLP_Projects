@@ -11,4 +11,5 @@ split_sizes:
   - 2000
   - 2000
 padding_value: -100
+num_keep: 6
 seed: 156
