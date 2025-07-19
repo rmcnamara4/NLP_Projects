@@ -87,7 +87,7 @@ class PegasusDataModule(pl.LightningDataModule):
                 batch_size = 32,
                 with_indices = True,
                 remove_columns = dataset['train'].column_names,
-                load_from_cache_file = False,
+                # load_from_cache_file = False,
                 fn_kwargs = {
                     'tokenizer': self.tokenizer,
                     'chunk_len': self.chunk_len,
@@ -126,7 +126,7 @@ class PegasusDataModule(pl.LightningDataModule):
                 batch_size = 32,
                 with_indices = True,
                 remove_columns = dataset['test'].column_names,
-                load_from_cache_file = False,
+                # load_from_cache_file = False,
                 fn_kwargs = {
                     'tokenizer': self.tokenizer,
                     'chunk_len': self.chunk_len,
