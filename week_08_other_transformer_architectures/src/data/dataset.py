@@ -7,7 +7,7 @@ from transformers import DataCollatorForSeq2Seq
 from torch.data.utils import DataLoader
 
 class PegasusDataModule(pl.LightningDataModule):
-  def __init__(self, tokenizer, batch_size, model = None, chunk_len = 512, stride = 412, min_len = 256, max_len = 1024, num_workers = 4, prefetch_factor = 2, split_sizes = (12_000, 6_000, 6_000)):
+  def __init__(self, cfg, tokenizer, embedding_model = None):
     """
     A PyTorch Lightning DataModule for hierarchical summarization of the PubMed scientific papers dataset.
 
@@ -29,15 +29,19 @@ class PegasusDataModule(pl.LightningDataModule):
     """
     super().__init__()
     self.tokenizer = tokenizer
-    self.batch_size = batch_size
-    self.chunk_len = chunk_len
-    self.stride = stride
-    self.min_len = min_len
-    self.max_len = max_len
-    self.num_workers = num_workers
-    self.prefetch_factor = prefetch_factor
-    self.split_sizes = split_sizes
-    self.model = model
+    self.train_batch_size = cfg.train_batch_size
+    self.test_batch_size = cfg.test_batch_size
+    self.chunk_len = cfg.chunk_len
+    self.stride = cfg.stride
+    self.min_len = cfg.min_len
+    self.max_len = cfg.max_len
+    self.num_workers = cfg.num_workers
+    self.prefetch_factor = cfg.prefetch_factor
+    self.split_sizes = cfg.split_sizes
+    self.seed = cfg.seed 
+    self.embedding_model = embedding_model
+    self.chunking_strategy = cfg.chunking_strategy
+    self.num_keep = cfg.num_keep
 
   def prepare_data(self):
     """
@@ -74,7 +78,11 @@ class PegasusDataModule(pl.LightningDataModule):
               'chunk_len': self.chunk_len,
               'stride': self.stride,
               'min_len': self.min_len,
-              'max_len': self.max_len
+              'max_len': self.max_len, 
+              'num_keep': self.num_keep,
+              'train': True, 
+              'chunking_strategy': self.chunking_strategy,
+              'embedding_model': self.embedding_model
           }
       )
 
@@ -109,7 +117,10 @@ class PegasusDataModule(pl.LightningDataModule):
               'stride': self.stride,
               'min_len': self.min_len,
               'max_len': self.max_len, 
-              'train': False
+              'num_keep': self.num_keep,
+              'train': False, 
+              'chunking_strategy': self.chunking_strategy,
+              'embedding_model': self.embedding_model
           }
       )
 
