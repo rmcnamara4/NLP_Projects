@@ -9,7 +9,6 @@ from src.data.dataset import PegasusDataModule
 from src.models.summarizer import PegasusSummarizationModule
 
 from torch.utils.data import DataLoader, Subset
-from src.data.collators import TestCollator
 
 import sys 
 import os 
@@ -35,7 +34,7 @@ def main(cfg: DictConfig):
 
     print('Data module instantiated!') 
 
-    summarization_module = PegasusSummarizationModule(cfg.model, cfg.optimizer, cfg.scheduler, tokenizer = tokenizer)
+    summarization_module = PegasusSummarizationModule(cfg.model, cfg.lora, cfg.optimizer, cfg.scheduler, tokenizer = tokenizer)
 
     model_path = os.path.join(cfg.save_model.save_path, cfg.save_model.model_name + '.pt')  
     if not os.path.exists(model_path):
