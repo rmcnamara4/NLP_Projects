@@ -1,8 +1,8 @@
 train_batch_size: 4
-test_batch_size: 12
+test_batch_size: 16
 chunk_len: 512 
 stride: 412
-min_len: 256
+min_len: 64
 max_len: 1024
 num_workers: 8
 prefetch_factor: 2
@@ -10,7 +10,7 @@ split_sizes:
   - 13000
   - 2000
   - 2000
-chunking_strategy: 'middle'
+chunking_strategy: 'dynamic'
 num_keep: 6
-embedding_model_name: null # 'all-MiniLM-L6-v2'
+embedding_model_name: 'all-MiniLM-L6-v2' # null 
 seed: 156
