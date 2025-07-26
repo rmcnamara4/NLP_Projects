@@ -79,4 +79,10 @@ def main(cfg: DictConfig):
 
 
 if __name__ == '__main__': 
-    main() 
+    try:
+        main()
+    except Exception as e:
+        print(f"❌ Training script failed with error: {e}")
+    finally:
+        print("⚠️ Triggering VM shutdown...")
+        os.system("sudo shutdown -h now")
