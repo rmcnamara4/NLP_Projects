@@ -9,7 +9,7 @@ run_name: 'mistral-7B'
 
 hydra: 
   run: 
-    dir: outputs/${run.run_name}/${run.subfolder}
+    dir: outputs/${run_name}/${prompt.prompt_version}
 
 seed: 10
 
