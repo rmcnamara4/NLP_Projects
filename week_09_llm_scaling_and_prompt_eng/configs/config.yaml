@@ -4,6 +4,7 @@ defaults:
   - generation: default 
   - prompt: default 
   - run: default
+  - data: default
 
 hydra: 
   run: 
