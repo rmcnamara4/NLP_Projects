@@ -1,5 +1,8 @@
-max_tokens: 70
+max_tokens: 7
 temperature: 0.0
 top_p: 1.0 
 do_sample: false 
 seed: null
+sleep_between_calls: 0
+system_prompt: null
+batch_size: 8
