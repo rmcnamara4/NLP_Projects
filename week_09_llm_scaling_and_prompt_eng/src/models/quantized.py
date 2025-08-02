@@ -11,11 +11,13 @@ def get_quantized_response(prompts, pipe, cfg):
         batch = prompts[i:i + cfg.batch_size]
         outputs = pipe(
             batch, 
-            max_tokens = cfg.max_tokens, 
+            max_new_tokens = cfg.max_tokens, 
             temperature = cfg.temperature, 
             top_p = cfg.top_p, 
             seed = cfg.seed,
-            do_sample = cfg.do_sample
+            do_sample = cfg.do_sample, 
+            eos_token_id = pipe.tokenizer.eos_token_id,
+            pad_token_id = pipe.tokenizer.eos_token_id
         )
         response = [out[0]['generated_text'].strip() for out in outputs]
         responses.extend(response)
