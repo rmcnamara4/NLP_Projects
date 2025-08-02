@@ -20,3 +20,5 @@ week_08_other_transformer_architectures/checkpoints/
 !week_07_decoder_centric_models/src/models/
 !week_08_other_transformer_architectures/src/data/
 !week_08_other_transformer_architectures/src/models/
+!week_09_llm_scaling_and_prompt_eng/src/models/
+!week_09_llm_scaling_and_prompt_eng/configs/data/
