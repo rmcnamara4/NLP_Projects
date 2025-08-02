@@ -1,0 +1,2 @@
+prompt_version: 'zero_shot_v1'
+template_file: 'prompts/zero_shot_v1.j2'

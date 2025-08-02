@@ -1,0 +1,15 @@
+defaults: 
+  - _self_
+  - model: quantized
+  - generation: default 
+  - prompt: default 
+  - run: default
+
+hydra: 
+  run: 
+    dir: outputs/${run.run_name}/${run.subfolder}
+
+seed: 10
+
+paths: 
+  result_path: outputs/${run.run_name}/${run.subfolder}
