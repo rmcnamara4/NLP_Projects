@@ -3,8 +3,9 @@ defaults:
   - model: quantized
   - generation: default 
   - prompt: default 
-  - run: default
   - data: default
+
+run_name: 'mistral-7B'
 
 hydra: 
   run: 
@@ -13,4 +14,4 @@ hydra:
 seed: 10
 
 paths: 
-  result_path: outputs/${run.run_name}/${run.subfolder}
+  result_path: outputs/${run_name}/${prompt.prompt_version}
