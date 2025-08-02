@@ -14,6 +14,8 @@ import sys
 import os 
 from dotenv import load_dotenv
 
+load_dotenv()
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
 openai_api_key = os.getenv('OPENAI_API_KEY') 
 hf_token = os.getenv('HUGGINGFACE_TOKEN') 
@@ -30,11 +32,11 @@ from seed import set_seed
 from jinja2 import Environment, FileSystemLoader
 
 
-@hydra.main(config_path = '../configs', config_name = 'config', version_base = 1.3)
+@hydra.main(config_path = '../configs', config_name = 'config', version_base = '1.3')
 def main(cfg: DictConfig): 
     set_seed(cfg.seed) 
 
-    model_type = cfg.model.model_type.str.lower()
+    model_type = cfg.model.model_type.lower()
 
     dataset = load_data(cfg.data)
     
@@ -72,6 +74,9 @@ def main(cfg: DictConfig):
         correct_vec, 
         os.path.join(cfg.paths.result_path, 'results.csv')
     )
+
+if __name__ == '__main__': 
+    main()
 
 
 
