@@ -12,6 +12,7 @@ experiments/
 catboost_info/
 week_07_decoder_centric_models/checkpoints/
 week_08_other_transformer_architectures/checkpoints/
+.env
 
 !week_03_word_embeddings_and_distributional_semantics/results/evaluation_summary.csv 
 !week_05_transformer_architecture/src/data/
