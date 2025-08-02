@@ -70,7 +70,7 @@ def main(cfg: DictConfig):
         cfg.model.model_name,
         cfg.prompt.prompt_version, 
         [x['question'] for x in prompt_variables], 
-        answers, 
+        references, 
         responses, 
         predictions, 
         correct_vec, 
