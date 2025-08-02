@@ -1,26 +1,26 @@
 import openai 
 from tqdm import tqdm 
 
-def get_openai_response(prompts, client, cfg): 
+def get_openai_response(prompts, client, model_cfg, generation_cfg): 
     if isinstance(prompts, str): 
         prompts = [prompts]
 
     responses = []
-    for prompt in tqdm(prompts, desc = f'Generating with {cfg.model}'): 
+    for prompt in tqdm(prompts, desc = f'Generating with {model_cfg.model_name}'): 
         messages = []
-        if cfg.system_prompt: 
-            messages.append({'role': 'system', 'content': cfg.system_prompt})
+        if generation_cfg.system_prompt: 
+            messages.append({'role': 'system', 'content': generation_cfg.system_prompt})
         messages.append({'role': 'user', 'content': prompt})
 
         try: 
             reponse = client.chat.completions.create(
-                model = cfg.model_name, 
+                model = model_cfg.model_name, 
                 messages = messages, 
-                max_tokens = cfg.max_tokens, 
-                temperature = cfg.temperature, 
-                top_p = cfg.top_p, 
-                do_sample = cfg.do_sample,
-                seed = cfg.seed
+                max_tokens = generation_cfg.max_tokens, 
+                temperature = generation_cfg.temperature, 
+                top_p = generation_cfg.top_p, 
+                do_sample = generation_cfg.do_sample,
+                seed = generation_cfg.seed
             )
             content = reponse['choices'][0]['message']['content'].strip()
         except Exception as e: 
@@ -28,9 +28,9 @@ def get_openai_response(prompts, client, cfg):
 
         responses.append(content)
 
-        if cfg.sleep_between_calls > 0: 
+        if generation_cfg.sleep_between_calls > 0: 
             import time 
-            time.sleep(cfg.sleep_between_calls) 
+            time.sleep(generation_cfg.sleep_between_calls) 
         
         return responses 
         
