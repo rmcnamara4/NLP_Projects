@@ -1,6 +1,8 @@
 import hydra 
 from omegaconf import DictConfig
 
+import json
+
 from src.evaluation.evaluate import calculate_accuracy
 from src.evaluation.save import save_results
 from src.models.openai import get_openai_response
@@ -74,6 +76,13 @@ def main(cfg: DictConfig):
         correct_vec, 
         os.path.join(cfg.paths.result_path, 'results.csv')
     )
+
+    results = {
+        'accuracy': accuracy
+    }
+    with open(os.path.join(cfg.paths.result_path, 'accuracy.json'), 'w') as f: 
+        json.dump(results, f, indent = 4)
+
 
 if __name__ == '__main__': 
     main()
