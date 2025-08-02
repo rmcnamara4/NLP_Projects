@@ -1,3 +1,3 @@
-prompt_version: 'one_shot_cot_v1_longer_output'
+prompt_version: 'few_shot_cot_v1_longer_output'
 template_file: 'v1.j2'
-prompt_dir: 'prompts/one_shot_cot/'
+prompt_dir: 'prompts/few_shot_cot/'

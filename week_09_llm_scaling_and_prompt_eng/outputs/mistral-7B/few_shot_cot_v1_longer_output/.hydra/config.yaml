@@ -1,0 +1,30 @@
+run_name: mistral-7B
+seed: 10
+paths:
+  result_path: outputs/${run_name}/${prompt.prompt_version}
+model:
+  model_name: mistralai/Mistral-7B-Instruct-v0.1
+  load_4bit: true
+  load_8bit: false
+  device_map: auto
+  return_full_text: false
+  model_type: huggingface
+generation:
+  max_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  do_sample: false
+  seed: null
+  sleep_between_calls: 0
+  system_prompt: null
+  batch_size: 8
+prompt:
+  prompt_version: few_shot_cot_v1_longer_output
+  template_file: v1.j2
+  prompt_dir: prompts/few_shot_cot/
+data:
+  dataset_name: gsm8k
+  config_name: main
+  split: test
+  seed: 24
+  length: 250
