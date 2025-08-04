@@ -2,4 +2,4 @@ dataset_name: 'gsm8k'
 config_name: 'main'
 split: 'test'
 seed: 24
-length: 5
+length: 250
