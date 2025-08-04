@@ -1,11 +1,11 @@
 defaults: 
   - _self_
-  - model: quantized
+  - model: openai
   - generation: default 
   - prompt: default 
   - data: default
 
-run_name: 'mistral-7B'
+run_name: 'chatgpt-3.5-turbo'
 
 hydra: 
   run: 
