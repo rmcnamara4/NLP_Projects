@@ -56,7 +56,7 @@ def main(cfg: DictConfig):
     if model_type == 'huggingface': 
         responses = get_quantized_response(prompts, pipe, cfg.generation) 
     elif model_type == 'openai': 
-        client = OpenAI(openai.api_key)
+        client = OpenAI(api_key = openai.api_key)
         responses = get_openai_response(prompts, client, cfg.model, cfg.generation) 
 
     predictions = [extract_final_answer(g) for g in responses]
