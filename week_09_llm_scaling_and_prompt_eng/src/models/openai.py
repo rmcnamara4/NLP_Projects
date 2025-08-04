@@ -13,16 +13,15 @@ def get_openai_response(prompts, client, model_cfg, generation_cfg):
         messages.append({'role': 'user', 'content': prompt})
 
         try: 
-            reponse = client.chat.completions.create(
+            response = client.chat.completions.create(
                 model = model_cfg.model_name, 
                 messages = messages, 
                 max_tokens = generation_cfg.max_tokens, 
                 temperature = generation_cfg.temperature, 
-                top_p = generation_cfg.top_p, 
-                do_sample = generation_cfg.do_sample,
-                seed = generation_cfg.seed
+                top_p = generation_cfg.top_p
             )
-            content = reponse['choices'][0]['message']['content'].strip()
+            content = response.choices[0].message.content.strip()
+            # content = reponse['choices'][0]['message']['content'].strip()
         except Exception as e: 
             content = f'[ERROR] {e}'
 
@@ -32,6 +31,6 @@ def get_openai_response(prompts, client, model_cfg, generation_cfg):
             import time 
             time.sleep(generation_cfg.sleep_between_calls) 
         
-        return responses 
+    return responses 
         
 
