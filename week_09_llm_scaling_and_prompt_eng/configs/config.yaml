@@ -1,11 +1,11 @@
 defaults: 
   - _self_
-  - model: openai
+  - model: quantized
   - generation: default 
   - prompt: default 
   - data: default
 
-run_name: 'chatgpt-3.5-turbo'
+run_name: 'wizardmath-13B'
 
 hydra: 
   run: 
