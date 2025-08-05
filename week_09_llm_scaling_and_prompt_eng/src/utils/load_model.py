@@ -19,7 +19,7 @@ def load_quantized_model(cfg):
     else: 
         bnb_config = None
 
-    tokenizer = AutoTokenizer.from_pretrained(cfg.model_name) 
+    tokenizer = AutoTokenizer.from_pretrained(cfg.model_name, trust_remote_code = True) 
 
     kwargs = {
         'device_map': cfg.device_map,
@@ -29,7 +29,7 @@ def load_quantized_model(cfg):
     if bnb_config is not None:
         kwargs['quantization_config'] = bnb_config
 
-    model = AutoModelForCausalLM.from_pretrained(cfg.model_name, **kwargs)
+    model = AutoModelForCausalLM.from_pretrained(cfg.model_name, trust_remote_code = True, use_safetensors = True, **kwargs)
 
     pipe = pipeline(
         'text-generation', 
