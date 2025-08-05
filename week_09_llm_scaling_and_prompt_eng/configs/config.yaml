@@ -5,7 +5,7 @@ defaults:
   - prompt: default 
   - data: default
 
-run_name: 'noushermes-2-mistral-13B'
+run_name: 'noushermes-2-llama-13B'
 
 hydra: 
   run: 
