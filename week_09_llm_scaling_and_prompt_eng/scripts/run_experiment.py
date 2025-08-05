@@ -60,7 +60,7 @@ def main(cfg: DictConfig):
         responses = get_openai_response(prompts, client, cfg.model, cfg.generation) 
 
     predictions = [extract_final_answer(g) for g in responses]
-    predictions = [float(p) if p else None for p in predictions]
+    predictions = [float(p) if p is not None else None for p in predictions]
 
     references = [float(a) for a in answers]
 
