@@ -1,4 +1,4 @@
-model_name: 'NousResearch/Nous-Hermes-Llama2-13b'
+model_name: 'mistralai/Mistral-7B-Instruct-v0.1'
 load_4bit: true 
 load_8bit: false 
 device_map: 'auto'
