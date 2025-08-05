@@ -5,7 +5,7 @@ defaults:
   - prompt: default 
   - data: default
 
-run_name: 'wizardmath-7B'
+run_name: 'noushermes-2-mistral-13B'
 
 hydra: 
   run: 

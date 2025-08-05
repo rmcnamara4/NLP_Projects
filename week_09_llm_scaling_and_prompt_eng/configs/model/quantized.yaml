@@ -1,4 +1,4 @@
-model_name: 'WizardLMTeam/WizardMath-7B-V1.1'
+model_name: 'NousResearch/Nous-Hermes-2-Mistral-13B'
 load_4bit: true 
 load_8bit: false 
 device_map: 'auto'
