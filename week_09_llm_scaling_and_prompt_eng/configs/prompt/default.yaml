@@ -1,3 +1,3 @@
-prompt_version: 'zero_shot_v1'
+prompt_version: 'one_shot_v1'
 template_file: 'v1.j2'
-prompt_dir: 'prompts/zero_shot/'
+prompt_dir: 'prompts/one_shot/'
