@@ -1,0 +1,26 @@
+run_name: chatgpt-3.5-turbo
+seed: 10
+paths:
+  result_path: outputs/${run_name}/${prompt.prompt_version}
+model:
+  model_name: gpt-3.5-turbo
+  model_type: openai
+generation:
+  max_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  do_sample: false
+  seed: null
+  sleep_between_calls: 0
+  system_prompt: null
+  batch_size: 8
+prompt:
+  prompt_version: one_shot_cot_v1
+  template_file: v1.j2
+  prompt_dir: prompts/one_shot_cot/
+data:
+  dataset_name: gsm8k
+  config_name: main
+  split: test
+  seed: 24
+  length: 250
