@@ -5,6 +5,7 @@ from omegaconf import OmegaConf
 from dotenv import load_dotenv
 load_dotenv()
 
+import os
 hf_token = os.getenv('HUGGINGFACE_TOKEN') 
 
 from huggingface_hub import login 
