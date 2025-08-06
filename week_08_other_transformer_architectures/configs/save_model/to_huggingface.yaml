@@ -1,0 +1,5 @@
+_base_model: 'google/pegasus-pubmed'
+model_path: 'models/pegasus_middle_chunking.pt'
+save_directory: 'huggingface_models/pegasus-middle-chunking-v1'
+push_to_hub: true 
+repo_name: 'rmcnamara4/pegasus-middle-chunking-v1'
