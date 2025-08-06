@@ -8,3 +8,7 @@ hydra:
   run:
     dir: .
   output_subdir: null
+  job:
+    logging:
+      level: CRITICAL
+  verbose: false
