@@ -1,5 +1,10 @@
 _base_model: 'google/pegasus-pubmed'
-model_path: 'models/pegasus_middle_chunking.pt'
+model_path: 'models/pegasus_middle_chunking_v1.pt'
 save_directory: 'huggingface_models/pegasus-middle-chunking-v1'
 push_to_hub: true 
 repo_name: 'rmcnamara4/pegasus-middle-chunking-v1'
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
