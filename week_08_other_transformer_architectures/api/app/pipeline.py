@@ -3,6 +3,8 @@ from src.data.preprocessing import preprocess
 
 from omegaconf import OmegaConf
 
+from peft import PeftModel, PeftConfig
+
 import torch 
 import os 
 
@@ -10,8 +12,13 @@ class SummarizerPipeline:
     def __init__(self): 
         self.model_name = 'rmcnamara4/pegasus-middle-chunking-v1'
 
+        peft_config = PeftConfig.from_pretrained(self.model_name) 
+        base_model_name = peft_config.base_model_name_or_path
+
         self.tokenizer = PegasusTokenizer.from_pretrained(self.model_name, trust_remote_code = True)
-        self.model = PegasusForConditionalGeneration.from_pretrained(self.model_name, trust_remote_code = True, use_safetensors = True) 
+        base_model = PegasusForConditionalGeneration.from_pretrained(base_model_name, trust_remote_code = True, use_safetensors = True) 
+        self.model =  PeftModel.from_pretrained(base_model, self.model_name)
+
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
         self.model.to(self.device) 
         self.model.eval()
@@ -42,7 +49,9 @@ class SummarizerPipeline:
             embedding_model = self.data_cfg['embedding_model_name']
         )
 
-        max_len = max(len(x) for x in batch_output['input_ids'])
+        max_len = max(len(x) for x in batch_output['input_ids']) if len(batch_output['input_ids'] > 0) else 0 
+        if max_len == 0: 
+            return 'Not long enough to summarize.'
         input_ids = [x + [self.tokenizer.pad_token_id] * (max_len - len(x)) for x in batch_output['input_ids']]
         attention_mask = [x + [0] * (max_len - len(x)) for x in batch_output['attention_mask']]
 
