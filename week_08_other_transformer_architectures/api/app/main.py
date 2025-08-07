@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from app.schemas import SummarizationRequest, SummarizationResponse
-from app.pipeline import SummarizerPipeline
+from api.app.schemas import SummarizationRequest, SummarizationResponse
+from api.app.pipeline import SummarizerPipeline
 
 app = FastAPI(title = 'Pegasus Summarization API', version = '1.0')
 
