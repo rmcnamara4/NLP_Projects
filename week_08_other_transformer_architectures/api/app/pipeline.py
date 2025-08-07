@@ -96,9 +96,7 @@ class SummarizerPipeline:
             )
 
         final_summary = self.tokenizer.decode(final_output[0], skip_special_tokens = True)
-
-        print(final_summary)
         
-        # return final_summary
+        return final_summary
 
 
