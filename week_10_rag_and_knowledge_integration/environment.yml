@@ -1,0 +1,45 @@
+name: rag-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - ipykernel
+  - numpy
+  - pandas
+  - scipy
+  - uvicorn
+  - fastapi
+  - jinja2
+  - tqdm
+  - pydantic>=2
+  - pyarrow
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - curl
+  - pip:
+      # Bedrock + AWS
+      - boto3
+      - botocore
+      - langchain
+      - langchain-aws
+      - awscli
+      # RAG + LLM tooling
+      - transformers>=4.42
+      - accelerate
+      - datasets
+      - sentence-transformers
+      - faiss-cpu           # swap to faiss-gpu later (see section 3)
+      - tiktoken
+      - rank-bm25
+      - chromadb            # or use OpenSearch/OpenSearch-Vector if you prefer
+      - opensearch-py
+      - pypdf
+      - python-docx
+      - unstructured
+      - unstructured[pdf]
+      # Optional: if you want to use OpenAI/Anthropic directly
+      - openai
+      - anthropic
