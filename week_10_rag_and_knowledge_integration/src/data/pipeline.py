@@ -3,18 +3,16 @@ from src.data.pmc_client import *
 from src.data.pmc_parser import * 
 from src.data.io import * 
 
-def run_pipeline(
+def collect_data(
     query: str, 
     max_results: int, 
     date_from: Optional[str], 
     date_to: Optional[str], 
     save_raw_xml: bool = True, 
     save_interim: bool = True, 
-    save_processed: bool = True, 
     use_s3: bool = True, 
     raw_key: str = 'data/raw/pmc_raw.jsonl', 
     interim_key: str = 'data/interim/pmc_parsed.jsonl', 
-    processed_key: str = 'data/processed/pmc_chunks.jsonl'
 ): 
     pmc_ids = search_pmc_ids(query, max_results, date_from, date_to)
     if not pmc_ids: 
