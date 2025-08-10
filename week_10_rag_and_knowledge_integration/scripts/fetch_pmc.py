@@ -12,6 +12,14 @@ if __name__ == '__main__':
     ap.add_argument('--date_from', default = None)
     ap.add_argument('--date_to', default = None)
     ap.add_argument('--use_s3', action = 'store_true')
+    ap.add_argument(
+        '--raw_key', 
+        default = 'data/raw/raw_xml.jsonl'
+    )
+    ap.add_argument(
+        '--interim_key'
+        default = 'data/interim/parsed_xml.jsonl'
+    )
     args = ap.parse_args()
 
     run_id = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
@@ -44,8 +52,8 @@ if __name__ == '__main__':
         date_from = args.date_from, 
         date_to = args.date_to, 
         use_s3 = args.use_s3, 
-        raw_key = f'data/raw/raw_xml.jsonl', 
-        interim_key = f'data/interim/parsed_xml.jsonl'
+        raw_key = args.raw_key, 
+        interim_key = args.interim_key
     )
 
 
