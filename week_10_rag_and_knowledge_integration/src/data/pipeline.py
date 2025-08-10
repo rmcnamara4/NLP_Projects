@@ -1,7 +1,7 @@
 from typing import List, Optional
 from src.data.pmc_client import * 
 from src.data.pmc_parser import * 
-from src.data.io import * 
+from src.utils.io import * 
 
 def collect_data(
     query: str, 
