@@ -1,5 +1,6 @@
 import argparse
-from src.data.pipeline import run_pipeline
+from src.data.pipeline import collect_data
+from src.utils.runlog import *
 import os
 from datetime import datetime
 import json
@@ -13,22 +14,38 @@ if __name__ == '__main__':
     ap.add_argument('--use_s3', action = 'store_true')
     args = ap.parse_args()
 
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    log_dir = 'run_logs/fetch_pmc'
-    os.makedirs(log_dir, exist_ok=True)
+    run_id = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+    payload = {
+        'run_id': run_id,
+        'ts_utc': datetime.utcnow().isoformat(),
+        'args': vars(args),
+        'env': {
+            'region': os.getenv('AWS_REGION'),
+            'user': os.getenv('SAGEMAKER_USER_PROFILE_NAME'),
+            'job_name': os.getenv('TRAINING_JOB_NAME') or os.getenv('PROCESSING_JOB_NAME'),
+        },
+    }
 
-    with open(f'{log_dir}/run_{timestamp}.json', 'w') as f:
-        json.dump(vars(args), f, indent = 2)
+    # 1) Local run log (to a writable dir)
+    local_dir = writable_runlog_dir()
+    local_path = os.path.join(local_dir, f'fetch_pmc/run_{run_id}.json')
+    os.makedirs(os.path.dirname(local_path), exist_ok = True)
+    with open(local_path, 'w') as f:
+        json.dump(payload, f, indent = 2)
+    print(f'[runlog] local -> {local_path}')
 
-    run_pipeline(
+    # 2) S3 run log (authoritative)
+    s3_uri = s3_runlog(payload, prefix = 'run_logs/fetch_pmc')
+    print(f'[runlog] s3 -> {s3_uri}')
+
+    collect_data(
         query = args.query, 
         max_results = args.max_results, 
         date_from = args.date_from, 
         date_to = args.date_to, 
         use_s3 = args.use_s3, 
         raw_key = f'data/raw/raw_xml.jsonl', 
-        interim_key = f'data/interim/parsed_xml.jsonl', 
-        processed_key = f'data/processed/article_chunks.jsonl'
+        interim_key = f'data/interim/parsed_xml.jsonl'
     )
 
 
