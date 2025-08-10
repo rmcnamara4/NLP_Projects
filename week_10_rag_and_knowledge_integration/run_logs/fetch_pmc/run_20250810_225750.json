@@ -1,9 +1,9 @@
 {
-  "run_id": "20250810_221333",
-  "ts_utc": "2025-08-10T22:13:33.234507",
+  "run_id": "20250810_225750",
+  "ts_utc": "2025-08-10T22:57:50.694794",
   "args": {
     "query": "alzheimer's disease review[Publication Type]",
-    "max_results": 50,
+    "max_results": 5,
     "date_from": "2020",
     "date_to": "2025",
     "use_s3": true
