@@ -33,7 +33,7 @@ def save_jsonl(records: Iterable[Dict], filename: str, use_s3: Optional[bool] = 
                 f.write(json.dumps(r) + '\n') 
             print(f'Saved locally to {filename}')
 
-def load_jsonl(path: str, from_s3: Optional[bool] = True):
+def load_jsonl(path: str, use_s3: Optional[bool] = True):
     if from_s3:
         if not S3_BUCKET:
             raise ValueError('S3_BUCKET env variable is not set.')
