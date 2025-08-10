@@ -31,4 +31,4 @@ def run_pipeline(
     if save_interim: 
         save_jsonl(parsed, interim_key, use_s3)
 
-    print('Done') 
+    print('Done saving articles!') 
