@@ -1,5 +1,6 @@
 from src.preprocess.chunking import chunk_many, get_tokenizer
 from src.utils.io import *
+from typing import List
 
 def chunk_articles(
         provider: str, 
