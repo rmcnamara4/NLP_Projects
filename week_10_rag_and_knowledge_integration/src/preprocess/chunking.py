@@ -1,7 +1,8 @@
 from transformers import AutoTokenizer
 from typing import Dict, List, Iterable
+from src.preprocess.normalize import clean_text
 
-def get_approx_tokens(provider: str, variant: str = None, hf_model: str = None): 
+def get_tokenizer(provider: str, variant: str = None, hf_model: str = None): 
     provider = (provider or '').lower()
     variant = (variant or '').lower() if variant else None
 
@@ -17,6 +18,7 @@ def get_approx_tokens(provider: str, variant: str = None, hf_model: str = None):
     return None
 
 def chunk_text(text: str, tokenizer, max_tokens: int = 400, overlap: int = 50, min_tokens: int = 50) -> List[str]: 
+    text = clean_text(text)
     ids = tokenizer.encode(text, add_special_tokens = False) 
     chunks = []
     start = 0
