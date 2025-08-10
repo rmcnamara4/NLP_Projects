@@ -9,7 +9,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument(
         '--provider', 
-        choices = ['hf', 'bedrock'] 
+        choices = ['hf', 'bedrock'],
         default = 'hf'
     ) 
     ap.add_argument(
@@ -46,7 +46,8 @@ if __name__ == '__main__':
     ap.add_argument(
         '--meta_keys',
         nargs = '+',             
-        type = str
+        type = str,
+        default = ['title', 'pub_date', 'doi']
     )
     ap.add_argument(
         '--input_path', 
@@ -64,7 +65,7 @@ if __name__ == '__main__':
     args = ap.parse_args()
 
     run_id = datetime.utcnow().strftime('%Y%m%d_%H%M%S') 
-        payload = {
+    payload = {
         'run_id': run_id,
         'ts_utc': datetime.utcnow().isoformat(),
         'args': vars(args),
