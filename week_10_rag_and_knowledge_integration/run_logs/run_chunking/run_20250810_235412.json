@@ -1,0 +1,27 @@
+{
+  "run_id": "20250810_235412",
+  "ts_utc": "2025-08-10T23:54:12.260010",
+  "args": {
+    "provider": "hf",
+    "variant": null,
+    "hf_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "max_tokens": 400,
+    "overlap": 50,
+    "min_tokens": 50,
+    "text_key": "body",
+    "id_key": "pmcid",
+    "meta_keys": [
+      "title",
+      "pub_date",
+      "doi"
+    ],
+    "input_path": "data/interim/parsed_xml.jsonl",
+    "output_path": "data/processed/processed_chunks.jsonl",
+    "use_s3": true
+  },
+  "env": {
+    "region": null,
+    "user": null,
+    "job_name": null
+  }
+}
