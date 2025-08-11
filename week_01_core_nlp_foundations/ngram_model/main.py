@@ -57,3 +57,15 @@ if __name__ == '__main__':
     with open('results/perplexity_results.json', 'w') as f: 
         json.dump(results, f, indent = 2)
 
+    unigram_generations = [generate_ngram_text(unigram_model, None, n = 1, length = 50) for _ in range(10)]
+    bigram_generations = [generate_ngram_text(bigram_model, '<s>', n = 2, length = 50) for _ in range(10)]
+    trigram_generations = [generate_ngram_text(trigram_model, ('<s>', 'the'), n = 3, length = 50) for _ in range(10)]
+
+    generations = {
+        'unigram': unigram_generations, 
+        'bigram': bigram_generations, 
+        'trigram': trigram_generations
+    }
+
+    with open('results/generations.json', 'w') as f: 
+        json.dump(generations, f, indent = 2)
