@@ -98,13 +98,13 @@ def generate_ngram_text(model, seed_words, n, length = 10):
       length (int): Number of tokens to generate.
 
   Returns:
-      None
+      str: A generated sentence beginning with the seed words.
   """
   if n == 1:
-    print(generate_unigram_text(model, length))
+    return generate_unigram_text(model, length)
   elif n == 2:
-    print(generate_bigram_text(model, seed_words, length))
+    return generate_bigram_text(model, seed_words, length)
   elif n == 3:
-    print(generate_trigram_text(model, seed_words, length))
+    return generate_trigram_text(model, seed_words, length)
   else:
     raise ValueError('Only n = 1, 2, or 3 are supported.')
