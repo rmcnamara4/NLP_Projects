@@ -1,0 +1,7 @@
+{
+  "unigram_perplexity": 622.14,
+  "bigram_perplexity": 341.82,
+  "trigram_perplexity": 5355.64,
+  "laplace_trigram_perplexity": 3116.6,
+  "fallback_perplexity": 77.85
+}
