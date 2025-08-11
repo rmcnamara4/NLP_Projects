@@ -29,6 +29,7 @@ conda activate week1
 
 # Install dependencies
 pip install -r requirements.txt
+```
 
 ## 🚀 How to Run 
 ```bash 
@@ -48,13 +49,13 @@ python3 main.py
 
 **Example Generations**  
 _Unigram:_  
-> gulf to from came 's </s> basis concerns negotiable morgan worried of $ <s> as future <unk> the have in nine fees credit mr. cents deficit </s> in last 's month the <s> vietnamese look because union </s> of the oil far of energy and customer in being with high
+> gulf to from came 's `</s>` basis concerns negotiable morgan worried of $ `<s>` as future `<unk>` the have in nine fees credit mr. cents deficit `</s>` in last 's month the `<s>` vietnamese look because union `</s>` of the oil far of energy and customer in being with high
 
 _Bigram:_  
-> <s> there were sell a new york-based <unk> in junk bonds are being acquired <unk> within the analyst at N billion of well above $ N one of cocaine consumed at N to do some other of senior subordinated notes sold its spokesman would n't presented his consulting and other
+> `<s>` there were sell a new york-based `<unk>` in junk bonds are being acquired `<unk>` within the analyst at N billion of well above $ N one of cocaine consumed at N to do some other of senior subordinated notes sold its spokesman would n't presented his consulting and other
 
 _Trigram:_  
-> <s> the idea N years old will be able to put it a canadian newspaper publisher said it named its interim location sources say it just has n't yet found a way to go national with pizza which it should be doing more to private investors the refinancing of campeau
+> `<s>` the idea N years old will be able to put it a canadian newspaper publisher said it named its interim location sources say it just has n't yet found a way to go national with pizza which it should be doing more to private investors the refinancing of campeau
 
 ## 📌 Key Takeaways
 - **Bigrams significantly reduced perplexity** compared to unigrams, showing that adding immediate context improves predictive power.
