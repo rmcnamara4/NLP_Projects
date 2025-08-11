@@ -1,7 +1,6 @@
-## 🧠 NLP Learning Journey — From Fundamentals to LLMs
+## 🧠 Applied NLP & LLM Engineering Portfolio
 
-A **10-week structured progression** through NLP and LLMs, moving from classical techniques to modern transformer-based workflows.  
-Over the course of the project, both the **complexity of models** and the **engineering rigor** increased — with later weeks reflecting more modular, reproducible, and production-ready code.
+A 10-week learning journey of progressively complex NLP projects, evolving from classical methods to transformer-based pipelines, with modular, production-ready code for real-world ML workflows.
 
 ---
 
