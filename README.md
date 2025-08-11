@@ -1,69 +1,35 @@
-🧠 NLP Learning Journey: 15 Weeks from Fundamentals to LLMs
+## 🧠 NLP Learning Journey — From Fundamentals to LLMs
 
-Welcome to my NLP learning project. Over the next 15 weeks, I’m diving deep into Natural Language Processing — learning from the ground up, building weekly projects, and sharing everything in this repo and a companion blog series.
+A **10-week structured progression** through NLP and LLMs, moving from classical techniques to modern transformer-based workflows.  
+Over the course of the project, both the **complexity of models** and the **engineering rigor** increased — with later weeks reflecting more modular, reproducible, and production-ready code.
 
-⸻
+---
 
-👋 About Me
+### 🚀 Highlights
 
-My name is Ryan McNamara. I’m a Senior Data Scientist working in healthcare, with a background in engineering and applied math. Over the past year, I’ve worked on machine learning projects including ER prediction, graph neural networks, and medical claims summarization.
+- **End-to-end NLP workflows**: preprocessing → embeddings → RNNs → transformers → LLM applications.  
+- **Applied, engineering-oriented approach** with reusable modules for data ingestion, cleaning, tokenization, training, and evaluation.  
+- **Models implemented from scratch** (Transformer architecture, attention mechanism) and with modern frameworks (Hugging Face, PyTorch).  
+- **Production-minded structure**: argument parsing, logging, and organized pipelines for reproducibility.  
+- **Code quality progression** visible across weeks, showing growth in modular scripts, configs, and logging for reproducibility.
 
-I recently completed a data science master’s at Columbia University, where I was introduced to NLP through coursework. That exposure sparked my interest — but I knew I had only scratched the surface. Now, I’m committing to going deeper.
+---
 
-⸻
+### 📂 Repo Structure
 
-📚 What This Project Is
+Each folder contains notebooks, scripts, and notes for a thematic week:
 
-This repo will contain:
+1. Core NLP foundations  
+2. Classical NLP techniques  
+3. Word embeddings & distributional semantics  
+4. Deep learning for NLP (RNNs, LSTMs)  
+5. Transformer architecture from scratch  
+6. Encoder-centric models (BERT, RoBERTa)  
+7. Decoder-centric models (GPT-style)  
+8. Other transformer architectures  
+9. LLM scaling & prompt engineering  
+10. Retrieval-Augmented Generation (RAG) & knowledge integration  
 
-	•	Weekly mini-projects and notebooks that build up from classical NLP to LLMs.
-	•	All code, learning materials, and implementation notes.
-	•	A companion blog series on Medium documenting my weekly progress, reflections, and key takeaways.
+---
 
-⸻
-
-🧭 Learning Roadmap
-
-Each week focuses on a core NLP concept or model, building toward real-world LLM workflows:
-
-🧠 Phase 1: Classical NLP (Weeks 1–4)
-
-	•	Tokenization
-	•	TF-IDF / Bag-of-Words
-	•	POS tagging & NER
-	•	Word2Vec & GloVe
-
-🔬 Phase 2: Neural NLP (Weeks 5-8)
-
-	•	RNNs, LSTMs, GRUs
-	•	Attention Mechanism and Transformers
-	•	BERT & GPT-style models
-
-🪨 Phase 3: LLMs & Advanced Topics (Weeks 9-12)
-
-	•	LLMs
-	•	Prompt engineering
-	•	Retrieval-Augmented Generation (RAG)
-
-🚀 Phase 4: Capstone Project (Weeks 13-15)
-
-	•	Build, train, and deploy a full NLP pipeline
-	•	Model serving, inference, and monitoring
-
-⸻
-
-🎯 Project Goals
-
-	1.	Document my learning journey to solidify my understanding of NLP, from foundational theory to applied projects.
-	2.	Provide a roadmap and resources for other data scientists or engineers entering the NLP and LLM space.
-
-⸻
-
-📌 Follow Along
-
-	•	💻 Code: All code will be pushed regularly to this GitHub repo
-	•	📝 Blog: I’ll share reflections and learnings on Medium (link coming soon)
-	•	🕒 Timeline: While the plan is 15 weeks, I may adjust the pace to fit life and work. The goal is consistency, not perfection.
-
-
-I’m excited to get into the weeds of NLP and uncover what’s under the hood of the LLM sportscar. However long it takes, this journey is happening.
+This repo serves as **both a learning record and an engineering portfolio** — demonstrating practical NLP expertise, sound ML engineering practices, and the ability to build real-world pipelines end-to-end.
