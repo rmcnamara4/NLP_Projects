@@ -1,0 +1,9 @@
+{
+  "Test_accuracy": 0.7821175,
+  "Test_precision": 0.7889349194238047,
+  "Test_recall": 0.77032,
+  "Test_specificity": 0.793915,
+  "Test_f1": 0.7795163440691558,
+  "Test_auroc": 0.8676428192875,
+  "Test_auprc": 0.8662471773049354
+}

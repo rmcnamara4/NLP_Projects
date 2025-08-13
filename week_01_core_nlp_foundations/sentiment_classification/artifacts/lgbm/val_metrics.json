@@ -1,0 +1,9 @@
+{
+  "Val_accuracy": 0.7826,
+  "Val_precision": 0.7891344383057091,
+  "Val_recall": 0.7713,
+  "Val_specificity": 0.7939,
+  "Val_f1": 0.7801153029230302,
+  "Val_auroc": 0.8674190820408165,
+  "Val_auprc": 0.8662909066230755
+}
