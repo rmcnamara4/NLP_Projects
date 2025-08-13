@@ -159,7 +159,7 @@ if __name__ == '__main__':
     best_run_id = runs_df.iloc[0]["run_id"]
 
     # load the model using the best run id
-    print('Evaluating best CatBoost model with run ID:', best_run_id)
+    print('Evaluating best model with run ID:', best_run_id)
     model_uri = f"runs:/{best_run_id}/catboost"
     model = mlflow.sklearn.load_model(model_uri)
 
