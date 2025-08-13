@@ -1,0 +1,9 @@
+{
+  "Train_accuracy": 0.8297583205654306,
+  "Train_precision": 0.8329823144167796,
+  "Train_recall": 0.8249172318472566,
+  "Train_specificity": 0.8345994092836045,
+  "Train_f1": 0.8289301562749535,
+  "Train_auroc": 0.9130627055638018,
+  "Train_auprc": 0.9125185039359394
+}
