@@ -1,5 +1,6 @@
 import mlflow 
 import optuna 
+import json
 
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
@@ -176,7 +177,11 @@ def log_mlflow(tfidf_suggestions, model_suggestions, model_name, X_train, y_trai
     train_pred_proba = pipe.predict_proba(X_train)[:, 1]
     train_pred = pipe.predict(X_train)
 
+    os.makedirs(f'./artifacts/{model_name}', exist_ok = True)
+
     train_metrics = calculate_metrics(y_train, train_pred_proba, train_pred, set = 'Train')
+    with open(f'./artifacts/{model_name}/train_metrics.json', 'w') as f:
+        json.dump(train_metrics, f, indent = 2)
     plot_roc_curve(y_train, train_pred_proba, path = f'./artifacts/{model_name}/train_roc_curve.png', set = 'Train')
     plot_pr_curve(y_train, train_pred_proba, path = f'./artifacts/{model_name}/train_pr_curve.png', set = 'Train')
     create_confusion_matrix(y_train, train_pred, path = f'./artifacts/{model_name}/train_confusion_matrix.png', set = 'Train')
@@ -190,6 +195,8 @@ def log_mlflow(tfidf_suggestions, model_suggestions, model_name, X_train, y_trai
     val_pred = pipe.predict(X_val)
 
     val_metrics = calculate_metrics(y_val, val_pred_proba, val_pred, set = 'Val')
+    with open(f'./artifacts/{model_name}/val_metrics.json', 'w') as f:
+        json.dump(val_metrics, f, indent = 2)
     plot_roc_curve(y_val, val_pred_proba, path = f'./artifacts/{model_name}/val_roc_curve.png', set = 'Val')
     plot_pr_curve(y_val, val_pred_proba, path = f'./artifacts/{model_name}/val_pr_curve.png', set = 'Val')
     create_confusion_matrix(y_val, val_pred, path = f'./artifacts/{model_name}/val_confusion_matrix.png', set = 'Val')
@@ -203,6 +210,8 @@ def log_mlflow(tfidf_suggestions, model_suggestions, model_name, X_train, y_trai
     test_pred = pipe.predict(X_test)
 
     test_metrics = calculate_metrics(y_test, test_pred_proba, test_pred, set = 'Test')
+    with open(f'./artifacts/{model_name}/test_metrics.json', 'w') as f:
+        json.dump(test_metrics, f, indent = 2)
     plot_roc_curve(y_test, test_pred_proba, path = f'./artifacts/{model_name}/test_roc_curve.png', set = 'Test')
     plot_pr_curve(y_test, test_pred_proba, path = f'./artifacts/{model_name}/test_pr_curve.png', set = 'Test')
     create_confusion_matrix(y_test, test_pred, path = f'./artifacts/{model_name}/test_confusion_matrix.png', set = 'Test')
