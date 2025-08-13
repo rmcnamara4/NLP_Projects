@@ -43,6 +43,7 @@ This project uses **Hydra** for flexible configuration management.
 The main config (*configs/config.yaml*) defines defaults for **model**, **generation**, **prompt**, and **data** settings.
 
 **Directory Layout**
+```
 configs/
 ├── config.yaml          # Main Hydra entry point
 ├── data/
@@ -54,6 +55,7 @@ configs/
 │   ├── quantized.yaml   # Local quantized LLM configs
 └── prompt/
     └── default.yaml     # Prompt template and version settings
+```
 
 ## 📊 Results
 The table below shows accuracy scores for each model–prompt configuration combination on the GSM8K math reasoning benchmark.
@@ -74,11 +76,7 @@ Below are sample outputs for the same math problem under different prompting str
 |--------------|-------------|----------|
 | Zero-Shot    | "152" | ❌ |
 | One-Shot     | "58" | ✅ |
-| One-Shot CoT | "Mary has 40 window ledges with 2 potted plants each, so she has a total of 40 * 2 = 80 potted plants already.
-She received 18 new potted plants, so she now has 80 + 18 = 98 potted plants in total.
-If she gives away 1 potted plant from each of the 40 window ledges, she will give away 40 * 1 = 40 potted plants.
-Therefore, Mary will remain with 98 - 40 = 58 potted plants. 
-The answer is 58." | ✅ |
+| One-Shot CoT | "Mary has 40 window ledges with 2 potted plants each, so she has a total of 40 * 2 = 80 potted plants already. She received 18 new potted plants, so she now has 80 + 18 = 98 potted plants in total. If she gives away 1 potted plant from each of the 40 window ledges, she will give away 40 * 1 = 40 potted plants. Therefore, Mary will remain with 98 - 40 = 58 potted plants. The answer is 58." | ✅ |
 
 ### 📌 Key Takeaways
 - **Chain-of-Thought prompting (CoT)** drives the largest performance gains across all models, with GPT-3.5-Turbo nearly tripling its accuracy compared to zero-shot.
