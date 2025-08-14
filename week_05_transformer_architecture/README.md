@@ -56,7 +56,7 @@ python3 main.py
 ```
 
 ## 🧪 Configuration
-All experiment settings are stored in a single `config.yaml` file, organized into sections:
+All experiment settings are stored in a single `src/config.yaml` file, organized into sections:
 
 - **Model** – Transformer architecture hyperparameters such as hidden size, attention head count, number of layers, and dropout rates.  
 - **Training** – Batch size, learning rate, number of epochs, early stopping patience, and checkpoint resume behavior.  
