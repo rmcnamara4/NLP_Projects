@@ -1,4 +1,6 @@
 import mlflow 
+from mlflow.tracking import MlflowClient
+
 import optuna 
 import json
 
@@ -105,6 +107,44 @@ def create_objective(tfidf_suggestions, model_suggestions, model_name, X_train, 
 
     return metrics['val_f1']
   return objective
+
+def find_model_artifact(run_id): 
+    """
+    Finds the relative artifact path of a logged MLflow model for a given run ID.
+
+    The returned artifact path can be used in `mlflow.<flavor>.load_model` calls
+    to load the model without needing to hardcode the artifact subdirectory name
+    (e.g., "model", "catboost", "sklearn-model").
+
+    Args:
+        run_id (str):
+            The unique MLflow run ID from which to locate the logged model artifact.
+
+    Returns:
+        str:
+            The relative path to the model's artifact directory (e.g., "model",
+            "catboost", "xgboost-model"), which contains the 'MLmodel' file.
+
+    Raises:
+        FileNotFoundError:
+            If no artifact directory containing an 'MLmodel' file is found for the given run ID.
+
+    Notes:
+        This is useful when:
+        - You have retrieved the best run via `mlflow.search_runs` but do not know
+          the exact artifact subdirectory name for the model.
+        - The function is flavor-agnostic and works for any MLflow-supported model type.
+    """
+    client = MlflowClient()
+    # look at top-level artifact dirs
+    for art in client.list_artifacts(run_id):
+        if not art.is_dir:
+            continue
+        # does this folder have an MLmodel file?
+        children = client.list_artifacts(run_id, art.path)
+        if any(c.path.endswith('MLmodel') for c in children):
+            return art.path
+    raise FileNotFoundError(f'No MLflow model artifact found for run {run_id}')
 
 def log_mlflow(tfidf_suggestions, model_suggestions, model_name, X_train, y_train, X_val, y_val, X_test, y_test, n_trials, run_name, experiment_id):
   """
