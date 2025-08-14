@@ -48,7 +48,7 @@ from src.mlflow import *
 
 if __name__ == '__main__': 
     # preprocess dataset
-    preprocess()
+    # preprocess()
 
     # load data
     X_train = pd.read_csv('./data/X_train_nltk.csv').squeeze()
@@ -152,15 +152,18 @@ if __name__ == '__main__':
     # search through mlflow runs and select the run with the best F1 score
     runs_df = mlflow.search_runs(
         experiment_ids = [experiment_id],
-        filter_string = "tags.mlflow.runName = 'catboost'",
-        order_by = ["metrics.val_f1 DESC"]
+        order_by = ['metrics.val_f1 DESC']
     )
 
-    best_run_id = runs_df.iloc[0]["run_id"]
+    best_run_id = runs_df.iloc[0]['run_id']
+
+    run = mlflow.get_run(best_run_id)
+    best_run_id = run.data.tags.get('mlflow.parentRunId') if run.data.tags.get('mlflow.parentRunId') else best_run_id
 
     # load the model using the best run id
     print('Evaluating best model with run ID:', best_run_id)
-    model_uri = f"runs:/{best_run_id}/catboost"
+    model_folder = find_model_artifact(best_run_id)
+    model_uri = f'runs:/{best_run_id}/{model_folder}'
     model = mlflow.sklearn.load_model(model_uri)
 
     pred = model.predict(X_test)
