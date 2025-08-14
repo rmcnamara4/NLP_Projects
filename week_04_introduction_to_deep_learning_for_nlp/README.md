@@ -1,4 +1,4 @@
-# Week 1 – Sentiment Classification
+# Week 4 - Sentiment Analysis with Deep Learning
 
 ## 📌 Objective
 This project builds upon earlier work from **Week 1**, where the same sentiment analysis dataset was modeled using **traditional machine learning methods** (e.g., logistic regression, SVM, and random forests).  
@@ -49,13 +49,13 @@ python3 main.py
 ## 📊 Results
 | Metric      | Traditional ML | Base Model | Attention Model |
 |-------------|----------------|------------|-----------------|
-| Accuracy    |                | 0.878      | 0.874           |
-| Precision   |                | 0.859      | 0.865           |
-| Recall      |                | 0.904      | 0.887           |
-| Specificity |                | 0.852      | 0.862           |
-| F1          |                | 0.881      | 0.876           |
-| AUROC       |                | 0.948      | 0.945           |
-| AUPRC       |                | 0.945      | 0.942           |
+| Accuracy    | 0.812          | 0.878      | 0.874           |
+| Precision   | 0.815          | 0.859      | 0.865           |
+| Recall      | 0.807          | 0.904      | 0.887           |
+| Specificity | 0.817          | 0.852      | 0.862           |
+| F1          | 0.811          | 0.881      | 0.876           |
+| AUROC       | 0.896          | 0.948      | 0.945           |
+| AUPRC       | 0.896          | 0.945      | 0.942           |
 
 
 ### 📌 Key Takeaways
