@@ -2,6 +2,7 @@
 
 ## 📌 Objective
 The goal of this project is to build and evaluate multiple text classification models on a balanced dataset, comparing architectures such as Logistic Regression, XGBoost, LightGBM, and CatBoost.  
+
 We apply consistent text preprocessing (including TF–IDF feature extraction) and model training to identify the best-performing approach based on validation F1 score.  
 The final output includes performance metrics, code for reproducibility, and a baseline for future model improvements.
 
@@ -21,6 +22,7 @@ The final output includes performance metrics, code for reproducibility, and a b
 Below are some example reviews from the dataset: 
 
 *Positive Sentiment:* 'I recommend this for anyone that is interested in writing graphic novel and/or drawing for comics. This one is truly legendary.'
+
 *Negative Sentiment:* 'I have not been satisfied with this water heater. When they say it is for 1 application, they mean it. If you are taking a shower, and someone washes their hands at a sink, the shower will get cold. Also, you basically have to turn the water on at almost full blast for the heater to kick on. If the pressure is too low, it will just click the igniter without lighting. The warmth of the water seems to fluctuate for no reason. It will be hot for a few minutes and then get colder. I usually have to adjust the temperature in the shower at least once per shower. I live in a 2-story house with the heater in the basement. I know two other people with this heater that live in 1-story houses and do not have my issues. Keep in mind that it will be at least $50 for the parts for the re-routing of the pipes. Plan on the work taking at least 1 day, maybe 2. Also note that it takes an extra 10 seconds to get warm water over a water heater tank. This should be expected though.'
 
 ## 📂 Project Structure
