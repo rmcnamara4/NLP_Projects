@@ -1,7 +1,9 @@
 # Week 1 – Sentiment Classification with Traditional ML
 
 ## 📌 Objective
-
+The goal of this project is to build and evaluate multiple text classification models on a balanced dataset, comparing architectures such as Logistic Regression, XGBoost, LightGBM, and CatBoost.  
+We apply consistent text preprocessing (including TF–IDF feature extraction) and model training to identify the best-performing approach based on validation F1 score.  
+The final output includes performance metrics, code for reproducibility, and a baseline for future model improvements.
 
 ## 🧩 Skills & Concepts
 - **Text Preprocessing:** tokenization, lemmatization, stopword removal, number replacement 
@@ -12,9 +14,14 @@
 - **Experiment Tracking:**: MLFlow for logging metrics, parameters, and artifacts 
 
 ## 📦 Dataset
-- **Source:** [Penn Treebank – Hugging Face](https://huggingface.co/datasets/penn_treebank)  
-- **Size:** 42,068 sentences (80% train / 20% test)  
-- **Preprocessing:** Minimal cleaning (dataset already tokenized/normalized). Added `<s>` and `</s>` sentence delimiters and split on whitespace.  
+- **Source:** [Amazon Reviews](https://www.kaggle.com/datasets/kritanjalijain/amazon-reviews)
+- **Size:** 560k training examples, 140k validation samples, and 400k test samples
+- **Preprocessing:** I preprocess with both the NLTK and SpaCy packages to get a feel for both, but modeling is only done with the NLTK datasets. I tokenize, lemmatize, remove stopwords, lowercase, etc. I also replace all numbers with `<NUM>`. 
+
+Below are some example reviews from the dataset: 
+
+*Positive Sentiment:* 'I recommend this for anyone that is interested in writing graphic novel and/or drawing for comics. This one is truly legendary.'
+*Negative Sentiment:* 'I have not been satisfied with this water heater. When they say it is for 1 application, they mean it. If you are taking a shower, and someone washes their hands at a sink, the shower will get cold. Also, you basically have to turn the water on at almost full blast for the heater to kick on. If the pressure is too low, it will just click the igniter without lighting. The warmth of the water seems to fluctuate for no reason. It will be hot for a few minutes and then get colder. I usually have to adjust the temperature in the shower at least once per shower. I live in a 2-story house with the heater in the basement. I know two other people with this heater that live in 1-story houses and do not have my issues. Keep in mind that it will be at least $50 for the parts for the re-routing of the pipes. Plan on the work taking at least 1 day, maybe 2. Also note that it takes an extra 10 seconds to get warm water over a water heater tank. This should be expected though.'
 
 ## 📂 Project Structure
 - `src/` – Core source code, preprocessing utils, and MLFlow logging functions
@@ -40,8 +47,6 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
-<!-- ## 🧪 Configuration  -->
-
 ## 📊 Results
 Below are the performance metrics for each of the best chosen models from the 4 different architectures. The best model was chosen based on validation F1 score since the dataset is perfectly balanced and both recall and precision are important. This best model was an XGBoost model. 
 
@@ -56,37 +61,33 @@ Below is the confusion matrix of the chosen XGBoost model on the test set.
 
 ![XGBoost Confusion Matrix](artifacts/xgb/test_confusion_matrix.png)
 
-**Example Generations**  
-_Unigram:_  
-> gulf to from came 's `</s>` basis concerns negotiable morgan worried of $ `<s>` as future `<unk>` the have in nine fees credit mr. cents deficit `</s>` in last 's month the `<s>` vietnamese look because union `</s>` of the oil far of energy and customer in being with high
-
-_Bigram:_  
-> `<s>` there were sell a new york-based `<unk>` in junk bonds are being acquired `<unk>` within the analyst at N billion of well above $ N one of cocaine consumed at N to do some other of senior subordinated notes sold its spokesman would n't presented his consulting and other
-
-_Trigram:_  
-> `<s>` the idea N years old will be able to put it a canadian newspaper publisher said it named its interim location sources say it just has n't yet found a way to go national with pizza which it should be doing more to private investors the refinancing of campeau
-
 ## 📌 Key Takeaways
-- **Bigrams significantly reduced perplexity** compared to unigrams, showing that adding immediate context improves predictive power.
-- **Trigram perplexity increased sharply** without smoothing due to data sparsity — many trigram combinations never appeared in training.
-- **Laplace smoothing** reduced trigram perplexity but was still higher than bigrams, highlighting the trade-off between context length and data availability.
-- **Fallback models** (using lower-order n-grams when higher-order counts are missing) gave the best perplexity, balancing context with coverage.
-- **Language is inherently sparse**, and any model that tries to predict the next word must find clever ways to deal with uncertainty, data sparsity, and variability in expression.
-- Generated samples from higher n-grams were more coherent than unigrams but still lacked grammatical structure — a limitation of pure statistical models. Trigram model could formulate simple phrases, like "will be able to", but lack coherence overall. 
-
+- **XGBoost emerged as the top-performing model** across most evaluated metrics, achieving the highest accuracy (0.812), precision (0.815), specificity (0.817), AUROC (0.896), and AUPRC (0.896).  
+- **Logistic Regression** closely followed XGBoost in performance, with the highest recall (0.811) and strong scores across all other metrics, indicating it remains a solid and interpretable baseline.  
+- **LightGBM and CatBoost** underperformed relative to XGBoost and Logistic Regression, with ~3% lower accuracy and noticeably lower AUROC and AUPRC values, suggesting weaker generalization to the test set.  
+- The **dataset being perfectly balanced** allowed F1 score to serve as a reliable metric for model selection, balancing the trade-off between recall and precision.  
+- The **performance gap between XGBoost and the other gradient boosting models** (LightGBM, CatBoost) may point to differences in how each algorithm handled feature interactions, regularization, or hyperparameter tuning in this specific task.
+- **TF-IDF vectorization** proved effective in converting raw text into meaningful numerical features. The results indicate that gradient boosting models—particularly XGBoost—were able to leverage the sparse, high-dimensional feature space better than other architectures, extracting more nuanced patterns from term-weighted representations.
 
 ## 🧠 Engineering Notes
-- Modularized model training, generation, and evaluation for reusability in future language modeling projects.  
-- Implemented smoothed probability estimation to handle unseen n-grams.  
-- Added fallback perplexity to balance accuracy and coverage.
-- Saved results in JSON format. 
+- **Experiment Tracking**: All experiments were tracked using **MLflow**, with a dedicated experiment name and local tracking URI. This ensured reproducibility and made it easy to compare performance across multiple model architectures and hyperparameter configurations.
+- **Model Selection Strategy**: The best model for each architecture was chosen based on **validation F1 score**, as the dataset was perfectly balanced and both recall and precision were equally important. This avoided bias toward models that might overfit to either precision or recall.
+- **Vectorization Approach**: Text preprocessing was performed using **TF-IDF** vectorization, producing a high-dimensional sparse feature matrix. This representation worked well with linear models and tree-based boosting methods, but performance differences emerged based on each model's handling of sparsity and feature interactions.
+- **Hyperparameter Tuning**: Hyperparameters were optimized using a held-out validation set within MLflow runs. For tree-based models, tuning focused on learning rate, maximum depth, subsampling ratios, and regularization parameters.
+- **Model Comparison**: Logistic Regression provided a strong, interpretable baseline with competitive performance. However, **XGBoost consistently outperformed** other architectures, suggesting its regularization scheme and handling of sparse features aligned best with the TF-IDF representation.
 
 ## 🗺️ Next Steps
-- Experiment with Kneser-Ney smoothing.  
-- Compare performance with neural language models (Week 5 onward).  
+- Refine the TF-IDF feature space by experimenting with higher n-gram ranges and character-level features to capture subtler textual patterns.  
+- Conduct additional hyperparameter tuning of the XGBoost model to push F1 and AUROC performance further.  
+- Explore ensemble methods that combine predictions from multiple architectures (e.g., LR + XGB) to boost robustness.  
+- Use SHAP values to analyze feature importance and identify the most influential terms contributing to predictions.  
+- Compare TF-IDF results against alternative text representations, such as pretrained word embeddings or contextual embeddings.  
+- Package the best-performing model with its preprocessing pipeline for deployment, ensuring reproducibility and scalability.  
 
 ## 🔗 References
-- Jurafsky & Martin, *Speech and Language Processing*, Ch. 3–4.  
-- Hugging Face Datasets – Penn Treebank.  
+- Jurafsky, D., & Martin, J. H. *Speech and Language Processing* (3rd ed. draft) – Ch. 1–3
+- Bird, S., Klein, E., & Loper, E. *NLTK Book* – Ch. 1–3: https://www.nltk.org/book/
+- scikit-learn TF–IDF: https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction
+- spaCy 101: https://spacy.io/usage/spacy-101
 
 
