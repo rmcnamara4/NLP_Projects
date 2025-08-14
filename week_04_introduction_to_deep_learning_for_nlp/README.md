@@ -61,7 +61,7 @@ python3 main.py
 ### 📌 Key Takeaways
 - **Deep Learning Performance**: Both the base LSTM model and the LSTM with a simple attention mechanism performed strongly, achieving ~88% accuracy and high AUROC/AUPRC scores. The base model slightly outperformed the attention model in most metrics for this dataset.
 - **Attention Mechanism Impact**: While attention improved **specificity** and **precision** slightly, it did not outperform the base LSTM in recall or overall F1 score. This suggests that for this well-predicted dataset, attention may not significantly boost performance over a well-tuned LSTM.
-- **Traditional ML Comparison**: Compared to the Week 1 baseline (traditional ML methods such as Logistic Regression, Naive Bayes, etc.), deep learning approaches achieved higher performacne, demonstrating better ability to capture complex linguistic patterns.
+- **Traditional ML Comparison**: Compared to the Week 1 baseline (traditional ML methods such as Logistic Regression, Naive Bayes, etc.), deep learning approaches achieved higher performance, demonstrating better ability to capture complex linguistic patterns.
 - **Few-Shot Learning Implications**: The main improvement over traditional ML likely comes from the deep model’s ability to learn contextual relationships in text. However, diminishing returns can occur without significant architectural changes (e.g., more complex attention or transformer-based models).
 - **Dataset Considerations**: The Amazon Reviews dataset is large and balanced enough that deep learning models can shine; results may differ for smaller or more imbalanced datasets.
 
