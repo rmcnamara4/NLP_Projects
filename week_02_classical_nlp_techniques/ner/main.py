@@ -6,7 +6,6 @@ import nltk
 from nltk.corpus.reader import ConllCorpusReader
 
 from sklearn_crfsuite import CRF, scorers, metrics
-from sklearn_crfsuite.metrics import flat_f1_score
 
 import time
 
@@ -20,6 +19,8 @@ warnings.filterwarnings('ignore')
 from tqdm import tqdm
 
 import re
+import os 
+import json
 
 from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV, cross_val_score, PredefinedSplit
 from sklearn.metrics import make_scorer
@@ -27,6 +28,7 @@ from scipy.stats import loguniform
 
 from src.crf_utils import * 
 from src.spacy_utils import * 
+from src.utils import custom_score, cast_to_py
 
 if __name__ == '__main__': 
     # SpaCy pre-trained model 
@@ -48,9 +50,14 @@ if __name__ == '__main__':
     pred, true_labels = evaluate_spacy_ner(nlp, test_sentences, label_map)
 
     # print performance
+    spacy_performance = classification_report(true_labels, pred, output_dict = True) 
     print('SpaCy Pre-Trained Model Performance:') 
-    print(classification_report(true_labels, pred))
+    print(spacy_performance)
     print()
+
+    os.makedirs('./results/spacy/', exist_ok = True) 
+    with open('./results/spacy/spacy_performance.json', 'w') as f:
+        json.dump(cast_to_py(spacy_performance), f, indent = 4)
 
     # CRF Model 
     # get X_train and y_train
@@ -73,9 +80,14 @@ if __name__ == '__main__':
 
     y_pred = crf_model.predict(X_test)
     
+    crf_performance = classification_report(y_test, y_pred, output_dict = True)
     print('CRF Model Performance:') 
-    print(classification_report(y_test, y_pred))
+    print(crf_performance)
     print()
+
+    os.makedirs('./results/crf/untuned/', exist_ok = True)
+    with open('./results/crf/untuned/crf_performance.json', 'w') as f:
+        json.dump(cast_to_py(crf_performance), f, indent = 4)
 
     # tune model 
     crf_model = CRF(
@@ -89,10 +101,6 @@ if __name__ == '__main__':
         'c1': loguniform(0.01, 1),
         'c2': loguniform(0.01, 1)
     }
-
-    def custom_score(estimator, X, y):
-        y_pred = estimator.predict(X)
-        return flat_f1_score(y, y_pred, average = 'weighted')
     
     # set up random search 
     crf_grid = RandomizedSearchCV(
@@ -115,8 +123,15 @@ if __name__ == '__main__':
     best_crf = crf_grid.best_estimator_
     y_pred = best_crf.predict(X_test)
 
+    tuned_crf_performance = classification_report(y_test, y_pred, output_dict = True)
     print('Best CRF Model Performance:')
-    print(classification_report(y_test, y_pred))
+    print(tuned_crf_performance)
+
+    os.makedirs('./results/crf/tuned/', exist_ok = True)
+    with open('./results/crf/tuned/crf_performance.json', 'w') as f:
+        json.dump(cast_to_py(tuned_crf_performance), f, indent = 4)
+    with open('./results/crf/tuned/crf_best_params.json', 'w') as f:
+        json.dump(crf_grid.best_params_, f, indent = 4)
 
 
 
