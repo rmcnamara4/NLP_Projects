@@ -1,0 +1,57 @@
+seed: 128
+
+model: 
+  model_name: 'distilbert-base-uncased'
+  num_classes: 2 
+  classifier_dim: 128
+  dropout: 0.1
+  use_cls: False 
+  freeze_bert: True
+
+dataset: 
+  max_length: 220
+  binary_col: 'toxicity'
+  thresh_val_size: 0.5
+  random_state: 42
+
+dataloader: 
+  num_workers: 4
+  pin_memory: True
+  prefetch_factor: 2
+
+training: 
+  batch_size: 1024
+  epochs: 10
+  use_class_weights: True 
+  class_weights_strategy: 'balanced' # can be 'balanced', 'none', or a list/tuple of weights (ex: (0.1, 0.9))
+  print_every: 100
+  patience: 4
+  resume: True
+
+optimizer: 
+  name: 'AdamW'
+  lr: 0.001
+
+scheduler: 
+  use_scheduler: True
+  patience: 2 
+  factor: 0.5
+  mode: 'min'
+
+threshold: 
+  step: 0.01
+  beta: 1
+
+logging: 
+  filemode: 'a'
+
+paths:
+  model_dir: './models/distilbert_mean_pool_frozen_bert'
+  model_file: 'model.pth'
+  checkpoint_file: 'checkpoint.pth'
+  train_loss_file: 'train_losses.pt'
+  val_loss_file: 'val_losses.pt'
+  train_auprc_file: 'train_auprc.pt'
+  val_auprc_file: 'val_auprc.pt'
+  train_log: 'train_mean_pool.log'
+  results_dir: 'results'
