@@ -1,0 +1,21 @@
+Analogy,Predicted Word,Similarity
+heart is to cardiovascular as lung is to ...,pancreatic,0.4388
+heart is to cardiovascular as lung is to ...,bladder,0.4249
+heart is to cardiovascular as lung is to ...,oncologic,0.4089
+heart is to cardiovascular as lung is to ...,hereditary,0.4074
+heart is to cardiovascular as lung is to ...,oncological,0.4059
+bacteria is to antibiotic as virus is to ...,prophylaxis,0.4589
+bacteria is to antibiotic as virus is to ...,antibiotics,0.4344
+bacteria is to antibiotic as virus is to ...,pap,0.4216
+bacteria is to antibiotic as virus is to ...,neonates,0.4041
+bacteria is to antibiotic as virus is to ...,pylori,0.4002
+psychiatry is to mental as cardiology is to ...,hrqol,0.3977
+psychiatry is to mental as cardiology is to ...,heart,0.385
+psychiatry is to mental as cardiology is to ...,coronary,0.3835
+psychiatry is to mental as cardiology is to ...,diabetes,0.3748
+psychiatry is to mental as cardiology is to ...,cardiovascular,0.3721
+cancer is to oncology as pneumonia is to ...,septic,0.4213
+cancer is to oncology as pneumonia is to ...,urinary,0.4207
+cancer is to oncology as pneumonia is to ...,bronch,0.4204
+cancer is to oncology as pneumonia is to ...,cough,0.4158
+cancer is to oncology as pneumonia is to ...,throat,0.4039

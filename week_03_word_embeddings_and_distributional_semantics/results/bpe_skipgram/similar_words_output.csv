@@ -1,0 +1,26 @@
+Target Word,Similar Word,Similarity
+diabetes,mellitus,0.8176
+diabetes,t2d,0.639
+diabetes,t1dm,0.6124
+diabetes,hypertension,0.6105
+diabetes,t1d,0.6086
+cancer,cancers,0.6733
+cancer,breast,0.6701
+cancer,squamous,0.577
+cancer,prostate,0.5617
+cancer,melanoma,0.5551
+disease,diseases,0.6078
+disease,dementias,0.5282
+disease,pancreatitis,0.506
+disease,ild,0.4988
+disease,masld,0.4871
+analysis,analyses,0.6757
+analysis,stata,0.5046
+analysis,wallis,0.5021
+analysis,kruskal,0.4771
+analysis,deductive,0.469
+cardiovascular,atherosclerotic,0.6084
+cardiovascular,ascvd,0.5986
+cardiovascular,cardiometabolic,0.5458
+cardiovascular,atheros,0.5116
+cardiovascular,cvd,0.5107
