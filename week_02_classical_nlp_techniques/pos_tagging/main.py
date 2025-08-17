@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np 
+import json
 
 import nltk 
 from nltk.corpus import brown 
@@ -10,7 +11,7 @@ import math
 nltk.download('brown') 
 nltk.download('universal_target') 
 
-from metrics import evaluate
+from src.evaluation import evaluate
 from src.viterbi_algorithm import viterbi
 from src.hmm_utils import get_emission_probability, convert_counts_to_probabilities
 
@@ -56,6 +57,14 @@ if __name__ == '__main__':
     }
 
     accuracy = evaluate(test_sentences, initial_probabilities, transition_probabilities, emission_probabilities, unique_tags)
-    
+
+    with open('./results/pos_tagging_results.json', 'w') as f: 
+        json.dump({
+            'accuracy': accuracy,
+            'transition_probabilities': transition_probabilities,
+            'emission_probabilities': emission_probabilities,
+            'initial_probabilities': initial_probabilities
+        }, f, indent = 4)
+
     print(f'Accuracy: {accuracy*100:.4f}%')
 
