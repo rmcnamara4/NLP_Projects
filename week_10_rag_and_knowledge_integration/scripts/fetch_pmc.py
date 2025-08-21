@@ -17,7 +17,7 @@ if __name__ == '__main__':
         default = 'data/raw/raw_xml.jsonl'
     )
     ap.add_argument(
-        '--interim_key'
+        '--interim_key',
         default = 'data/interim/parsed_xml.jsonl'
     )
     args = ap.parse_args()
