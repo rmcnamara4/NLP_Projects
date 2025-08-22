@@ -22,7 +22,7 @@ if __name__ == '__main__':
     )
     args = ap.parse_args()
 
-    save_runlog(args)
+    save_runlog(args, sub_dir = 'fetch_pmc')
 
     collect_data(
         query = args.query, 
