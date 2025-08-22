@@ -64,7 +64,7 @@ if __name__ == '__main__':
     
     args = ap.parse_args()
 
-    save_runlog(args)
+    save_runlog(args, sub_dir = 'run_chunking')
     
     chunk_articles(
         provider = args.provider, 
