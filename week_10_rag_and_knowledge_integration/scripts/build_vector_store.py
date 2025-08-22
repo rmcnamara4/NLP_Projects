@@ -1,13 +1,9 @@
 import argparse 
 
-from src.embeddings.hf import HFEmbeddings
-from src.embeddings.bedrock import BedrockEmbeddings
-
-from src.vectorstore.faiss import FaissVectorStore
+from src.vectorstore.faiss_store import FaissStore
 from src.vectorstore.pipeline import create_index
 
 import os 
-from datetime import datetime
 import json 
 
 from src.utils.runlog import save_runlog
@@ -17,7 +13,7 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument(
         '--input_path', 
-        default = 'data/processed/processed_chunks.json1'
+        default = 'data/processed/processed_chunks.jsonl'
     )
     ap.add_argument(
         '--use_s3', 
@@ -33,9 +29,10 @@ if __name__ == '__main__':
         default = 'sentence-transformers/all-MiniLM-L6-v2'
     )
     ap.add_argument(
-        'embedding_dim', 
+        '--embedding_dim', 
         default = None, 
-        type = int
+        type = int, 
+        required = False
     )
     ap.add_argument(
         '--device', 
@@ -70,7 +67,7 @@ if __name__ == '__main__':
     )
     args = ap.parse_args()
 
-    save_runlog(args)
+    # save_runlog(args, sub_dir = 'build_vector_store')
 
     if args.embedder_provider == 'hf': 
         from src.embeddings.hf import HFEmbeddings
@@ -87,27 +84,27 @@ if __name__ == '__main__':
         )
 
     if args.use_ivf: 
-        vector_store = FaissVectorStore.ivf(
+        vector_store = FaissStore.ivf(
             dim = embedder.dim, 
             nlist = args.nlist, 
             metric = args.metric, 
             normalize = args.normalize
         )
     else: 
-        vector_store = FaissVectorStore(
+        vector_store = FaissStore(
             dim = embedder.dim, 
             metric = args.metric, 
             normalize = args.normalize
         )
 
     create_index(
-        records = load_jsonl(args.input_path, from_s3 = args.use_s3),
+        records = load_jsonl(args.input_path, use_s3 = args.use_s3),
         embedder = embedder, 
         store = vector_store, 
         batch_size = args.batch_size
     )
 
-    store.save(args.output_path)
+    vector_store.save(args.output_path)
 
     print(f'Vector store saved to {args.output_path}')
 
