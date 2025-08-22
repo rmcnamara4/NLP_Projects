@@ -1,6 +1,7 @@
 import os 
 import boto3
 import json
+from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -29,10 +30,10 @@ def writable_runlog_dir():
 def s3_runlog(payload, prefix = 'runs'):
     run_id = payload['run_id']
     key = f'{prefix}/{run_id}/args.json'
-    s3_client.put_object(Bucket = S3_BUCKET, Key = key, Body = json.dumps(payload).encode('utf-8'))
+    s3_client.put_object(Bucket = S3_BUCKET, Key = key, Body = json.dumps(payload, indent = 2).encode('utf-8'))
     return f's3://{S3_BUCKET}/{key}'
 
-def save_runlog(args): 
+def save_runlog(args, sub_dir = 'run'): 
     run_id = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
     payload = {
         'run_id': run_id,
@@ -47,13 +48,13 @@ def save_runlog(args):
 
         # 1) Local run log (to a writable dir)
     local_dir = writable_runlog_dir()
-    local_path = os.path.join(local_dir, f'fetch_pmc/run_{run_id}.json')
+    local_path = os.path.join(local_dir, f'{sub_dir}/run_{run_id}.json')
     os.makedirs(os.path.dirname(local_path), exist_ok = True)
     with open(local_path, 'w') as f:
         json.dump(payload, f, indent = 2)
     print(f'[runlog] local -> {local_path}')
 
     # 2) S3 run log (authoritative)
-    s3_uri = s3_runlog(payload, prefix = 'run_logs/fetch_pmc')
+    s3_uri = s3_runlog(payload, prefix = f'run_logs/{sub_dir}')
     print(f'[runlog] s3 -> {s3_uri}')
 
