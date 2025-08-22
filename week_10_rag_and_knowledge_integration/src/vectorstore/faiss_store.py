@@ -18,7 +18,13 @@ class FaissStore(VectorStore):
         self.index = faiss.IndexFlatIP(dim) if metric == 'ip' else faiss.IndexFlatL2(dim)
         self._metadatas: List[Dict[str, Any]] = []
 
-    # @classmethod 
+    @classmethod 
+    def ivf(cls, dim: int, nlist: int = 1024, metric: str = 'ip', normalize: bool = True) -> 'FaissStore': 
+        quant = faiss.IndexFlatIP(dim) if metric == 'ip' else faiss.IndexFlatL2(dim)
+        index = faiss.IndexIVFFlat(quant, dim, nlist, faiss.METRIC_INNER_PRODUCT if metric == 'ip' else faiss.METRIC_L2) 
+        obj = cls(dim, metric, normalize) 
+        obj.index = index 
+        return obj 
 
     def add(self, embeddings: np.ndarray, metadatas: List[Dict[str, Any]]) -> None: 
         vecs = embeddings.astype(np.float32) 
