@@ -1,6 +1,6 @@
 import argparse
 from src.data.pipeline import collect_data
-from src.utils.runlog import *
+from src.utils.runlog import save_runlog
 import os
 from datetime import datetime
 import json
@@ -22,29 +22,7 @@ if __name__ == '__main__':
     )
     args = ap.parse_args()
 
-    run_id = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
-    payload = {
-        'run_id': run_id,
-        'ts_utc': datetime.utcnow().isoformat(),
-        'args': vars(args),
-        'env': {
-            'region': os.getenv('AWS_REGION'),
-            'user': os.getenv('SAGEMAKER_USER_PROFILE_NAME'),
-            'job_name': os.getenv('TRAINING_JOB_NAME') or os.getenv('PROCESSING_JOB_NAME'),
-        },
-    }
-
-    # 1) Local run log (to a writable dir)
-    local_dir = writable_runlog_dir()
-    local_path = os.path.join(local_dir, f'fetch_pmc/run_{run_id}.json')
-    os.makedirs(os.path.dirname(local_path), exist_ok = True)
-    with open(local_path, 'w') as f:
-        json.dump(payload, f, indent = 2)
-    print(f'[runlog] local -> {local_path}')
-
-    # 2) S3 run log (authoritative)
-    s3_uri = s3_runlog(payload, prefix = 'run_logs/fetch_pmc')
-    print(f'[runlog] s3 -> {s3_uri}')
+    save_runlog(args)
 
     collect_data(
         query = args.query, 
