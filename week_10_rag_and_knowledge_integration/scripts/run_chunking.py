@@ -5,7 +5,7 @@ import os
 from datetime import datetime 
 import json 
 
-if __name__ == '__main__': 
+def main(): 
     ap = argparse.ArgumentParser()
     ap.add_argument(
         '--provider', 
@@ -80,3 +80,6 @@ if __name__ == '__main__':
         output_path = args.output_path, 
         use_s3 = args.use_s3
     )
+
+if __name__ == '__main__':
+    main()
