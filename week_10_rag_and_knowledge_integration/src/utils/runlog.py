@@ -2,6 +2,7 @@ import os
 import boto3
 import json
 from datetime import datetime
+import glob
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -57,4 +58,14 @@ def save_runlog(args, sub_dir = 'run'):
     # 2) S3 run log (authoritative)
     s3_uri = s3_runlog(payload, prefix = f'run_logs/{sub_dir}')
     print(f'[runlog] s3 -> {s3_uri}')
+
+def load_latest_run(log_dir: str): 
+    files = sorted(glob.glob(os.path.join(log_dir, 'run_*.json')))
+    if not files: 
+        raise FileNotFoundError(f'No run log files found in {log_dir}')
+    with open(files[-1]) as f: 
+        log = json.load(f) 
+
+    args = log['args']
+    return args 
 
