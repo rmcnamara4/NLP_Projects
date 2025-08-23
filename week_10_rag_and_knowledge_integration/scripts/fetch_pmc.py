@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import json
 
-if __name__ == '__main__': 
+def main(): 
     ap = argparse.ArgumentParser()
     ap.add_argument('--query', required = True)
     ap.add_argument('--max_results', type = int, default = 50)
@@ -34,4 +34,5 @@ if __name__ == '__main__':
         interim_key = args.interim_key
     )
 
-
+if __name__ == '__main__':
+    main()
