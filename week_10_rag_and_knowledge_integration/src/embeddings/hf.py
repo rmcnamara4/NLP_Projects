@@ -32,5 +32,23 @@ class HFEmbeddings(Embeddings):
     @property
     def dim(self) -> int: 
         return int(self._dim)
+    
+    def save(self, path: str) -> None:
+        os.makedirs(path, exist_ok = True) 
+        with open(os.path.join(path, 'embedder.json'), 'w') as f: 
+            json.dump({
+                'embedder_provider': 'hf',
+                'model_name': self.model_name, 
+                'device': self.device
+            }, f)
+
+    @classmethod
+    def load(cls, path: str) -> 'Embeddings':
+        with open(os.path.join(path, 'embedder.json')) as f: 
+            info = json.load(f) 
+        return cls(
+            model_name = info['model_name'], 
+            device = info.get('device', None)
+        )
 
     
