@@ -98,3 +98,17 @@ class BedrockEmbeddings(Embeddings):
         )
         body = resp['body'].read()
         return json.loads(body)
+    
+    def save(self, path: str) -> None: 
+        os.makedirs(path, exist_ok = True) 
+        with open(os.path.join(path, 'embedder.json'), 'w') as f: 
+            json.dump({
+                'model_id': self.model_id, 
+                'dim': self.dim
+            }, f)
+
+    @classmethod
+    def load(cls, path: str) -> 'Embeddings':
+        with open(os.path.join(path, 'embedder.json')) as f: 
+            cfg = json.load(f) 
+        return cls(model_id = cfg['model_id'], dim = cfg['dim'])
