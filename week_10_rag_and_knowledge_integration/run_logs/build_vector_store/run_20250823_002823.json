@@ -1,0 +1,23 @@
+{
+  "run_id": "20250823_002823",
+  "ts_utc": "2025-08-23T00:28:23.405082",
+  "args": {
+    "input_path": "data/processed/processed_chunks.jsonl",
+    "use_s3": true,
+    "embedder_provider": "hf",
+    "embedder_variant": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedding_dim": null,
+    "device": "cpu",
+    "metric": "ip",
+    "normalize": true,
+    "use_ivf": false,
+    "nlist": 1024,
+    "output_path": "index/faiss_store",
+    "batch_size": 32
+  },
+  "env": {
+    "region": null,
+    "user": null,
+    "job_name": null
+  }
+}
