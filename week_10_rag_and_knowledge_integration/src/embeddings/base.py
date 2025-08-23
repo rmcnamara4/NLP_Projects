@@ -15,3 +15,12 @@ class Embeddings(ABC):
     @abstractmethod
     def dim(self) -> int: 
         pass
+
+    @abstractmethod
+    def save(self, path: str) -> None: 
+        pass
+
+    @classmethod
+    @abstractmethod
+    def load(cls, path: str) -> 'Embeddings':
+        pass 
