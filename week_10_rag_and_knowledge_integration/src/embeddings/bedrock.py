@@ -103,6 +103,7 @@ class BedrockEmbeddings(Embeddings):
         os.makedirs(path, exist_ok = True) 
         with open(os.path.join(path, 'embedder.json'), 'w') as f: 
             json.dump({
+                'embedder_provider': 'bedrock',
                 'model_id': self.model_id, 
                 'dim': self.dim
             }, f)
