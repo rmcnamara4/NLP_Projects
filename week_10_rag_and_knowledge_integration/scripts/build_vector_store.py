@@ -9,7 +9,7 @@ import json
 from src.utils.runlog import save_runlog
 from src.utils.io import load_jsonl
 
-if __name__ == '__main__': 
+def main(): 
     ap = argparse.ArgumentParser()
     ap.add_argument(
         '--input_path', 
@@ -105,6 +105,10 @@ if __name__ == '__main__':
     )
 
     vector_store.save(args.output_path)
+    embedder.save(args.output_path)
 
     print(f'Vector store saved to {args.output_path}')
+
+if __name__ == '__main__':
+    main()
 
