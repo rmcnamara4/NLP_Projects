@@ -65,9 +65,9 @@ class FaissStore(VectorStore):
         with open(os.path.join(path, 'store.json')) as f: 
             cfg = json.load(f) 
 
-        obs = cls(cfg['dim'], cfg['metric'], cfg['normalize'])
+        obj = cls(cfg['dim'], cfg['metric'], cfg['normalize'])
         obj.index = faiss.read_index(os.path.join(path, 'index.faiss'))
-        with open(os.path.join(path, 'metadatas.json')) as f: 
+        with open(os.path.join(path, 'metadatas.jsonl')) as f: 
             obj._metadatas = [json.loads(line) for line in f]
 
         return obj
