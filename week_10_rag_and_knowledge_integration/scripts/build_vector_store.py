@@ -58,7 +58,7 @@ if __name__ == '__main__':
     )
     ap.add_argument(
         '--output_path', 
-        default = 'vector_store/faiss_store'
+        default = 'index/faiss_store'
     )
     ap.add_argument(
         '--batch_size', 
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     )
     args = ap.parse_args()
 
-    # save_runlog(args, sub_dir = 'build_vector_store')
+    save_runlog(args, sub_dir = 'build_vector_store')
 
     if args.embedder_provider == 'hf': 
         from src.embeddings.hf import HFEmbeddings
