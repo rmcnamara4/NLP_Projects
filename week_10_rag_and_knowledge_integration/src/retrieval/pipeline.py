@@ -23,7 +23,7 @@ def run_search(
     results = []
     for q in queries: 
         id = q.get('id', None)
-        query_text = q.get('text', None)
+        query_text = q.get('query', None)
 
         embedded_query = embedder.embed_query(query_text)
         out = index.search(embedded_query, k = k)
