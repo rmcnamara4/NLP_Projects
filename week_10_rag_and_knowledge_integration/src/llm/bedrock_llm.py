@@ -27,7 +27,7 @@ Message = Dict[str, Any]
 
 class LLM(ABC): 
     @abstractmethod
-    def generate(self, messages = List[Message], **overrides) -> Dict[str, Any]: 
+    def generate(self, messages: List[Message], **overrides) -> Dict[str, Any]: 
         pass 
 
     def simple(self, user_text: str, system_text: Optional[str] = None, **kw) -> str: 
@@ -42,11 +42,12 @@ class BedrockLLM(LLM):
     def __init__(
         self, 
         model_id: Optional[str], 
-        client = None
+        client = None,
+        default: Optional[Dict[str, Any]] = None
     ): 
         self.client = client or bedrock_client()
         self.model_id = model_id or os.getenv('BEDROCK_MODEL_ID', 'us.anthropic.claude-3-5-haiku-20241022-v1:0')
-        self.family = _get_family(model_id) 
+        self.family = _get_family(self.model_id) 
         self.default = {
             'max_tokens': 700, 
             'temperature': 0.2, 
@@ -75,8 +76,8 @@ class BedrockLLM(LLM):
             if sys_msgs: 
                 body['system'] = '\n\n'.join(sys_msgs)
 
-            resp = client.invoke_model(
-                modelId = model_id, 
+            resp = self.client.invoke_model(
+                modelId = self.model_id, 
                 body = json.dumps(body).encode('utf-8'), 
                 accept = 'application/json', 
                 contentType = 'application/json'
@@ -121,7 +122,7 @@ class BedrockLLM(LLM):
             # Assistant slot (where generation starts)
             parts.append('<|start_header_id|>assistant<|end_header_id|>')
 
-            full_prompt = '\n'.join(parts)
+            prompt = '\n'.join(parts)
 
             body = {
                 'prompt': prompt, 
@@ -148,18 +149,19 @@ class BedrockLLM(LLM):
         response = self.client.invoke_model(
             modelId = self.model_id, 
             accept = 'application/json', 
-            contentType = 'appplication/json', 
+            contentType = 'application/json', 
             body = json.dumps(body).encode('utf-8') 
         )
 
         data = json.loads(response['body'].read())
-        text = {
+        text = (
             data.get('outputText')
             or data.get('generation') 
             or data.get('generated_text') 
             or data.get('results', [{}])[0].get('output_text', '') 
             or data.get('completions', [{}])[0].get('data', {}).get('text', '')
-        }
+            or ''
+        )
 
         return {'text': text, 'usage': data.get('usage', {}), 'raw': data}
 
