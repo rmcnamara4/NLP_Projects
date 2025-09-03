@@ -15,13 +15,14 @@ def render_template(dir: str, name: str, **vars) -> str:
     template = _env(dir).get_template(name) 
     return template.render(**vars) 
 
-def build_prompt(question: str, contexts: List[str]) -> str: 
+def build_prompt(dir: str, question: str, contexts: List[str]) -> str: 
     return render_template(
+        dir, 
         'rag_answer.j2', 
         question = question, 
         contexts = contexts,
         citation_example = '1'
     )
 
-def build_system_prompt() -> str: 
-    return render_template('system_medical.j2') 
+def build_system_prompt(dir: str) -> str: 
+    return render_template(dir, 'system_medical.j2') 
