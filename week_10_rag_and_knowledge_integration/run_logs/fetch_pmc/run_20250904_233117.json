@@ -1,0 +1,18 @@
+{
+  "run_id": "20250904_233117",
+  "ts_utc": "2025-09-04T23:31:17.500186",
+  "args": {
+    "query": "Alzheimer* AND (review OR \"meta-analysis\")",
+    "max_results": 50,
+    "date_from": "2018",
+    "date_to": "2025",
+    "use_s3": true,
+    "raw_key": "data/raw/raw_xml.jsonl",
+    "interim_key": "data/interim/parsed_xml.jsonl"
+  },
+  "env": {
+    "region": null,
+    "user": null,
+    "job_name": null
+  }
+}
