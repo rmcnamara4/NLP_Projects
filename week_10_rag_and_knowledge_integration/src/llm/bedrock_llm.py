@@ -41,7 +41,7 @@ class LLM(ABC):
 class BedrockLLM(LLM): 
     def __init__(
         self, 
-        model_id: Optional[str], 
+        model_id: Optional[str] = None, 
         client = None,
         default: Optional[Dict[str, Any]] = None
     ): 
