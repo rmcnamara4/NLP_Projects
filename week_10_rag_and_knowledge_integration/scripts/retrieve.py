@@ -4,6 +4,7 @@ import os
 
 from src.retrieval.pipeline import load_index, load_embedder, run_search
 from src.utils.io import load_jsonl, save_jsonl
+from src.utils.runlog import save_runlog
 
 def main():     
     ap = argparse.ArgumentParser()
@@ -30,7 +31,7 @@ def main():
     )
     args = ap.parse_args()
 
-    # save_runlog(args, sub_dir = 'evaluate')
+    save_runlog(args, sub_dir = 'retrieve')
 
     with open(os.path.join(args.index_path, 'embedder.json')) as f:
         embedder_cfg = json.load(f)
