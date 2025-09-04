@@ -41,7 +41,7 @@ def main():
             retrieved_results = q['results'], 
             chunks_json_path = args.chunks_json, 
             use_s3 = args.use_s3, 
-            max_chars = args.max_context_chars, 
+            max_chars = args.max_context_char, 
             prompt_dir = args.prompt_dir,
             llm = llm
         )
