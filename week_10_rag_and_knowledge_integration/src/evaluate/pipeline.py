@@ -1,6 +1,44 @@
 from src.evaluate.retrieval_eval import * 
+from src.evaluate.llm_as_judge import * 
+from src.utils.io import load_jsonl
 import numpy as np 
 from functools import partial
+from typing import List, Dict
+
+def get_retrieved_ids(path: str, use_s3: bool = False): 
+    all_retrieved = []
+    retrieved_ids = load_jsonl(path, use_s3)
+    for c in retrieved_ids: 
+        temp = []
+        for r in c['results']: 
+            temp.append(r['id'])
+        all_retrieved.append(temp) 
+    return all_retrieved
+
+def get_golden_ids(path: str, use_s3: bool = False) -> List[str]: 
+    all_golden = []
+    queries = load_jsonl(path, use_s3) 
+    for q in queries: 
+        all_golden.append(set(q['gold_chunks']))
+    return all_golden
+
+def get_meta_to_int(path: str, use_s3: bool = False) -> Dict[str, int]: 
+    metadata = load_jsonl(path, use_s3) 
+    meta_to_int = {}
+    for i, m in enumerate(metadata): 
+        meta_to_int[m['id']] = i
+    return meta_to_int
+
+def get_vecs_from_ids(ids: List[str], index, meta_to_int: Dict[str, int]): 
+    vecs = []
+    for c in ids: 
+        temp = []
+        for r in c: 
+            ind = meta_to_int[r]
+            vec = index.reconstruct(ind) 
+            temp.append(vec) 
+        vecs.append(vec) 
+    return vecs 
 
 def eval_retrieval(all_retrieved: List[List[Any]], all_golden: List[set], k: int, match_type: str = 'binary', sim_threshold: float = 0.8): 
     if match_type == 'binary': 
@@ -26,4 +64,49 @@ def eval_retrieval(all_retrieved: List[List[Any]], all_golden: List[set], k: int
         f'precision_at_{k}': np.mean(precision_at_k_results), 
         'mrr': np.mean(mrr_results), 
         'coverage': coverage_results
-    }
+    }, (hit_at_k_results, recall_at_k_results, precision_at_k_results, mrr_results)
+
+def eval_correctness_and_faithfulness(
+    llm, 
+    prompt_dir: str, 
+    system_template_name: str, 
+    faithfulness_user_template_name: str, 
+    correctness_user_template_name: str, 
+    all_questions: List[str], 
+    all_answers: List[str], 
+    all_retrieved_texts: List[List[str]], 
+    all_golden_texts: List[List[str]]
+): 
+    faithfulness_results = []
+    correctness_results = []
+
+    for q, a, ret_txts, gold_txts in zip(all_questions, all_answers, all_retrieved_texts, all_golden_texts): 
+        f = judge_faithfulness(
+            llm, 
+            prompt_dir, 
+            system_template_name, 
+            faithfulness_user_template_name, 
+            q, 
+            a, 
+            ret_txts
+        )
+
+        c = judge_correctness(
+            llm, 
+            prompt_dir, 
+            system_template_name, 
+            correctness_user_template_name, 
+            q, 
+            a, 
+            gold_txts
+        )
+
+        faithfulness_results.append(f) 
+        correctness_results.append(c) 
+
+    judge_metrics = aggregate_judge_results(
+        faithfulness_results, correctness_results, 
+        has_gold_flags = [bool(g) for g in all_golden_texts]
+    )
+
+    return judge_metrics, (faithfulness_results, correctness_results)
