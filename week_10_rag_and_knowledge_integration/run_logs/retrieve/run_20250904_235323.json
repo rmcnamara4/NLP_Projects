@@ -1,0 +1,16 @@
+{
+  "run_id": "20250904_235323",
+  "ts_utc": "2025-09-04T23:53:23.262652",
+  "args": {
+    "queries_path": "data/queries.jsonl",
+    "index_path": "index/faiss_store_v1",
+    "k": 5,
+    "use_s3": false,
+    "output_path": "data/retrieved_chunks.jsonl"
+  },
+  "env": {
+    "region": null,
+    "user": null,
+    "job_name": null
+  }
+}

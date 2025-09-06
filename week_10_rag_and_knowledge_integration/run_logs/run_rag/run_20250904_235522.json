@@ -1,0 +1,21 @@
+{
+  "run_id": "20250904_235522",
+  "ts_utc": "2025-09-04T23:55:22.317705",
+  "args": {
+    "chunks_json": "data/processed/processed_chunks.jsonl",
+    "retrieval_json": "data/retrieved_chunks.jsonl",
+    "prompt_dir": "prompts/version_1",
+    "use_s3": true,
+    "model_id": "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+    "max_context_char": 6000,
+    "max_out_tokens": 500,
+    "temperature": 0.2,
+    "top_p": 0.95,
+    "out": "./results/rag_answers.jsonl"
+  },
+  "env": {
+    "region": null,
+    "user": null,
+    "job_name": null
+  }
+}
