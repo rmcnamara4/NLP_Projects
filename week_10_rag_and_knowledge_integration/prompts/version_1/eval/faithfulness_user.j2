@@ -1,0 +1,18 @@
+Task: Judge **faithfulness**. Treat the retrieved context as the ONLY source of truth. 
+
+Question: 
+{{ question }}
+
+Answer: 
+{{ answer }}
+
+Retrieved context (as evidence): 
+{% for c in retrieved_context %}
+- {{ c }}
+{% endfor %}
+
+Instructions: 
+- Grade whether the answer is supported strictly by the retrieved context. 
+- If the answer makes claims not found in the retrieved context, that is "contradicted" (hallucination) unless explicitly marked as uncertain; if uncertain and not in evidence -> "insufficient"
+- "abstain" is not rewarded here. If the answer abstains but the retrieved context actually contains enough support, set verdict to "insufficient" or "contradicted" accordingly and score low. 
+- Map to the JSON schema from the system prompt

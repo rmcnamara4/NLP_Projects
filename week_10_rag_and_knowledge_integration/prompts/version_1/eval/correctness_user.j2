@@ -1,0 +1,21 @@
+Task: Judge **correctness**. Treat the GOLDEN context as the authoritative ground truth. 
+
+Question: 
+{{ question }}
+
+Answer: 
+{{ answer }}
+
+GOLDEN context (ground truth): 
+{% if golden context and golden_context|length > 0 %}
+{% for c in golden_context %} 
+- {{ c }}
+{% endfor %}
+{% else %}
+(No GOLDEN context available. In this case, the correct behavior is to abstain if the question cannot be answered confidently.) 
+{% endif %}
+
+Instructions: 
+- If GOLDEN context is present, judge whether the answer is "supported", "contradicted", or "insufficient". 
+- If NO GOLDEN context is present, the **correct** behavior is to "abstain". Answers that abstain get verdict "abstain" and score 1.0. Non-abstaining answers should be "insufficient" (or "contradicted" if confidently wrong) with low score. 
+- Map to the JSON schema from the system prompt. 
