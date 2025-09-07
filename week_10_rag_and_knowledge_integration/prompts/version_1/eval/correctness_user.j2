@@ -7,7 +7,7 @@ Answer:
 {{ answer }}
 
 GOLDEN context (ground truth): 
-{% if golden context and golden_context|length > 0 %}
+{% if golden_context and golden_context|length > 0 %}
 {% for c in golden_context %} 
 - {{ c }}
 {% endfor %}
