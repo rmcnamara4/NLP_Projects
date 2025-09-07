@@ -1,9 +1,10 @@
 from src.evaluate.retrieval_eval import * 
 from src.evaluate.llm_as_judge import * 
+from src.llm.pipeline import batch_get_texts
 from src.utils.io import load_jsonl
 import numpy as np 
 from functools import partial
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 def get_retrieved_ids(path: str, use_s3: bool = False): 
     all_retrieved = []
@@ -21,6 +22,22 @@ def get_golden_ids(path: str, use_s3: bool = False) -> List[str]:
     for q in queries: 
         all_golden.append(set(q['gold_chunks']))
     return all_golden
+
+def get_text(ids: List[List[str]], path: str, use_s3: bool = True) -> List[List[str]]:
+    texts = []
+    for i in ids:  
+        batch = batch_get_texts(i, path, use_s3)
+        texts.append(list(batch.values()))
+    return texts
+
+
+def get_questions_and_answers(path: str, use_s3: bool = False) -> Tuple[List[str], List[str]]: 
+    questions, answers = [], []
+    results = load_jsonl(path, use_s3) 
+    for r in results: 
+        questions.append(r['question'])
+        answers.append(r['answer'])
+    return questions, answers 
 
 def get_meta_to_int(path: str, use_s3: bool = False) -> Dict[str, int]: 
     metadata = load_jsonl(path, use_s3) 
@@ -55,14 +72,19 @@ def eval_retrieval(all_retrieved: List[List[Any]], all_golden: List[set], k: int
             recall_at_k_results.append(recall_at_k(retrieved, golden, k, matcher))
             precision_at_k_results.append(precision_at_k(retrieved, golden, k, matcher))
             mrr_results.append(mrr(retrieved, golden, matcher))
+        else: 
+            hit_at_k_results.append(np.nan) 
+            recall_at_k_results.append(np.nan) 
+            precision_at_k_results.append(np.nan) 
+            mrr_results.append(np.nan)
 
     coverage_results = coverage(all_retrieved, all_golden, matcher) 
 
     return {
-        f'hit_at_{k}': np.mean(hit_at_k_results), 
-        f'recall_at_{k}': np.mean(recall_at_k_results), 
-        f'precision_at_{k}': np.mean(precision_at_k_results), 
-        'mrr': np.mean(mrr_results), 
+        f'hit_at_{k}': np.nanmean(hit_at_k_results), 
+        f'recall_at_{k}': np.nanmean(recall_at_k_results), 
+        f'precision_at_{k}': np.nanmean(precision_at_k_results), 
+        'mrr': np.nanmean(mrr_results), 
         'coverage': coverage_results
     }, (hit_at_k_results, recall_at_k_results, precision_at_k_results, mrr_results)
 
