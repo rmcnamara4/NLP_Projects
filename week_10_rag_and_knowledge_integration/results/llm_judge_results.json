@@ -1,0 +1,8 @@
+{
+  "faithfulness_score": 0.86,
+  "correctness_score": 0.9800000000000001,
+  "hallucination_score": 0.0,
+  "insufficient_rate_faith": 0.2,
+  "insufficient_rate_correct": 0.0,
+  "abstain_accuracy_no_gold": 1.0
+}
