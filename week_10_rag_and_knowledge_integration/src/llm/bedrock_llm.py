@@ -5,17 +5,35 @@ from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 load_dotenv()
 
+Message = Dict[str, Any]
+
 def bedrock_client(): 
     return boto3.client(
         'bedrock-runtime', region_name = os.getenv('AWS_DEFAULT_REGION', 'us-east-1')
     )
 
+# Define variables for identifying which family of model the chosen LLM belongs to 
 FAM_ANTHROPIC = 'anthropic.claude'
 FAM_COHERE = 'cohere.command'
 FAM_META_LLAMA = 'meta.llama'
 FAM_AMAZON_TITAN = 'amazon.titan'
 
 def _get_family(model_id: str) -> str: 
+    """
+    Identify the LLM family based on its model ID.
+
+    This function inspects the model identifier string and maps it to a 
+    known provider family (Anthropic, Cohere, Meta LLaMA, or Amazon Titan). 
+    If the model ID does not match any of these, it returns "other".
+
+    Args:
+        model_id (str): The model identifier (e.g., 
+            "us.anthropic.claude-3-5-haiku-20241022-v1:0").
+
+    Returns:
+        str: The family constant string corresponding to the model 
+            (e.g., "anthropic.claude", "cohere.command"), or "other".
+    """
     mid = model_id.lower()
     if 'anthropic' in mid or 'claude' in mid: return FAM_ANTHROPIC
     if 'cohere' in mid: return FAM_COHERE
@@ -23,14 +41,50 @@ def _get_family(model_id: str) -> str:
     if 'titan' in mid: return FAM_AMAZON_TITAN
     return 'other'
 
-Message = Dict[str, Any]
-
 class LLM(ABC): 
+    """
+    Abstract base class for Large Language Model (LLM) clients.
+
+    Defines a standard interface for generating text completions
+    from a sequence of system/user messages. Subclasses should
+    implement the `generate` method for specific providers.
+    """
     @abstractmethod
     def generate(self, messages: List[Message], **overrides) -> Dict[str, Any]: 
+        """
+        Generate a model response given a list of messages.
+
+        Args:
+            messages (List[Message]): A sequence of messages, where each
+                message is a dict with "role" ("system", "user", or
+                "assistant") and "content" (str).
+            **overrides: Optional provider-specific parameters such as
+                temperature, max_tokens, etc.
+
+        Returns:
+            Dict[str, Any]: A response dictionary containing:
+                - "text" (str): The model-generated text.
+                - "usage" (dict, optional): Token usage metadata.
+                - "raw" (dict, optional): Full raw provider response.
+        """
         pass 
 
     def simple(self, user_text: str, system_text: Optional[str] = None, **kw) -> str: 
+        """
+        Generate a response from a simple user/system text prompt.
+
+        Wraps `generate` by constructing messages from raw strings,
+        making it easier to call for quick single-turn prompts.
+
+        Args:
+            user_text (str): The user input prompt text.
+            system_text (Optional[str]): An optional system instruction
+                (e.g., role or task definition).
+            **kw: Optional overrides passed to `generate`.
+
+        Returns:
+            str: The model-generated text (extracted from the response).
+        """
         msgs: List[Message] = []
         if system_text: 
             msgs.append({'role': 'system', 'content': system_text})
@@ -39,6 +93,13 @@ class LLM(ABC):
         return out.get('text', '')
 
 class BedrockLLM(LLM): 
+    """
+    LLM client for AWS Bedrock-hosted models.
+
+    Provides a unified interface for Anthropic (Claude), Cohere,
+    Meta (LLaMA), and Amazon Titan families. Handles message
+    formatting, request construction, and response parsing.
+    """
     def __init__(
         self, 
         model_id: Optional[str] = None, 
@@ -56,6 +117,21 @@ class BedrockLLM(LLM):
         }
 
     def generate(self, messages = List[Message], **overrides) -> Dict[str, Any]: 
+        """
+        Generate text from a sequence of messages using an AWS Bedrock model.
+
+        Args:
+            messages (List[Message]): A list of messages in dict form with
+                "role" ("system" or "user") and "content" (str).
+            **overrides: Optional parameters such as `max_tokens`,
+                `temperature`, or `top_p` that override defaults.
+
+        Returns:
+            Dict[str, Any]: A dictionary with:
+                - "text" (str): The generated text output.
+                - "usage" (dict, optional): Token usage metadata if provided.
+                - "raw" (dict): Full parsed provider response for debugging.
+        """
         params = {**self.default, **overrides}
         if self.family == FAM_ANTHROPIC: 
             body = {
