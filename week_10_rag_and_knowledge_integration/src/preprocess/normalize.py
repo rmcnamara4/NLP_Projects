@@ -47,6 +47,25 @@ def clean_text(
     remove_author_year: bool = True,
     unescape_html_entities: bool = True,
 ) -> str:
+    """
+    Clean and normalize raw text by removing citations, references, and formatting.
+
+    Applies regex-based preprocessing steps to strip out HTML tags, bracketed
+    citations, figure references, year-based patterns, and author–year references.
+    Optionally decodes HTML entities and collapses whitespace.
+
+    Args:
+        text: The raw input string to clean.
+        remove_html: If True, remove HTML tags. Defaults to True.
+        remove_bracket_cites: If True, remove citations in square brackets (e.g., [12]). Defaults to True.
+        remove_figure_refs: If True, remove figure/table references (e.g., "Fig. 1"). Defaults to True.
+        remove_year_parens: If True, remove parenthetical year references (e.g., (2020)). Defaults to True.
+        remove_author_year: If True, remove author–year references (e.g., "Smith (2020)"). Defaults to True.
+        unescape_html_entities: If True, decode HTML entities (e.g., "&amp;" → "&"). Defaults to True.
+
+    Returns:
+        str: Cleaned and normalized text with citations and formatting artifacts removed.
+    """
     if not text:
         return ''
 
