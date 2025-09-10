@@ -16,6 +16,20 @@ s3_client = boto3.client(
 )
 
 def save_jsonl(records: Iterable[Dict], filename: str, use_s3: Optional[bool] = True): 
+    """
+    Save a list of records in JSON Lines (JSONL) format either locally or to S3.
+
+    Args:
+        records: Iterable of dictionaries to save.
+        filename: Path (local file or S3 key) where the JSONL should be stored.
+        use_s3: If True (default), save to S3. If False, save to local filesystem.
+
+    Raises:
+        ValueError: If `use_s3=True` but the `S3_BUCKET` environment variable is not set.
+
+    Returns:
+        None. Saves the file locally or to the specified S3 bucket and prints the save location.
+    """
     if use_s3: 
         if not S3_BUCKET: 
             raise ValueError('S3_BUCKET env variable is not set.') 
@@ -34,6 +48,19 @@ def save_jsonl(records: Iterable[Dict], filename: str, use_s3: Optional[bool] = 
             print(f'Saved locally to {filename}')
 
 def load_jsonl(path: str, use_s3: Optional[bool] = True):
+    """
+    Load records from a JSON Lines (JSONL) file stored locally or in S3.
+
+    Args:
+        path: File path (for local) or S3 key (for remote) to read from.
+        use_s3: If True (default), read from S3. If False, read from local filesystem.
+
+    Raises:
+        ValueError: If `use_s3=True` but the `S3_BUCKET` environment variable is not set.
+
+    Returns:
+        List[dict]: A list of dictionaries, one per JSONL line.
+    """
     if use_s3:
         if not S3_BUCKET:
             raise ValueError('S3_BUCKET env variable is not set.')
