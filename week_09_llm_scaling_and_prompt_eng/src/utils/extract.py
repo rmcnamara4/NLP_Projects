@@ -1,6 +1,18 @@
 import re
 
 def extract_final_answer(text):
+    """
+    Extracts the final numeric answer from an LLM-generated response to a math problem.
+
+    The function removes artifacts (e.g., <<...>>) and uses regex to find the last
+    numeric value in the response. It supports integers and floats with commas.
+
+    Args:
+        text (str): The full generated text output from the language model.
+
+    Returns:
+        float or None: The extracted numeric answer as a float, or None if parsing fails.
+    """
     # Remove any artifacts like <<...>>
     text = re.sub(r'<<.*?>>', '', text)
 

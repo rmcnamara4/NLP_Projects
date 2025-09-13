@@ -2,6 +2,26 @@ import torch
 from tqdm import tqdm
 
 def get_quantized_response(prompts, pipe, cfg): 
+    """
+    Generates responses using a quantized local language model pipeline.
+
+    This function processes a list of prompts using a quantized model (e.g., GGUF or GPTQ via Hugging Face or Text Generation Inference),
+    supporting batched generation and sampling configuration.
+
+    Args:
+        prompts (str or list of str): A single prompt or a list of prompts to generate responses for.
+        pipe (transformers.Pipeline): A text generation pipeline (e.g., from `transformers.pipeline(...)`) with a quantized model.
+        cfg (object): Configuration object containing generation parameters:
+            - batch_size (int): Number of prompts per batch.
+            - max_tokens (int): Maximum number of new tokens to generate.
+            - temperature (float): Sampling temperature.
+            - top_p (float): Nucleus sampling parameter.
+            - seed (int): Random seed for reproducibility.
+            - do_sample (bool): Whether to use sampling or greedy decoding.
+
+    Returns:
+        list of str: A list of generated responses, one for each input prompt.
+    """
     if isinstance(prompts, str): 
         prompts = [prompts]
 
