@@ -68,7 +68,7 @@ def main():
     )
     ap.add_argument(
         '--index_path', 
-        default = 'index/faiss_store_v1/index.faiss'
+        default = 'index/faiss_store_v1/'
     )
     ap.add_argument(
         '--k', 
@@ -119,7 +119,7 @@ def main():
 
     if args.match_type == 'semantic': 
         index = load_index(args.index_path) 
-        get_meta_to_int = get_meta_to_int(args.metadata_path, use_s3 = False)
+        meta_to_int = get_meta_to_int(args.metadata_path, use_s3 = False)
 
         retrieved_vecs = get_vecs_from_ids(retrieved_ids, index.index, meta_to_int)
         golden_vecs = get_vecs_from_ids(golden_ids, index.index, meta_to_int)
