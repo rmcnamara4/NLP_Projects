@@ -1,0 +1,29 @@
+{
+  "run_id": "20250913_230212",
+  "ts_utc": "2025-09-13T23:02:12.746637",
+  "args": {
+    "queries_path": "data/queries.jsonl",
+    "retrieved_path": "data/retrieved_chunks.jsonl",
+    "answer_path": "results/rag_answers.jsonl",
+    "model_id": "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 600,
+    "prompt_dir": "prompts/version_1/eval",
+    "system_template": "system.j2",
+    "faithfulness_user_template": "faithfulness_user.j2",
+    "correctness_user_template": "correctness_user.j2",
+    "processed_chunks_path": "data/processed/processed_chunks.jsonl",
+    "metadata_path": "index/faiss_store_v1/metadatas.jsonl",
+    "index_path": "index/faiss_store_v1/",
+    "k": 5,
+    "match_type": "semantic",
+    "sim_threshold": 0.8,
+    "out": "results"
+  },
+  "env": {
+    "region": null,
+    "user": null,
+    "job_name": null
+  }
+}
