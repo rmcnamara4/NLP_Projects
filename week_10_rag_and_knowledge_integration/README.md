@@ -157,16 +157,14 @@ Evaluation was performed across both **retrieval** and **generation** stages usi
 > ✅ *All metrics are based on manual annotations comparing model output to gold/reference answers.*
 
 ### 📝 Example Outputs 
-Example 1
----------
+#### Example 1
 **Query**: 
 *How does amyloid-beta accumulation contribute to synaptic dysfunction in Alzheimer's disease?*
 
 **Model Answer**: 
 *Amyloid-beta (Aβ) peptide contributes to synaptic dysfunction through multiple mechanisms. It can directly act on neuronal tubulin tau, causing rapid separation of tau from microtubules and leading to axon structure collapse [1]. Aβ also interacts with ryanodine receptors, disrupting intracellular calcium homeostasis and causing structural and functional damage to nerve cells [1]. Additionally, Aβ affects N-methyl-D-aspartate (NMDA) receptors, which leads to abnormal protein synthesis, dendritic spine formation, and glutamate homeostasis disorders, ultimately causing neuronal excitotoxicity [1]. These processes collectively result in synaptic dysfunction and can eventually lead to neuronal death.*
 
-Example 2
----------
+#### Example 2
 **Query**: 
 *Compare efficacy of cholinesterase inhibitors vs memantine in mild AD.*
 
