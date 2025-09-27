@@ -14,7 +14,7 @@ def main():
     )
     ap.add_argument(
         '--index_path', 
-        default = 'index/faiss_faiss_store'
+        default = 'index/faiss_store'
     )
     ap.add_argument(
         '--k', 
